@@ -1,0 +1,12 @@
+name: Backend - Pull Request - Cleanup action caches
+
+on:
+  pull_request:
+    types:
+      - closed
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    name: Cleanup
+    uses: CycriLabs/eam-gha-workflows/.github/workflows/be-fe_pull-request_cache-cleanup.yml@main
