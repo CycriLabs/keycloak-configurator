@@ -29,7 +29,7 @@ mvn quarkus:dev -P github "-Dquarkus.args=-h"
 Starting the import of a configuration can be done as follows:
 
 ```bash
-mvn quarkus:dev -P github "-Dquarkus.args=-s http://localhost:40800 -u keycloak -p root configure -c C:\Users\MarcScheib\eam-projects\keycloak-configuration-eam"
+mvn quarkus:dev -P github "-Dquarkus.args=-s http://localhost:40800 -u keycloak -p root configure -c ../keycloak-configuration-eam"
 ```
 
 Showing the help of a sub-command can be done as follows:

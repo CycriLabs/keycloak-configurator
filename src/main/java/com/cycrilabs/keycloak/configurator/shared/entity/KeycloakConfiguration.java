@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.shared.entity;
+package com.cycrilabs.keycloak.configurator.shared.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

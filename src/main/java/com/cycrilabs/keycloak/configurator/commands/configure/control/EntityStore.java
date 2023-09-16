@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.commands.configure.control;
+package com.cycrilabs.keycloak.configurator.commands.configure.control;
 
 import java.util.HashMap;
 import java.util.Map;

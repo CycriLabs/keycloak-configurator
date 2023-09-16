@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.commands.configure.boundary;
+package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
 import java.nio.file.Path;
 
@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.Response;
 import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.GroupRepresentation;
 
-import com.cycrilabs.eam.keycloak.configurator.commands.configure.entity.EntityImportType;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
 
 import io.quarkus.logging.Log;
 

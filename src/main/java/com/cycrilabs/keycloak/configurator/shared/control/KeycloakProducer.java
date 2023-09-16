@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.shared.control;
+package com.cycrilabs.keycloak.configurator.shared.control;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -8,7 +8,7 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 
-import com.cycrilabs.eam.keycloak.configurator.shared.entity.KeycloakConfiguration;
+import com.cycrilabs.keycloak.configurator.shared.entity.KeycloakConfiguration;
 
 @ApplicationScoped
 public class KeycloakProducer {

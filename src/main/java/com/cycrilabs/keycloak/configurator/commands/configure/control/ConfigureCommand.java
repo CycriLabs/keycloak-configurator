@@ -1,12 +1,12 @@
-package com.cycrilabs.eam.keycloak.configurator.commands.configure.control;
+package com.cycrilabs.keycloak.configurator.commands.configure.control;
 
 import java.util.Comparator;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
-import com.cycrilabs.eam.keycloak.configurator.commands.configure.boundary.AbstractImporter;
-import com.cycrilabs.eam.keycloak.configurator.shared.entity.KeycloakConfiguration;
+import com.cycrilabs.keycloak.configurator.commands.configure.boundary.AbstractImporter;
+import com.cycrilabs.keycloak.configurator.shared.entity.KeycloakConfiguration;
 
 import io.quarkus.logging.Log;
 import picocli.CommandLine;
