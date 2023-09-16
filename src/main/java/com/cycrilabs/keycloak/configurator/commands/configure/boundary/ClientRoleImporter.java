@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.commands.configure.boundary;
+package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
 import java.nio.file.Path;
 
@@ -8,7 +8,7 @@ import jakarta.ws.rs.ClientErrorException;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
-import com.cycrilabs.eam.keycloak.configurator.commands.configure.entity.EntityImportType;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
 
 import io.quarkus.logging.Log;
 

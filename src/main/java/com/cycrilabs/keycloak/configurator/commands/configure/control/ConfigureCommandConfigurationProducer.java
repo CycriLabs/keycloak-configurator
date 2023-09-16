@@ -1,9 +1,9 @@
-package com.cycrilabs.eam.keycloak.configurator.commands.configure.control;
+package com.cycrilabs.keycloak.configurator.commands.configure.control;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
-import com.cycrilabs.eam.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
 
 import picocli.CommandLine;
 

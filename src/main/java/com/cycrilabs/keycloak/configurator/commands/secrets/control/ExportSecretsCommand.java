@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.commands.secrets.control;
+package com.cycrilabs.keycloak.configurator.commands.secrets.control;
 
 import io.quarkus.logging.Log;
 import picocli.CommandLine;

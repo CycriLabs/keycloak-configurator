@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.commands.configure.boundary;
+package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
 import static io.quarkus.arc.ComponentsProvider.LOG;
 
@@ -16,11 +16,11 @@ import jakarta.inject.Inject;
 
 import org.keycloak.admin.client.Keycloak;
 
-import com.cycrilabs.eam.keycloak.configurator.commands.configure.control.EntityStore;
-import com.cycrilabs.eam.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
-import com.cycrilabs.eam.keycloak.configurator.commands.configure.entity.EntityImportType;
-import com.cycrilabs.eam.keycloak.configurator.shared.control.JsonbConfigurator;
-import com.cycrilabs.eam.keycloak.configurator.shared.entity.KeycloakConfiguration;
+import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
+import com.cycrilabs.keycloak.configurator.shared.control.JsonbConfigurator;
+import com.cycrilabs.keycloak.configurator.shared.entity.KeycloakConfiguration;
 
 import io.quarkus.logging.Log;
 

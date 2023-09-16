@@ -1,4 +1,4 @@
-package com.cycrilabs.eam.keycloak.configurator.shared.control;
+package com.cycrilabs.keycloak.configurator.shared.control;
 
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
