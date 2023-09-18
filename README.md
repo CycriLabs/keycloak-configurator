@@ -14,26 +14,37 @@ Currently, two commands are supported:
 
 Each commands support a set of options. The options can be listed by executing the command with `-h` or `--help`.
 
-TODO: list global options and sub command options
+### Sub-Command `configure`
+
+The `configure` sub-command allows to configure a Keycloak instance with a set of realms, clients, client-roles, etc.
+The configuration is done by providing a set of configuration files. Each configuration file is a JSON file that represents
+a entity of the Keycloak REST API.
+
+TODO:
+- list global options and sub command options
+- describe configuration files
+
+### Sub-Command `export-secrets`
+
+TODO: describe sub command
 
 ## Development
 
-The configurator can be started in dev mode using the following commands. Depending on the goal, different commands can be used.
-
-Showing the help can be done as follows:
+The configurator can be started in dev mode using the Quarkus CLI and passing the arguments via `-Dquarkus.args`.
+For example, showing the help can be done as follows:
 
 ```bash
-mvn quarkus:dev -P github "-Dquarkus.args=-h"
+mvn quarkus:dev "-Dquarkus.args=-h"
 ```
 
 Starting the import of a configuration can be done as follows:
 
 ```bash
-mvn quarkus:dev -P github "-Dquarkus.args=-s http://localhost:40800 -u keycloak -p root configure -c ../keycloak-configuration-eam"
+mvn quarkus:dev "-Dquarkus.args=-s http://localhost:40800 -u keycloak -p root configure -c ../keycloak-configuration-eam"
 ```
 
-Showing the help of a sub-command can be done as follows:
+The help of a sub-command is shown as follows:
 
 ```bash
-mvn quarkus:dev -P github "-Dquarkus.args=configure -h"
+mvn quarkus:dev "-Dquarkus.args=configure -h"
 ```
