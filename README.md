@@ -40,11 +40,40 @@ mvn quarkus:dev "-Dquarkus.args=-h"
 Starting the import of a configuration can be done as follows:
 
 ```bash
-mvn quarkus:dev "-Dquarkus.args=-s http://localhost:40800 -u keycloak -p root configure -c ../keycloak-configuration-eam"
+mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:40800 -u keycloak -p root -c ../keycloak-configuration-eam"
 ```
 
 The help of a sub-command is shown as follows:
 
 ```bash
 mvn quarkus:dev "-Dquarkus.args=configure -h"
+```
+
+## Execution examples
+
+- Show help:
+    ```bash
+    mvn quarkus:dev "-Dquarkus.args=-h"
+    ```
+- Show help of the `configure` sub-command:
+    ```bash
+    mvn quarkus:dev "-Dquarkus.args=configure -h"
+    ```
+- Execute configuration import:
+    ```bash
+    mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:40800 -u keycloak -p root -c ../keycloak-configuration-eam"
+    ```
+- Show help of the `export-secrets` sub-command:
+    ```bash
+    mvn quarkus:dev "-Dquarkus.args=export-secrets -h"
+    ```
+- Export client secrets of all clients of the realm `eam`:
+    ```bash
+    mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:40800 -u keycloak -p root -r eam"
+    ```
+
+Specify the log level via `-Dquarkus.log.level`. For example, to set the log level to `INFO`:
+
+```bash
+mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:40800 -u keycloak -p root -r eam" "-Dquarkus.log.level=INFO"
 ```

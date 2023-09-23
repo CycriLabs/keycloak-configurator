@@ -11,13 +11,4 @@ import picocli.CommandLine;
         version = "0.1.0",
         subcommands = { ConfigureCommand.class, ExportSecretsCommand.class })
 public class EntryCommand {
-    @CommandLine.Option(required = true, names = { "-s", "--server" },
-            description = "Keycloak server that will be configured.")
-    String server = "";
-    @CommandLine.Option(required = true, names = { "-u", "--username" },
-            description = "Username of the admin user that is used for configuration.")
-    String username = "";
-    @CommandLine.Option(required = true, names = { "-p", "--password" },
-            description = "Password of the admin user that is used for configuration.")
-    String password = "";
 }

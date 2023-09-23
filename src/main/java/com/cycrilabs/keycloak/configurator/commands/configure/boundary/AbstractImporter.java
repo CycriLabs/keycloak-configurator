@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
 import org.keycloak.admin.client.Keycloak;
@@ -19,8 +20,8 @@ import org.keycloak.admin.client.Keycloak;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
-import com.cycrilabs.keycloak.configurator.shared.control.JsonbConfigurator;
-import com.cycrilabs.keycloak.configurator.shared.entity.KeycloakConfiguration;
+import com.cycrilabs.keycloak.configurator.shared.control.JsonbFactory;
+import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 
 import io.quarkus.logging.Log;
 
@@ -28,13 +29,14 @@ public abstract class AbstractImporter {
     public static final String PATH_SEPARATOR = Pattern.quote(System.getProperty("file.separator"));
 
     @Inject
-    protected KeycloakConfiguration configuration;
-    @Inject
-    protected ConfigureCommandConfiguration subConfiguration;
-    @Inject
+    protected ConfigureCommandConfiguration configuration;
     protected Keycloak keycloak;
-
     protected EntityStore entityStore;
+
+    @PostConstruct
+    public void init() {
+        keycloak = KeycloakFactory.create(configuration);
+    }
 
     protected <T> T loadEntity(final Path filepath, final Class<T> dtoClass) {
         final String json = loadJsonFromResource(filepath);
@@ -51,12 +53,12 @@ public abstract class AbstractImporter {
     }
 
     private <T> T fromJson(final String content, final Class<T> dtoClass) {
-        return JsonbConfigurator.getJsonb().fromJson(content, dtoClass);
+        return JsonbFactory.getJsonb().fromJson(content, dtoClass);
     }
 
     public void runImport(final EntityStore entityStore) {
-        this.entityStore = entityStore;
         Log.infof("Executing importer %s.", getClass().getSimpleName());
+        this.entityStore = entityStore;
         final List<Path> importFiles = getEntityFilePaths(getEntityDirectory());
         for (final Path importFile : importFiles) {
             final Object o = importFile(importFile);
@@ -65,7 +67,7 @@ public abstract class AbstractImporter {
     }
 
     private List<Path> getEntityFilePaths(final String entityDir) {
-        final String dir = Paths.get(subConfiguration.getConfigDirectory(), entityDir).toString();
+        final String dir = Paths.get(configuration.getConfigDirectory(), entityDir).toString();
         try (final Stream<Path> stream = Files.walk(Paths.get(dir))) {
             return stream
                     .filter(Files::isRegularFile)

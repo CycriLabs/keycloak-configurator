@@ -31,6 +31,7 @@
 
         <!-- Dependency versions -->
         <quarkus.platform.version>3.4.1</quarkus.platform.version>
+        <velocity.version>2.3</velocity.version>
         <lombok.version>1.18.28</lombok.version>
         <!-- /Dependency versions -->
 
@@ -72,6 +73,12 @@
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-picocli</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>${velocity.version}</version>
         </dependency>
 
         <dependency>
