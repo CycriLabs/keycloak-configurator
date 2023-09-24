@@ -9,8 +9,20 @@ concurrency:
 
 jobs:
   test-and-build:
-    name: Test and build
-    uses: CycriLabs/eam-gha-workflows/.github/workflows/be_pull-request_test-build.yml@main
-    secrets: inherit
-    with:
-      java-version: 17
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v3
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: 'graalvm'
+          java-version: '17'
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test project
+        run: mvn -B package
