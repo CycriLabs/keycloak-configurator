@@ -12,8 +12,6 @@ public class ConfigureCommandConfigurationProducer {
     @Produces
     @ApplicationScoped
     ConfigureCommandConfiguration createConfiguration(final CommandLine.ParseResult parseResult) {
-        return new ConfigureCommandConfiguration(
-                parseResult.subcommand().matchedOption("c").getValue().toString()
-        );
+        return new ConfigureCommandConfiguration(parseResult);
     }
 }

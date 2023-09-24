@@ -7,8 +7,8 @@ import jakarta.json.bind.JsonbConfig;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(staticName = "getInstance")
-public class JsonbConfigurator {
-    private static final JsonbConfigurator INSTANCE = new JsonbConfigurator();
+public class JsonbFactory {
+    private static final JsonbFactory INSTANCE = new JsonbFactory();
 
     private Jsonb jsonbFormatting;
     private Jsonb jsonb;

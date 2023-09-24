@@ -1,10 +1,17 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+import com.cycrilabs.keycloak.configurator.shared.entity.KeycloakConfiguration;
+
+import picocli.CommandLine.ParseResult;
+
 @Getter
-public class ConfigureCommandConfiguration {
-    String configDirectory;
+public class ConfigureCommandConfiguration extends KeycloakConfiguration {
+    private final String configDirectory;
+
+    public ConfigureCommandConfiguration(final ParseResult parseResult) {
+        super(parseResult);
+        configDirectory = getMatchedOption(parseResult, "-c");
+    }
 }
