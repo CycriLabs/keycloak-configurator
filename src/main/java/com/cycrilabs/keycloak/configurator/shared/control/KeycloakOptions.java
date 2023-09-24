@@ -13,6 +13,6 @@ public class KeycloakOptions {
     String username = "";
     @CommandLine.Option(required = true, names = { "-p", "--password" },
             description = "Password of the admin user that is used for configuration.",
-            scope = CommandLine.ScopeType.INHERIT)
+            scope = CommandLine.ScopeType.INHERIT, arity = "0..1", interactive = true)
     String password = "";
 }
