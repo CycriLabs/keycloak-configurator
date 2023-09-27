@@ -19,9 +19,9 @@ import org.keycloak.admin.client.Keycloak;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
-import com.cycrilabs.keycloak.configurator.shared.control.JsonbFactory;
+import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
+import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 
@@ -40,7 +40,7 @@ public abstract class AbstractImporter {
 
     protected <T> T loadEntity(final Path filepath, final Class<T> dtoClass) {
         final String json = loadJsonFromResource(filepath);
-        return fromJson(json, dtoClass);
+        return JsonUtil.fromJson(json, dtoClass);
     }
 
     private String loadJsonFromResource(final Path filePath) {
@@ -50,10 +50,6 @@ public abstract class AbstractImporter {
             LOG.errorf("Could not read file {}", filePath);
             throw new RuntimeException(e);
         }
-    }
-
-    private <T> T fromJson(final String content, final Class<T> dtoClass) {
-        return JsonbFactory.getJsonb().fromJson(content, dtoClass);
     }
 
     public void runImport(final EntityStore entityStore) {
@@ -87,7 +83,7 @@ public abstract class AbstractImporter {
         return getType().getDirectory();
     }
 
-    public abstract EntityImportType getType();
+    public abstract EntityType getType();
 
     protected abstract Object importFile(final Path file);
 }

@@ -8,15 +8,15 @@ import jakarta.ws.rs.ClientErrorException;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
+import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class ClientRoleImporter extends AbstractImporter {
     @Override
-    public EntityImportType getType() {
-        return EntityImportType.CLIENT_ROLE;
+    public EntityType getType() {
+        return EntityType.CLIENT_ROLE;
     }
 
     @Override

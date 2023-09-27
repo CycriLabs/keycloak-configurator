@@ -20,15 +20,19 @@ public class JsonbFactory {
 
     private Jsonb getConfiguredJsonb(final boolean formatting) {
         if (formatting) {
-            if (jsonbFormatting == null) {
-                jsonbFormatting = JsonbBuilder.create(getConfig(true));
-            }
-            return jsonbFormatting;
+            return getConfiguredJsonbFormatting();
         }
         if (jsonb == null) {
             jsonb = JsonbBuilder.create(getConfig(false));
         }
         return jsonb;
+    }
+
+    private Jsonb getConfiguredJsonbFormatting() {
+        if (jsonbFormatting == null) {
+            jsonbFormatting = JsonbBuilder.create(getConfig(true));
+        }
+        return jsonbFormatting;
     }
 
     public static Jsonb getJsonb() {
