@@ -9,15 +9,15 @@ import jakarta.ws.rs.core.Response;
 import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
+import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class UserImporter extends AbstractImporter {
     @Override
-    public EntityImportType getType() {
-        return EntityImportType.USER;
+    public EntityType getType() {
+        return EntityType.USER;
     }
 
     @Override

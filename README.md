@@ -71,6 +71,14 @@ mvn quarkus:dev "-Dquarkus.args=configure -h"
     ```bash
     mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:40800 -u keycloak -p root -r eam"
     ```
+- Export client entities of the realm `eam`:
+    ```bash
+    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:40800 -u keycloak -p root -r eam -t client" "-Dquarkus.log.level=INFO"
+    ```
+- Export client entity "eam-js" of the realm `eam`:
+    ```bash
+    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:40800 -u keycloak -p root -r eam -t client -n eam-js" "-Dquarkus.log.level=INFO"
+    ```
 
 Specify the log level via `-Dquarkus.log.level`. For example, to set the log level to `INFO`:
 

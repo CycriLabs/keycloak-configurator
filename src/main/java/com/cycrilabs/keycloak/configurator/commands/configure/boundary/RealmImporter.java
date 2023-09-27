@@ -7,15 +7,15 @@ import jakarta.ws.rs.ClientErrorException;
 
 import org.keycloak.representations.idm.RealmRepresentation;
 
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.EntityImportType;
+import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class RealmImporter extends AbstractImporter {
     @Override
-    public EntityImportType getType() {
-        return EntityImportType.REALM;
+    public EntityType getType() {
+        return EntityType.REALM;
     }
 
     @Override
