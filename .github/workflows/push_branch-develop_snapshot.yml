@@ -1,0 +1,68 @@
+name: Backend - Develop - Publish snapshot on push
+
+on:
+  push:
+    branches:
+      - develop
+
+env:
+  java-version: '17'
+  distribution: 'graalvm'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v4
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Adapt maven settings
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+
+      - name: Test
+        run: mvn -B verify
+
+  build-container-image:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v4
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Adapt maven settings
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+
+      - name: Deploy project & image
+        run: >
+          mvn -B package -DskipTests
+          -Dquarkus.container-image.tag=latest
+          -Dquarkus.container-image.build=true
+          -Dquarkus.native.container-build=true -Dnative
+          -Dquarkus.container-image.push=true
+          -Dquarkus.container-image.registry=ghcr.io
+          -Dquarkus.container-image.username=${{ github.actor }}
+          -Dquarkus.container-image.password=${{ secrets.GITHUB_TOKEN }}
