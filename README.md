@@ -18,15 +18,27 @@ Each commands support a set of options. The options can be listed by executing t
 
 The `configure` sub-command allows to configure a Keycloak instance with a set of realms, clients, client-roles, etc.
 The configuration is done by providing a set of configuration files. Each configuration file is a JSON file that represents
-a entity of the Keycloak REST API.
+an entity of the Keycloak REST API.
 
 TODO:
+
 - list global options and sub command options
 - describe configuration files
 
 ### Sub-Command `export-secrets`
 
 TODO: describe sub command
+
+## Running via docker
+
+The configurator can be run via docker. All container images are available at 
+[GitHub Container Registry](https://github.com/CycriLabs/keycloak-configurator/pkgs/container/keycloak-configurator).
+
+An example for running the configurator via docker is as follows:
+
+```bash
+docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest -V
+```
 
 ## Development
 

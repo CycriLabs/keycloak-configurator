@@ -1,0 +1,175 @@
+name: Backend - Main - Release on push
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  java-version: 17
+  distribution: graalvm
+  node-js-version: 18.x
+  author-name: Marc Scheib
+  author-email: marc.scheib@cycrilabs.com
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v4
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Adapt maven settings
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+
+      - name: Test
+        run: mvn -B verify
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v4
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Adapt maven settings
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+
+      - name: Setup Node.js [${{ env.node-js-version }}]
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-js-version }}
+
+      - name: Release
+        run: npm exec --package=@semantic-release/changelog --package=@semantic-release/git --package=@semantic-release/exec --yes -- semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_AUTHOR_NAME: ${{ env.author-name }}
+          GIT_AUTHOR_EMAIL: ${{ env.author-email }}
+
+  build-container-image:
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v4
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Adapt maven settings
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+
+      - name: Deploy project & image
+        run: >
+          mvn -B package -DskipTests
+          -Dquarkus.container-image.build=true
+          -Dquarkus.native.container-build=true -Dnative
+          -Dquarkus.container-image.push=true
+          -Dquarkus.container-image.registry=ghcr.io
+          -Dquarkus.container-image.username=${{ github.actor }}
+          -Dquarkus.container-image.password=${{ secrets.GITHUB_TOKEN }}
+
+  build-artifacts:
+    needs: release
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v4
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Adapt maven settings
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+
+      - name: Build artifacts
+        run: mvn -B package -DskipTests -P dist,native # space between -P and dist,native is important for Windows PowerShell build
+
+      - name: Upload artifacts
+        uses: CycriLabs/publish-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          asset_dir: 'target/distributions'
+          release_tag: 'latest'
+
+  next-dev-version:
+    needs: [build-container-image, build-artifacts]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout [${{ github.head_ref || github.ref_name }}]
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Setup GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
+          components: 'native-image'
+          cache: 'maven'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Adapt maven settings
+        uses: s4u/maven-settings-action@v2
+        with:
+          servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
+          githubServer: false
+
+      - name: Set next snapshot
+        run: mvn versions:set -DnextSnapshot=true && mvn versions:commit
+
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          author_name: ${{ env.author-name }}
+          author_email: ${{ env.author-email }}
+          message: 'chore: set next development version [skip ci]'
+          add: '.'
