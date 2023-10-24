@@ -5,8 +5,6 @@
     <id>dist</id>
     <formats>
         <format>tar.gz</format>
-        <format>zip</format>
-        <format>dir</format>
     </formats>
     <files>
         <file>
