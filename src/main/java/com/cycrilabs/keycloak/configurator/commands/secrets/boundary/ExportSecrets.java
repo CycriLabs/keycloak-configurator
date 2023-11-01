@@ -31,7 +31,10 @@ import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class ExportSecrets {
-    private static final String TEMPLATE_NAME_PLACEHOLDER = "client-name";
+    private static final String VARIABLE_CLIENT_ID = "client_id";
+    private static final String VARIABLE_REALM = "realm";
+    private static final String VARIABLE_AUTH_SERVER_URL = "auth_server_url";
+    private static final String VARIABLE_SECRET = "secret";
 
     @Inject
     ExportSecretsCommandConfiguration configuration;
@@ -87,13 +90,16 @@ public class ExportSecrets {
     private String generateFileContent(final ClientRepresentation client, final Template template) {
         return VelocityUtils.mergeTemplate(template, VelocityUtils.createVelocityContext(
                 Map.ofEntries(
-                        Map.entry("secret", client.getSecret())
+                        Map.entry(VARIABLE_REALM, configuration.getRealmName()),
+                        Map.entry(VARIABLE_AUTH_SERVER_URL, configuration.getServer()),
+                        Map.entry(VARIABLE_SECRET, client.getSecret()),
+                        Map.entry(VARIABLE_CLIENT_ID, client.getClientId())
                 )
         ));
     }
 
     private Path getTargetFile(final String clientId, final String templateName) {
-        final String filename = templateName.replace(TEMPLATE_NAME_PLACEHOLDER, clientId);
+        final String filename = templateName.replace(VARIABLE_CLIENT_ID, clientId);
         return Paths.get(configuration.getOutputDirectory(), filename);
     }
 }
