@@ -47,7 +47,7 @@ public class ExportSecrets {
         final List<ClientRepresentation> clients = loadClientSecrets();
         for (final ClientRepresentation client : clients) {
             for (final Template template : templates) {
-                Log.infof("Generating secret file(s) for client '%s.'", client.getClientId());
+                Log.infof("Generating secret file(s) for client '%s'.", client.getClientId());
                 writeFiles(client, template);
             }
         }
@@ -80,7 +80,7 @@ public class ExportSecrets {
         try {
             Files.writeString(targetFile, fileContent, StandardCharsets.UTF_8);
         } catch (final IOException e) {
-            Log.errorf("Failed to write file '%s.'", targetFile.toString());
+            Log.errorf("Failed to write file '%s'.", targetFile.toString());
         }
     }
 
