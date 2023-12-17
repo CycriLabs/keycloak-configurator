@@ -60,7 +60,7 @@ jobs:
           githubServer: false
 
       - name: Setup Node.js [${{ env.node-js-version }}]
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.node-js-version }}
 

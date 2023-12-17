@@ -13,7 +13,7 @@ jobs:
 
     steps:
       - name: Checkout [${{ github.head_ref || github.ref_name }}]
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
