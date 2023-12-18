@@ -34,7 +34,7 @@ jobs:
           githubServer: false
 
       - name: Test
-        run: mvn -B verify
+        run: mvn -B verify -Pgithub
 
   release:
     needs: test
@@ -94,7 +94,7 @@ jobs:
 
       - name: Deploy project & image
         run: >
-          mvn -B package -DskipTests
+          mvn -B package -Pgithub -DskipTests
           -Dquarkus.container-image.build=true
           -Dquarkus.native.container-build=true -Dnative
           -Dquarkus.container-image.push=true
@@ -129,7 +129,7 @@ jobs:
           githubServer: false
 
       - name: Build artifacts
-        run: mvn -B package -DskipTests -P dist,native # space between -P and dist,native is important for Windows PowerShell build
+        run: mvn -B package -DskipTests -P github,dist,native # space between -P and dist,native is important for Windows PowerShell build
 
       - name: Upload artifacts
         uses: CycriLabs/publish-assets@v1
@@ -163,7 +163,7 @@ jobs:
           githubServer: false
 
       - name: Set next snapshot
-        run: mvn versions:set -DnextSnapshot=true && mvn versions:commit
+        run: mvn versions:set -Pgithub -DnextSnapshot=true && mvn -Pgithub versions:commit
 
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
