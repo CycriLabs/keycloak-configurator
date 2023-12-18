@@ -31,7 +31,7 @@
 
         <!-- Dependency versions -->
         <quarkus.platform.version>3.6.3</quarkus.platform.version>
-        <velocity.version>2.3</velocity.version>
+        <quarkus.velocity.version>0.1.0-SNAPSHOT</quarkus.velocity.version>
         <lombok.version>1.18.30</lombok.version>
         <!-- /Dependency versions -->
 
@@ -59,6 +59,11 @@
                 <version>${quarkus.platform.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.cycrilabs</groupId>
+                <artifactId>quarkus-velocity</artifactId>
+                <version>${quarkus.velocity.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -89,11 +94,9 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-picocli</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity-engine-core</artifactId>
-            <version>${velocity.version}</version>
+            <groupId>com.cycrilabs</groupId>
+            <artifactId>quarkus-velocity</artifactId>
         </dependency>
 
         <dependency>
