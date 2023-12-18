@@ -32,7 +32,7 @@
         <!-- Dependency versions -->
         <quarkus.platform.version>3.6.3</quarkus.platform.version>
         <velocity.version>2.3</velocity.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.30</lombok.version>
         <!-- /Dependency versions -->
 
         <!-- Extension versions -->
