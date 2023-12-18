@@ -31,7 +31,7 @@ jobs:
           githubServer: false
 
       - name: Test
-        run: mvn -B verify
+        run: mvn -B verify -Pgithub
 
   build-container-image:
     needs: test
@@ -56,7 +56,7 @@ jobs:
 
       - name: Deploy project & image
         run: >
-          mvn -B package -DskipTests
+          mvn -B package -Pgithub -DskipTests
           -Dquarkus.container-image.tag=latest
           -Dquarkus.container-image.build=true
           -Dquarkus.native.container-build=true -Dnative
