@@ -40,6 +40,12 @@ An example for running the configurator via docker is as follows:
 docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest -V
 ```
 
+Running the `configure` sub-command can be done as follows:
+
+```bash
+docker run -v ./keycloak-configuration:/config --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest configure -s http://localhost:4080 -u keycloak -p root -c /config
+```
+
 ## Development
 
 The configurator can be started in dev mode using the Quarkus CLI and passing the arguments via `-Dquarkus.args`.
