@@ -2,8 +2,6 @@ package com.cycrilabs.keycloak.configurator.commands.export.boundary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
-import org.keycloak.representations.idm.RealmRepresentation;
-
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 

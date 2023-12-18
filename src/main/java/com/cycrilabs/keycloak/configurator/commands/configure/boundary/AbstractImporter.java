@@ -4,6 +4,7 @@ import static io.quarkus.arc.ComponentsProvider.LOG;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,7 +27,8 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import io.quarkus.logging.Log;
 
 public abstract class AbstractImporter {
-    public static final String PATH_SEPARATOR = Pattern.quote(System.getProperty("file.separator"));
+    public static final String PATH_SEPARATOR =
+            Pattern.quote(FileSystems.getDefault().getSeparator());
 
     @Inject
     protected ConfigureCommandConfiguration configuration;
@@ -57,8 +59,7 @@ public abstract class AbstractImporter {
         this.entityStore = entityStore;
         final List<Path> importFiles = getEntityFilePaths(getEntityDirectory());
         for (final Path importFile : importFiles) {
-            final Object o = importFile(importFile);
-
+            importFile(importFile);
         }
     }
 
