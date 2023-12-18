@@ -17,8 +17,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'graalvm'
-          java-version: '17'
-          components: 'native-image'
+          java-version: '21'
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -29,7 +28,7 @@ jobs:
           tools: latest
 
       - name: Test
-        run: mvn -B verify
+        run: mvn -B verify -Pgithub
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v2
