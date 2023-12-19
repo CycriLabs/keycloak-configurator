@@ -1,6 +1,7 @@
 package com.cycrilabs.keycloak.configurator.shared.control;
 
 import org.keycloak.representations.idm.ClientProfilesRepresentation;
+import org.keycloak.representations.idm.ErrorRepresentation;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
@@ -14,6 +15,6 @@ import io.quarkus.runtime.annotations.RegisterForReflection;
  * org.keycloak.representations.idm.ClientProfilesRepresentation, No default constructor found.
  * </code>
  */
-@RegisterForReflection(targets = { ClientProfilesRepresentation.class })
+@RegisterForReflection(targets = { ClientProfilesRepresentation.class, ErrorRepresentation.class })
 public class ReflectionConfiguration {
 }
