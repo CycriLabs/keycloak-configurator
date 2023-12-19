@@ -1,7 +1,6 @@
 package com.cycrilabs.keycloak.configurator.commands.secrets.boundary;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -11,7 +10,6 @@ import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -56,16 +54,8 @@ public class ExportSecrets {
         }
     }
 
-    private Collection<File> loadTemplateFiles() throws URISyntaxException, FileNotFoundException {
-        return configuration.getConfigDirectory() == null
-                ? List.of(getDefaultTemplateFile())
-                : FileUtils.listFiles(new File(configuration.getConfigDirectory()), null, true);
-    }
-
-    private File getDefaultTemplateFile() throws FileNotFoundException, URISyntaxException {
-        return new File(Optional.ofNullable(getClass().getResource("client-name.env"))
-                .orElseThrow(() -> new FileNotFoundException("Default template not found."))
-                .toURI());
+    private Collection<File> loadTemplateFiles() {
+        return FileUtils.listFiles(new File(configuration.getConfigDirectory()), null, true);
     }
 
     private List<ClientRepresentation> loadClientSecrets() {

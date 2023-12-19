@@ -16,7 +16,7 @@ public class ExportSecretsCommand implements Runnable {
     @CommandLine.Option(required = true, names = { "-r", "--realm" },
             description = "Realm name to export secrets from.")
     String realm;
-    @CommandLine.Option(names = { "-c", "--config" },
+    @CommandLine.Option(required = true, names = { "-c", "--config" },
             description = "Directory containing templates for secret output files.")
     String configDirectory;
     @CommandLine.Option(names = { "-o", "--output" }, defaultValue = "./",

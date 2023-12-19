@@ -87,7 +87,7 @@ mvn quarkus:dev "-Dquarkus.args=configure -h"
     ```
 - Export client secrets of all clients of the realm `eam`:
     ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:40800 -u keycloak -p root -r eam"
+    mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:40800 -u keycloak -p root -r eam -c ./secret-templates"
     ```
 - Export client entities of the realm `eam`:
     ```bash
