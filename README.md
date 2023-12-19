@@ -43,7 +43,7 @@ docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest -V
 Running the `configure` sub-command can be done as follows:
 
 ```bash
-docker run -v ./keycloak-configuration:/config --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest configure -s http://localhost:4080 -u keycloak -p root -c /config
+docker run -v ./keycloak-configuration:/config --net="host" --pull=always --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest configure -s http://localhost:4080 -u keycloak -p root -c /config
 ```
 
 ## Development
