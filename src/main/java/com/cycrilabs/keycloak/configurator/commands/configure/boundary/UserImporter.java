@@ -1,6 +1,7 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
@@ -41,10 +42,19 @@ public class UserImporter extends AbstractImporter {
             Log.errorf("Could not import user from file: %s", e.getMessage());
         }
 
-        final UserRepresentation importedUser = keycloak.realm(realmName)
+        return loadImportedUser(realmName, user);
+    }
+
+    private UserRepresentation loadImportedUser(final String realmName,
+            final UserRepresentation user) {
+        final List<UserRepresentation> searchResult = keycloak.realm(realmName)
                 .users()
-                .search("alice@maildrop.cc")
-                .get(0);
+                .search(user.getUsername());
+        if (searchResult.isEmpty()) {
+            Log.infof("Could not load imported user '%s' from server.", user.getUsername());
+            return null;
+        }
+        final UserRepresentation importedUser = searchResult.getFirst();
         Log.infof("Loaded imported user '%s' from server.", importedUser.getEmail());
         return importedUser;
     }
