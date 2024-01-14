@@ -7,6 +7,7 @@ import jakarta.ws.rs.ClientErrorException;
 
 import org.keycloak.representations.idm.RealmRepresentation;
 
+import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -20,7 +21,7 @@ public class RealmImporter extends AbstractImporter {
 
     @Override
     protected RealmRepresentation importFile(final Path file) {
-        final RealmRepresentation realm = loadEntity(file, RealmRepresentation.class);
+        final RealmRepresentation realm = JsonUtil.loadEntity(file, RealmRepresentation.class);
 
         try {
             keycloak.realms()

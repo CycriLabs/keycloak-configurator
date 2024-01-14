@@ -8,6 +8,7 @@ import jakarta.ws.rs.ClientErrorException;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
+import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -21,7 +22,7 @@ public class ClientRoleImporter extends AbstractImporter {
 
     @Override
     protected RoleRepresentation importFile(final Path file) {
-        final RoleRepresentation role = loadEntity(file, RoleRepresentation.class);
+        final RoleRepresentation role = JsonUtil.loadEntity(file, RoleRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
@@ -34,9 +35,11 @@ public class ClientRoleImporter extends AbstractImporter {
                     .get(client.getId())
                     .roles()
                     .create(role);
-            Log.infof("Client role '%s' imported.", role.getName());
+            Log.infof("Client role '%s' imported for client '%s' of realm '%s'.", role.getName(),
+                    clientId, realmName);
         } catch (final ClientErrorException e) {
-            Log.errorf("Could not import client role from file: %s", e.getMessage());
+            Log.errorf("Could not import client role for client '%s' of realm '%s': %s", clientId,
+                    realmName, e.getMessage());
         }
 
         return keycloak.realm(realmName)
