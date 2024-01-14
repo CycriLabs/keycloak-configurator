@@ -1,6 +1,7 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
@@ -25,7 +26,7 @@ public class ClientRoleImporter extends AbstractImporter {
         final RoleRepresentation role = JsonUtil.loadEntity(file, RoleRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
-        final String realmName = fileNameParts[fileNameParts.length - 3];
+        final String realmName = fileNameParts[fileNameParts.length - 4];
         final String clientId = fileNameParts[fileNameParts.length - 2];
         final ClientRepresentation client = entityStore.getClient(realmName, clientId);
 
@@ -37,7 +38,7 @@ public class ClientRoleImporter extends AbstractImporter {
                     .create(role);
             Log.infof("Client role '%s' imported for client '%s' of realm '%s'.", role.getName(),
                     clientId, realmName);
-        } catch (final ClientErrorException e) {
+        } catch (final Exception e) {
             Log.errorf("Could not import client role for client '%s' of realm '%s': %s", clientId,
                     realmName, e.getMessage());
         }

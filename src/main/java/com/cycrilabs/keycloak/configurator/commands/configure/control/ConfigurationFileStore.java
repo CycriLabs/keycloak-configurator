@@ -21,6 +21,11 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 
+/**
+ * Store for configuration files that holds a list of all configuration files for each entity type.
+ * the configuration files are read from the configured directory and its subdirectories on first
+ * access.
+ */
 @ApplicationScoped
 public class ConfigurationFileStore {
     @Inject
@@ -34,6 +39,10 @@ public class ConfigurationFileStore {
         create();
     }
 
+    /**
+     * Create the configuration file store by reading all configuration files from the configured
+     * directory and its subdirectories.
+     */
     private void create() {
         final String configurationDirectory = configuration.getConfigDirectory();
         final Path configurationPath = Paths.get(configurationDirectory).toAbsolutePath();
@@ -41,25 +50,18 @@ public class ConfigurationFileStore {
 
         final List<Path> allRealmDirectories = listDirectoriesInPath(configurationPath);
         for (final Path realmConfiguration : allRealmDirectories) {
-            final Map<String, Path> realmConfigurationDirectories =
-                    listDirectoriesInPath(realmConfiguration)
-                            .stream()
-                            .collect(Collectors.toMap(
-                                    path -> path.getName(path.getNameCount() - 1).toString(),
-                                    Function.identity()));
-            for (final EntityType entityType : EntityType.values()) {
-                for (final Map.Entry<String, Path> configurationEntry : realmConfigurationDirectories.entrySet()) {
-                    Log.debugf("Reading files from '%s' for type '%s'.",
-                            configurationEntry.getValue(), entityType);
-                    if (configurationEntry.getKey().contains(entityType.getDirectory())) {
-                        configurationFiles.computeIfAbsent(entityType,
-                                key -> listFilesInPath(configurationEntry.getValue()));
-                    }
-                }
-            }
+            createTypeDirectoryLookup(realmConfiguration);
+            mapEntityTypes(createTypeDirectoryLookup(realmConfiguration));
         }
     }
 
+    /**
+     * List all directories in the given directory.
+     *
+     * @param dir
+     *         directory to list directories in
+     * @return list of directories in the given directory
+     */
     private List<Path> listDirectoriesInPath(final Path dir) {
         try (final Stream<Path> stream = Files.list(dir)) {
             return stream
@@ -71,8 +73,57 @@ public class ConfigurationFileStore {
         return Collections.emptyList();
     }
 
+    /**
+     * Create a lookup map for the given directory that maps all directories within the given one.
+     * The key is the name of the directory and the value is the full path to the directory.
+     *
+     * @param realmConfiguration
+     *         directory to create lookup map for
+     * @return lookup map for the given directory
+     */
+    private Map<String, Path> createTypeDirectoryLookup(final Path realmConfiguration) {
+        return listDirectoriesInPath(realmConfiguration)
+                .stream()
+                .collect(Collectors.toMap(
+                        path -> path.getName(path.getNameCount() - 1).toString(),
+                        Function.identity()));
+    }
+
+    /**
+     * Map all entity types to their configuration files.
+     *
+     * @param typeDirectoryLookup
+     *         lookup map for the realm configuration directory
+     */
+    private void mapEntityTypes(final Map<String, Path> typeDirectoryLookup) {
+        for (final EntityType entityType : EntityType.values()) {
+            for (final Map.Entry<String, Path> configurationEntry : typeDirectoryLookup.entrySet()) {
+                final String potentialEntityTypeDirectory = configurationEntry.getKey();
+                final Path fullEntityTypePath = configurationEntry.getValue();
+                if (potentialEntityTypeDirectory.contains(entityType.getDirectory())) {
+                    Log.debugf("Reading files from '%s' for type '%s'.", fullEntityTypePath,
+                            entityType);
+                    configurationFiles.computeIfAbsent(entityType,
+                            key -> listFilesInPath(fullEntityTypePath));
+                    Log.debugf("Found %d files for type '%s'.",
+                            configurationFiles.get(entityType).size(), entityType);
+                } else {
+                    Log.debugf("Skipping directory '%s' for type '%s'.", fullEntityTypePath,
+                            entityType);
+                }
+            }
+        }
+    }
+
+    /**
+     * List all files in the given directory and its subdirectories that end with '.json'.
+     *
+     * @param dir
+     *         directory to list files in
+     * @return list of files in the given directory and its subdirectories
+     */
     private List<Path> listFilesInPath(final Path dir) {
-        try (final Stream<Path> stream = Files.list(dir)) {
+        try (final Stream<Path> stream = Files.walk(dir)) {
             return stream
                     .filter(Files::isRegularFile)
                     .filter(file -> file.toString().endsWith(".json"))
@@ -83,6 +134,13 @@ public class ConfigurationFileStore {
         return Collections.emptyList();
     }
 
+    /**
+     * Get all paths for the given entity type.
+     *
+     * @param type
+     *         entity type
+     * @return list of files for the given entity type
+     */
     public List<Path> getImportFiles(final EntityType type) {
         return configurationFiles.getOrDefault(type, Collections.emptyList());
     }

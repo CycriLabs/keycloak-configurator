@@ -39,8 +39,10 @@ public class EntityStore {
     }
 
     public ClientRepresentation getClient(final String realmName, final String clientId) {
-        return realms.get(realmName)
-                .getChildren()
-                .get(clientId);
+        return realms.get(realmName) != null
+               ? realms.get(realmName)
+                       .getChildren()
+                       .get(clientId)
+               : null;
     }
 }
