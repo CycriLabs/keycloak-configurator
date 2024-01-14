@@ -15,9 +15,9 @@ public abstract class KeycloakConfiguration {
     }
 
     protected KeycloakConfiguration(final ParseResult parseResult) {
-        this.server = getMatchedOption(parseResult, "-s");
-        this.username = getMatchedOption(parseResult, "-u");
-        this.password = getMatchedOption(parseResult, "-p");
+        server = getMatchedOption(parseResult, "-s");
+        username = getMatchedOption(parseResult, "-u");
+        password = getMatchedOption(parseResult, "-p");
     }
 
     protected String getMatchedOption(final ParseResult parseResult, final String name) {
