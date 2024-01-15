@@ -1,24 +1,60 @@
 # Keycloak Configurator
 
-The Keycloak Configurator allows to set up a Keycloak instance with a set of realms, clients, client-roles, etc.
-The configuration is executed against the [Keycloak REST API](https://www.keycloak.org/docs-api/22.0.1/rest-api/index.html).
-Communication is done via the [Quarkus Keycloak Java Admin Client](https://quarkus.io/guides/security-keycloak-admin-client).
+The Keycloak Configurator allows to set up a Keycloak instance with a set of
+realms, clients, client-roles, etc. The configuration is executed against the 
+[Keycloak REST API](https://www.keycloak.org/docs-api/22.0.1/rest-api/index.html).
+Communication is done via the 
+[Quarkus Keycloak Java Admin Client](https://quarkus.io/guides/security-keycloak-admin-client).
 
 ## Usage
 
-The configurator prints out the help when executed with `-h` or `--help`. It lists all commands that are available.
-Currently, two commands are supported:
+The configurator prints out the help when executed with `-h` or `--help`. It
+lists all commands that are available. Currently, two commands are supported:
 
 * `configure` - Configures a Keycloak instance with a set of realms, clients, client-roles, etc.
-* `export-secrets` - Exports secrets of all clients of the given realm.
+* `export-secrets` - Exports secrets of all clients of the given realm
+* `rotate-secrets` - Rotates secrets of all clients of the given realm
+* `export-entities` - Exports entities of the given realm, optionally filtered by type or name
 
-Each commands support a set of options. The options can be listed by executing the command with `-h` or `--help`.
+Each commands support a set of options. The options can be listed by executing
+the command with `-h` or `--help`.
 
 ### Sub-Command `configure`
 
-The `configure` sub-command allows to configure a Keycloak instance with a set of realms, clients, client-roles, etc.
-The configuration is done by providing a set of configuration files. Each configuration file is a JSON file that represents
-an entity of the Keycloak REST API.
+The `configure` sub-command allows to configure a Keycloak instance with a set 
+of realms, clients, client-roles, etc. The configuration is done by providing a
+set of configuration files. Each configuration file is a JSON file that 
+represents an entity of the Keycloak REST API. When calling the sub-command,
+the path to the directory holding the configuration must be provided. The 
+following structure is expected:
+
+```
+├── configuration
+│   ├── realm-a
+│   │   ├── realms
+│   │   │   ├── realm-a.json
+│   │   ├── clients
+│   │   │   ├── client-a.json
+│   │   ├── client-roles
+│   │   │   ├── client-a
+│   │   │   │   ├── role-a.json
+│   │   ├── realm-roles
+│   │   │   ├── ...
+│   │   ├── groups
+│   │   │   ├── ...
+│   │   ├── users
+│   │   │   ├── ...
+│   ├── realm-b
+│   │   ├── realms
+│   │   │   ├── realm-b.json
+│   │   ├── clients
+│   │   ├── ...
+```
+
+The directory may container multiple subdirectories. Each subdirectory
+represents one realm to be imported together with the respective configuration.
+All directories containing one of the keywords shown above are treated as
+configuration input.
 
 TODO:
 
@@ -29,22 +65,47 @@ TODO:
 
 TODO: describe sub command
 
+### Sub-Command `rotate-secrets`
+
+TODO: describe sub command
+
+### Sub-Command `export-entities`
+
+TODO: describe sub command
+
 ## Running via docker
 
 The configurator can be run via docker. All container images are available at 
 [GitHub Container Registry](https://github.com/CycriLabs/keycloak-configurator/pkgs/container/keycloak-configurator).
 
-An example for running the configurator via docker is as follows:
+For example, the following command prints the version of the configurator.
+After the version is printed, the container is stopped and removed:
 
 ```bash
 docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest -V
 ```
 
-Running the `configure` sub-command can be done as follows:
+### Providing configuration files
+
+Several sub-commands require configuration files. The configuration files must
+be provided to the container. This is done by mounting a volume to a
+directory inside the container.
+
+For example, the following command mounts the directory `./keycloak-configuration`
+to the directory `/config` inside the container. The configurator is executed with
+the `configure` sub-command and the configuration files are read from the
+mounted volume `/config`:
 
 ```bash
 docker run -v ./keycloak-configuration:/config --net="host" --pull=always --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest configure -s http://localhost:4080 -u keycloak -p root -c /config
 ```
+
+## Troubleshooting
+
+### Mounting volumes on Windows Git Bash
+
+TODO: describe issue and solution using mount option 
+`--mount type=bind,source="$(pwd -W)/keycloak-configuration",target=/config`
 
 ## Development
 
