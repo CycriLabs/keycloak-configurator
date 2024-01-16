@@ -104,8 +104,23 @@ docker run -v ./keycloak-configuration:/config --net="host" --pull=always --rm -
 
 ### Mounting volumes on Windows Git Bash
 
-TODO: describe issue and solution using mount option 
-`--mount type=bind,source="$(pwd -W)/keycloak-configuration",target=/config`
+When trying to mount a volume on Windows Git Bash, the following error may occur:
+
+```
+TODO add error message
+```
+
+This is caused by the `/` in the path. The forward slash must be noted as `//`. For example,
+the following command mounts the directory `./secret-templates` and `./keycloak-secrets` to 
+into the container as `/secret-templates` and `/output`, respectively. The configurator then
+executes the `export-secrets` sub-command:
+
+```bash
+docker run \
+    --mount type=bind,src="/$(pwd)/secret-templates",target="/secret-templates,readonly" \
+    --mount type=bind,src="/$(pwd)/keycloak-secrets",target="/output" \
+    --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest export-secrets -s http://localhost:4080 -u keycloak -p root -r default -c //secret-templates -o //output
+```
 
 ## Development
 
@@ -119,7 +134,7 @@ mvn quarkus:dev "-Dquarkus.args=-h"
 Starting the import of a configuration can be done as follows:
 
 ```bash
-mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:40800 -u keycloak -p root -c ../keycloak-configuration-eam"
+mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:4080 -u keycloak -p root -c ../keycloak-configuration-eam"
 ```
 
 The help of a sub-command is shown as follows:
@@ -140,7 +155,7 @@ mvn quarkus:dev "-Dquarkus.args=configure -h"
     ```
 - Execute configuration import:
     ```bash
-    mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:40800 -u keycloak -p root -c ../keycloak-configuration-eam"
+    mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:4080 -u keycloak -p root -c ../keycloak-configuration-eam"
     ```
 - Show help of the `export-secrets` sub-command:
     ```bash
@@ -148,19 +163,19 @@ mvn quarkus:dev "-Dquarkus.args=configure -h"
     ```
 - Export client secrets of all clients of the realm `eam`:
     ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:40800 -u keycloak -p root -r eam -c ./secret-templates"
+    mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:4080 -u keycloak -p root -r eam -c ./secret-templates"
     ```
 - Export client entities of the realm `eam`:
     ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:40800 -u keycloak -p root -r eam -t client" "-Dquarkus.log.level=INFO"
+    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:4080 -u keycloak -p root -r eam -t client" "-Dquarkus.log.level=INFO"
     ```
 - Export client entity "eam-js" of the realm `eam`:
     ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:40800 -u keycloak -p root -r eam -t client -n eam-js" "-Dquarkus.log.level=INFO"
+    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:4080 -u keycloak -p root -r eam -t client -n eam-js" "-Dquarkus.log.level=INFO"
     ```
 
 Specify the log level via `-Dquarkus.log.level`. For example, to set the log level to `INFO`:
 
 ```bash
-mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:40800 -u keycloak -p root -r eam" "-Dquarkus.log.level=INFO"
+mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:4080 -u keycloak -p root -r eam" "-Dquarkus.log.level=INFO"
 ```
