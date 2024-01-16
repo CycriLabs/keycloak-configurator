@@ -21,8 +21,6 @@ public class ConfigureCommand implements Runnable {
     String configDirectory = "";
 
     @Inject
-    EntityStore entityStore;
-    @Inject
     ConfigureCommandConfiguration configuration;
     @Inject
     Instance<AbstractImporter> importers;
@@ -33,6 +31,6 @@ public class ConfigureCommand implements Runnable {
                 configuration.getServer(), configuration.getConfigDirectory());
         importers.stream()
                 .sorted(Comparator.comparingInt(AbstractImporter::getPriority))
-                .forEach(importer -> importer.runImport(entityStore));
+                .forEach(AbstractImporter::runImport);
     }
 }

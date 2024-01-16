@@ -3,12 +3,15 @@ package com.cycrilabs.keycloak.configurator.commands.configure.control;
 import java.util.HashMap;
 import java.util.Map;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import lombok.Getter;
 
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
+
+import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class EntityStore {
@@ -29,11 +32,19 @@ public class EntityStore {
     private final Map<String, EntityStoreEntry<RealmRepresentation, ClientRepresentation>> realms =
             new HashMap<>();
 
+    @PostConstruct
+    public void init() {
+        Log.infof("Initializing entity store.");
+    }
+
     public void addRealm(final RealmRepresentation realm) {
+        Log.debugf("Adding realm '%s' to entity store.", realm.getRealm());
         realms.put(realm.getRealm(), new EntityStoreEntry<>(realm));
     }
 
     public void addClient(final String realmName, final ClientRepresentation importedClient) {
+        Log.debugf("Adding client '%s' to realm '%s' in entity store.", importedClient.getClientId(),
+                realmName);
         realms.get(realmName)
                 .addChild(importedClient.getClientId(), importedClient);
     }
