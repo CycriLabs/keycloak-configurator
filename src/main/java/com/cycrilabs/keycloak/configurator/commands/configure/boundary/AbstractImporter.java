@@ -28,20 +28,20 @@ public abstract class AbstractImporter {
 
     @Inject
     protected ConfigureCommandConfiguration configuration;
-    protected Keycloak keycloak;
     @Inject
     protected ConfigurationFileStore configurationFileStore;
+    @Inject
     protected EntityStore entityStore;
+
+    protected Keycloak keycloak;
 
     @PostConstruct
     public void init() {
         keycloak = KeycloakFactory.create(configuration);
     }
 
-    public void runImport(final EntityStore entityStore) {
+    public void runImport() {
         Log.infof("Executing importer '%s'.", getClass().getSimpleName());
-        this.entityStore = entityStore;
-
         for (final Path importFile : getImportFiles()) {
             Log.debugf("Importing file '%s'.", importFile);
             importFile(importFile);
