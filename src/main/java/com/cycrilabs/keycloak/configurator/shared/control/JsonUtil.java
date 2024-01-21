@@ -1,6 +1,7 @@
 package com.cycrilabs.keycloak.configurator.shared.control;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,5 +73,22 @@ public class JsonUtil {
     public static <T> T loadEntity(final Path filepath, final Class<T> dtoClass) {
         final String json = loadJsonFromPath(filepath);
         return fromJson(json, dtoClass);
+    }
+
+    /**
+     * Loads an entity from the given file path. The file is expected to be a JSON file.
+     * The JSON is converted to an object of the given type.
+     *
+     * @param filepath
+     *         path to the JSON file
+     * @param dtoType
+     *         type of the object to convert to
+     * @param <T>
+     *         type of the object to convert to
+     * @return object of the given type
+     */
+    public static <T> T loadEntity(final Path filepath, final Type dtoType) {
+        final String json = loadJsonFromPath(filepath);
+        return JsonbFactory.getJsonb().fromJson(json, dtoType);
     }
 }

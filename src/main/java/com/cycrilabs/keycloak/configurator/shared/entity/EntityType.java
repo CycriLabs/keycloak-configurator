@@ -10,8 +10,9 @@ public enum EntityType {
     CLIENT(2, "client", "clients"),
     CLIENT_ROLE(3, "client-role", "client-roles"),
     REALM_ROLE(4, "realm-role", "realm-roles"),
-    GROUP(5, "group", "groups"),
-    USER(6, "user", "users");
+    SERVICE_ACCOUNT_ROLE(5, "service-account-role", "service-account-roles"),
+    GROUP(6, "group", "groups"),
+    USER(7, "user", "users");
 
     private final int priority;
     private final String name;
