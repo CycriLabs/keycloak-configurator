@@ -12,7 +12,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -33,7 +32,6 @@ public class ConfigurationFileStore {
 
     private final Map<EntityType, List<Path>> configurationFiles = new HashMap<>();
 
-    @PostConstruct
     public void init() {
         Log.infof("Initializing configuration file store.");
         create();
@@ -43,7 +41,7 @@ public class ConfigurationFileStore {
      * Create the configuration file store by reading all configuration files from the configured
      * directory and its subdirectories.
      */
-    private void create() {
+    public void create() {
         final String configurationDirectory = configuration.getConfigDirectory();
         final Path configurationPath = Paths.get(configurationDirectory).toAbsolutePath();
         Log.infof("Creating configuration file store for directory '%s'.", configurationPath);

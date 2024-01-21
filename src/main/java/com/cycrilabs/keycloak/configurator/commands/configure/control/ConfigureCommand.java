@@ -1,15 +1,9 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.control;
 
-import java.util.Comparator;
-
-import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
-import com.cycrilabs.keycloak.configurator.commands.configure.boundary.AbstractImporter;
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakOptions;
 
-import io.quarkus.logging.Log;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "configure", mixinStandardHelpOptions = true)
@@ -19,18 +13,18 @@ public class ConfigureCommand implements Runnable {
     @CommandLine.Option(required = true, names = { "-c", "--config" },
             description = "Directory containing the keycloak configuration files.")
     String configDirectory = "";
+    @CommandLine.Option(names = { "-t", "--entity-type" },
+            description = "Entity type to configure. If not provided, all entities are configured.")
+    String entityType;
 
     @Inject
-    ConfigureCommandConfiguration configuration;
+    ConfigurationFileStore configurationFileStore;
     @Inject
-    Instance<AbstractImporter> importers;
+    ImportRunner importRunner;
 
     @Override
     public void run() {
-        Log.infof("Running importers for server %s with configuration %s.",
-                configuration.getServer(), configuration.getConfigDirectory());
-        importers.stream()
-                .sorted(Comparator.comparingInt(AbstractImporter::getPriority))
-                .forEach(AbstractImporter::runImport);
+        configurationFileStore.init();
+        importRunner.run();
     }
 }
