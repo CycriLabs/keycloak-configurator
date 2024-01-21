@@ -41,6 +41,12 @@ public abstract class AbstractImporter {
     }
 
     public void runImport() {
+        if (configuration.getEntityType() != null && configuration.getEntityType() != getType()) {
+            Log.infof("Skipping importer '%s' for entity type '%s'.", getClass().getSimpleName(),
+                    configuration.getEntityType());
+            return;
+        }
+
         Log.infof("Executing importer '%s'.", getClass().getSimpleName());
         for (final Path importFile : getImportFiles()) {
             Log.debugf("Importing file '%s'.", importFile);

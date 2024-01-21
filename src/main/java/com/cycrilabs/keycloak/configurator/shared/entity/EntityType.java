@@ -1,5 +1,7 @@
 package com.cycrilabs.keycloak.configurator.shared.entity;
 
+import java.util.Arrays;
+
 import lombok.Getter;
 
 @Getter
@@ -22,11 +24,9 @@ public enum EntityType {
     }
 
     public static EntityType fromName(final String name) {
-        for (final EntityType entityType : EntityType.values()) {
-            if (entityType.getName().equals(name)) {
-                return entityType;
-            }
-        }
-        throw new IllegalArgumentException("Unknown entity type: " + name);
+        return Arrays.stream(EntityType.values())
+                .filter(entityType -> entityType.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 }
