@@ -98,7 +98,7 @@ public class ConfigurationFileStore {
             for (final Map.Entry<String, Path> configurationEntry : typeDirectoryLookup.entrySet()) {
                 final String potentialEntityTypeDirectory = configurationEntry.getKey();
                 final Path fullEntityTypePath = configurationEntry.getValue();
-                if (potentialEntityTypeDirectory.contains(entityType.getDirectory())) {
+                if (compareDirectoryNames(potentialEntityTypeDirectory, entityType)) {
                     Log.debugf("Reading files from '%s' for type '%s'.", fullEntityTypePath,
                             entityType);
                     configurationFiles.computeIfAbsent(entityType,
@@ -111,6 +111,27 @@ public class ConfigurationFileStore {
                 }
             }
         }
+    }
+
+    /**
+     * Compare the given directory name with the directory name of the given entity type.
+     *
+     * @param potentialEntityTypeDirectory
+     *         directory name to compare
+     * @param entityType
+     *         entity type to compare
+     * @return true if the directory name contains the directory name of the entity type
+     */
+    private boolean compareDirectoryNames(final String potentialEntityTypeDirectory,
+            final EntityType entityType) {
+        // some simple algorithm to compare if a directory matches an entity type,
+        // e.g. if it is prefixed by number: 1_realms and realms
+        // the overall length difference should not be that huge to avoid embedded naming
+        // e.g. client-roles and service-account-client-roles
+        final int maxNameLengthDiff = 5;
+        return potentialEntityTypeDirectory.contains(entityType.getDirectory())
+                && potentialEntityTypeDirectory.length() - entityType.getDirectory().length()
+                < maxNameLengthDiff;
     }
 
     /**
