@@ -10,7 +10,7 @@ public enum EntityType {
     CLIENT(2, "client", "clients"),
     CLIENT_ROLE(3, "client-role", "client-roles"),
     REALM_ROLE(4, "realm-role", "realm-roles"),
-    SERVICE_ACCOUNT_ROLE(5, "service-account-role", "service-account-roles"),
+    SERVICE_ACCOUNT_CLIENT_ROLE(5, "service-account-client-role", "service-account-client-roles"),
     GROUP(6, "group", "groups"),
     USER(7, "user", "users");
 

@@ -20,10 +20,10 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
-public class ServiceAccountRoleImporter extends AbstractImporter {
+public class ServiceAccountClientRoleImporter extends AbstractImporter {
     @Override
     public EntityType getType() {
-        return EntityType.SERVICE_ACCOUNT_ROLE;
+        return EntityType.SERVICE_ACCOUNT_CLIENT_ROLE;
     }
 
     @Override
@@ -32,7 +32,8 @@ public class ServiceAccountRoleImporter extends AbstractImporter {
         final String realmName = fileNameParts[fileNameParts.length - 4];
         final String serviceUsername = fileNameParts[fileNameParts.length - 2];
 
-        Log.debugf("Importing service account roles '%s' for service user '%s' of realm '%s'.",
+        Log.debugf(
+                "Importing service account client roles '%s' for service user '%s' of realm '%s'.",
                 file.getFileName(), serviceUsername, realmName);
 
         final UserRepresentation user = loadUserByUsername(realmName, serviceUsername);
