@@ -6,6 +6,10 @@ on:
     - cron: '30 1 * * *'
   workflow_dispatch:
 
+env:
+  java-version: '21'
+  distribution: 'graalvm'
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
@@ -16,8 +20,8 @@ jobs:
       - name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          distribution: 'graalvm'
-          java-version: '21'
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 

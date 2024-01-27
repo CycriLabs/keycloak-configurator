@@ -3,6 +3,10 @@ name: Backend - Pull Request - Test
 on:
   pull_request:
 
+env:
+  java-version: '21'
+  distribution: 'graalvm'
+
 concurrency:
   group: build-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
@@ -18,8 +22,8 @@ jobs:
       - name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          distribution: 'graalvm'
-          java-version: '21'
+          distribution: ${{ env.distribution }}
+          java-version: ${{ env.java-version }}
           cache: 'maven'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
