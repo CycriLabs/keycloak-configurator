@@ -1,3 +1,19 @@
+# [1.1.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.0.0...1.1.0) (2024-01-27)
+
+
+### Features
+
+* adapt importers to new configuration dir structure ([#26](https://github.com/CycriLabs/keycloak-configurator/issues/26)) ([01e0f1a](https://github.com/CycriLabs/keycloak-configurator/commit/01e0f1afeb9ba442d71282ba5d3378e58d5df7ee))
+* add cycrilabs banner ([1dc5dba](https://github.com/CycriLabs/keycloak-configurator/commit/1dc5dbaed13085797c9ad06624d660d514295887))
+* add realm & client roles to user ([#25](https://github.com/CycriLabs/keycloak-configurator/issues/25)) ([43d29b3](https://github.com/CycriLabs/keycloak-configurator/commit/43d29b31777e88705852561ee45b3d450ba6f812))
+* add service account realm role mapping ([#31](https://github.com/CycriLabs/keycloak-configurator/issues/31)) ([cb27e62](https://github.com/CycriLabs/keycloak-configurator/commit/cb27e6214cbbcd3f421a722a1c65a383c742e3bc))
+* add service user client role mapping ([#30](https://github.com/CycriLabs/keycloak-configurator/issues/30)) ([cea475a](https://github.com/CycriLabs/keycloak-configurator/commit/cea475adf65b164f9f240d1976e9b1ee375d5f20))
+* add support for single entity configuration ([#12](https://github.com/CycriLabs/keycloak-configurator/issues/12)) ([f9a15f5](https://github.com/CycriLabs/keycloak-configurator/commit/f9a15f5c02101b6787f6b1018edd37f693701b86))
+* bump quarkus to 3.6.4 ([668e206](https://github.com/CycriLabs/keycloak-configurator/commit/668e20605e91b3fbb0743011678a166f26828612))
+* bump quarkus to 3.6.6 ([1a5b5c9](https://github.com/CycriLabs/keycloak-configurator/commit/1a5b5c905be98ff32c990f34ba2c99fed95e453b))
+* bump quarkus to 3.6.8 ([72a1a66](https://github.com/CycriLabs/keycloak-configurator/commit/72a1a669673590c4b616aee2d47c88fa121b7d33))
+* bump quarkus-velocity to 1.0.0 ([341506e](https://github.com/CycriLabs/keycloak-configurator/commit/341506ea42e25b123a9413ae387383d4d0106b3e))
+
 # 1.0.0 (2023-12-19)
 
 
