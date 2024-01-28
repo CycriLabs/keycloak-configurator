@@ -1,9 +1,9 @@
 # Keycloak Configurator
 
 The Keycloak Configurator allows to set up a Keycloak instance with a set of
-realms, clients, client-roles, etc. The configuration is executed against the 
+realms, clients, client-roles, etc. The configuration is executed against the
 [Keycloak REST API](https://www.keycloak.org/docs-api/22.0.1/rest-api/index.html).
-Communication is done via the 
+Communication is done via the
 [Quarkus Keycloak Java Admin Client](https://quarkus.io/guides/security-keycloak-admin-client).
 
 ## Usage
@@ -21,12 +21,9 @@ the command with `-h` or `--help`.
 
 ### Sub-Command `configure`
 
-The `configure` sub-command allows to configure a Keycloak instance with a set 
-of realms, clients, client-roles, etc. The configuration is done by providing a
-set of configuration files. Each configuration file is a JSON file that 
-represents an entity of the Keycloak REST API. When calling the sub-command,
-the path to the directory holding the configuration must be provided. The 
-following structure is expected:
+The `configure` sub-command allows to configure a Keycloak instance based on a set
+of realms, clients, client-roles, etc. JSON configuration files. Each file represents
+an entity of the Keycloak REST API. The following directory structure is expected:
 
 ```
 ├── configuration
@@ -51,31 +48,93 @@ following structure is expected:
 │   │   ├── ...
 ```
 
-The directory may container multiple subdirectories. Each subdirectory
+The directory may contain multiple subdirectories. Each subdirectory
 represents one realm to be imported together with the respective configuration.
 All directories containing one of the keywords shown above are treated as
 configuration input.
 
-TODO:
+The following table lists all required and optional options of the `configure`
+sub-command:
 
-- list global options and sub command options
-- describe configuration files
+| Option                | Required | Description                                                                                       |
+|-----------------------|----------|---------------------------------------------------------------------------------------------------|
+| `-s`, `--server`      | yes      | The URL of the Keycloak server.                                                                   |
+| `-u`, `--username`    | yes      | The username of the Keycloak admin user.                                                          |
+| `-p`, `--password`    | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.               |
+| `-c`, `--config`      | yes      | The path to the directory containing the configuration files.                                     |
+| `-t`, `--entity-type` | no       | Allows to import only on specific entity type. Requires all prerequisites to be imported already. |
+
+The following table lists all supported entity types:
+
+| Entity Type                   | Description                            |
+|-------------------------------|----------------------------------------|
+| `realm`                       | A realm.                               |
+| `client`                      | A client.                              |
+| `client-role`                 | A client role.                         |
+| `realm-role`                  | A realm role.                          |
+| `service-account-client-role` | A service account client role mapping. |
+| `group`                       | A group.                               |
+| `user`                        | A user.                                |
+| `service-account-realm-role`  | A service account realm role mapping.  |
+
+Entities are imported as listed in the table above.
 
 ### Sub-Command `export-secrets`
 
-TODO: describe sub command
+The `export-secrets` sub-command allows to export secrets of all clients of the
+given realm. The secrets are exported based on a set of provided secret templates.
+
+The following table lists all required and optional options of the `export-secrets`
+sub-command:
+
+| Option             | Required | Description                                                                               |
+|--------------------|----------|-------------------------------------------------------------------------------------------|
+| `-s`, `--server`   | yes      | The URL of the Keycloak server.                                                           |
+| `-u`, `--username` | yes      | The username of the Keycloak admin user.                                                  |
+| `-p`, `--password` | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.       |
+| `-r`, `--realm`    | yes      | The realm to export the secrets from.                                                     |
+| `-c`, `--config`   | yes      | The path to the directory containing the secret templates.                                |
+| `-o`, `--output`   | no       | The path to the directory where the secrets are exported to. Defaults to the working dir. |
 
 ### Sub-Command `rotate-secrets`
 
-TODO: describe sub command
+The `rotate-secrets` sub-command allows to rotate secrets of all clients of the
+given realm.
+
+The following table lists all required and optional options of the `rotate-secrets`
+sub-command:
+
+| Option             | Required | Description                                                                         |
+|--------------------|----------|-------------------------------------------------------------------------------------|
+| `-s`, `--server`   | yes      | The URL of the Keycloak server.                                                     |
+| `-u`, `--username` | yes      | The username of the Keycloak admin user.                                            |
+| `-p`, `--password` | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input. |
+| `-r`, `--realm`    | yes      | The realm to export the secrets from.                                               |
+| `-c`, `--client`   | no       | Optionally, a client can be provided. Only the secret of this client is rotated.    |
 
 ### Sub-Command `export-entities`
 
-TODO: describe sub command
+The `export-entities` sub-command allows to export entities from Keycloak. The following
+table lists all required and optional options of the `export-entities` sub-command:
+
+| Option                | Required | Description                                                                                |
+|-----------------------|----------|--------------------------------------------------------------------------------------------|
+| `-s`, `--server`      | yes      | The URL of the Keycloak server.                                                            |
+| `-u`, `--username`    | yes      | The username of the Keycloak admin user.                                                   |
+| `-p`, `--password`    | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.        |
+| `-r`, `--realm`       | no       | The realm to export the entities from.                                                     |
+| `-c`, `--client`      | no       | The client to export the entities from.                                                    |
+| `-t`, `--entity-type` | no       | The type of the entities to export.                                                        |
+| `-n`, `--entity-name` | no       | The name of the entity to export.                                                          |
+| `-o`, `--output`      | no       | The path to the directory where the entities are exported to. Defaults to the working dir. |
+
+If no realm is provided, all realms are exported. If no client is provided, all clients
+of the given realm are exported. If no entity type is provided, all entity types are exported.
+If no entity name is provided, all entities of the given type are exported.
 
 ## Running via docker
 
-The configurator can be run via docker. All container images are available at 
+The configurator can be run via docker. All container images are available at
 [GitHub Container Registry](https://github.com/CycriLabs/keycloak-configurator/pkgs/container/keycloak-configurator).
 
 For example, the following command prints the version of the configurator.
@@ -111,7 +170,7 @@ TODO add error message
 ```
 
 This is caused by the `/` in the path. The forward slash must be noted as `//`. For example,
-the following command mounts the directory `./secret-templates` and `./keycloak-secrets` to 
+the following command mounts the directory `./secret-templates` and `./keycloak-secrets` to
 into the container as `/secret-templates` and `/output`, respectively. The configurator then
 executes the `export-secrets` sub-command:
 
@@ -122,57 +181,30 @@ docker run \
     --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest export-secrets -s http://localhost:4080 -u keycloak -p root -r default -c //secret-templates -o //output
 ```
 
+### Adapting the log-level
+
+In same cases, it may be necessary to adapt the log-level of the configurator. This can be done
+by appending `-Dquarkus.log.level=DEBUG` to the command. For example, the following command
+executes the `export-secrets` sub-command with the log-level set to `INFO`:
+
+```bash
+docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest export-secrets -s http://localhost:4080 -u keycloak -p root -r default -c /secret-templates -o /output -Dquarkus.log.level=INFO
+```
+
+It is all possible to set the log-level specific to the configurator itself:
+
+```bash
+docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest export-secrets -s http://localhost:4080 -u keycloak -p root -r default -c /secret-templates -o /output -Dquarkus.log.category."com.cycrilabs".level=DEBUG
+```
+
 ## Development
 
 The configurator can be started in dev mode using the Quarkus CLI and passing the arguments via `-Dquarkus.args`.
-For example, showing the help can be done as follows:
-
-```bash
-mvn quarkus:dev "-Dquarkus.args=-h"
-```
-
-Starting the import of a configuration can be done as follows:
+For example, starting the import of a configuration is done as follows:
 
 ```bash
 mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:4080 -u keycloak -p root -c ../keycloak-configuration-eam"
 ```
-
-The help of a sub-command is shown as follows:
-
-```bash
-mvn quarkus:dev "-Dquarkus.args=configure -h"
-```
-
-## Execution examples
-
-- Show help:
-    ```bash
-    mvn quarkus:dev "-Dquarkus.args=-h"
-    ```
-- Show help of the `configure` sub-command:
-    ```bash
-    mvn quarkus:dev "-Dquarkus.args=configure -h"
-    ```
-- Execute configuration import:
-    ```bash
-    mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:4080 -u keycloak -p root -c ../keycloak-configuration-eam"
-    ```
-- Show help of the `export-secrets` sub-command:
-    ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-secrets -h"
-    ```
-- Export client secrets of all clients of the realm `eam`:
-    ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:4080 -u keycloak -p root -r eam -c ./secret-templates"
-    ```
-- Export client entities of the realm `eam`:
-    ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:4080 -u keycloak -p root -r eam -t client" "-Dquarkus.log.level=INFO"
-    ```
-- Export client entity "eam-js" of the realm `eam`:
-    ```bash
-    mvn quarkus:dev "-Dquarkus.args=export-entities -s http://localhost:4080 -u keycloak -p root -r eam -t client -n eam-js" "-Dquarkus.log.level=INFO"
-    ```
 
 Specify the log level via `-Dquarkus.log.level`. For example, to set the log level to `INFO`:
 
