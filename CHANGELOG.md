@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/CycriLabs/keycloak-configurator/compare/1.1.0...1.1.1) (2024-01-28)
+
+
+### Bug Fixes
+
+* register DTOs for reflection ([9e7d291](https://github.com/CycriLabs/keycloak-configurator/commit/9e7d2918ffeda21eef199f1e867911255f49aa59))
+
 # [1.1.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.0.0...1.1.0) (2024-01-27)
 
 
