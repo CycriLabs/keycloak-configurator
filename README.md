@@ -96,6 +96,27 @@ sub-command:
 | `-c`, `--config`   | yes      | The path to the directory containing the secret templates.                                |
 | `-o`, `--output`   | no       | The path to the directory where the secrets are exported to. Defaults to the working dir. |
 
+The secret templates support expanding a given set of variables. The following set
+of variables is supported:
+
+| Variable          | Description                     |
+|-------------------|---------------------------------|
+| `client_id`       | The client id of the client.    |
+| `realm`           | The realm of the client.        |
+| `auth_server_url` | The URL of the Keycloak server. |
+| `secret`          | The secret of the client.       |
+
+Variables must be placed within the secret template as `$variable`. For example:
+
+```properties
+QUARKUS_OIDC_CREDENTIALS_SECRET=$secret
+```
+
+The `client_id` variable can be used within the filename of secret templates as well.
+In comparison to the usage in templates, the `$` must be omitted.
+Each client is exported to a separate file then. Otherwise, multiple clients will 
+overwrite each other. For example, as possible name could be `client_id-oidc.env`. 
+
 ### Sub-Command `rotate-secrets`
 
 The `rotate-secrets` sub-command allows to rotate secrets of all clients of the
