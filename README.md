@@ -99,12 +99,14 @@ sub-command:
 The secret templates support expanding a given set of variables. The following set
 of variables is supported:
 
-| Variable          | Description                     |
-|-------------------|---------------------------------|
-| `client_id`       | The client id of the client.    |
-| `realm`           | The realm of the client.        |
-| `auth_server_url` | The URL of the Keycloak server. |
-| `secret`          | The secret of the client.       |
+| Variable          | Description                                                                                                                            |
+|-------------------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `auth_server_url` | The URL of the Keycloak server.                                                                                                        |
+| `realm`           | The realm of the client.                                                                                                               |
+| `client_id`       | The client id of the client.                                                                                                           |
+| `client`          | The Keycloak representation object of the current client being exported.                                                               |
+| `secret`          | The secret of the client.                                                                                                              |
+| `clients`         | The map of Keycloak representation objects of all clients belonging to the realm. The key of the map is the `clientId` of each client. |
 
 Variables must be placed within the secret template as `$variable`. For example:
 
@@ -112,10 +114,26 @@ Variables must be placed within the secret template as `$variable`. For example:
 QUARKUS_OIDC_CREDENTIALS_SECRET=$secret
 ```
 
+The `client` variable is the Keycloak representation [ClientRepresentation](https://www.keycloak.org/docs-api/23.0.6/rest-api/#ClientRepresentation).
+All fields can be accessed as described in [Velocity References](https://velocity.apache.org/engine/2.3/user-guide.html#references),
+for example:
+
+```properties
+QUARKUS_OIDC_CREDENTIALS_SECRET=$client.secret
+```
+
+The same approach applies to the `clients` variable. For example, to access the secret
+of a different client than the current one, the following can be used:
+
+```properties
+QUARKUS_OIDC_CREDENTIALS_SECRET=$secret
+QUARKUS_OIDC_IDENTITY_SERVICE_SECRET=$clients["identity-service"].secret
+```
+
 The `client_id` variable can be used within the filename of secret templates as well.
 In comparison to the usage in templates, the `$` must be omitted.
-Each client is exported to a separate file then. Otherwise, multiple clients will 
-overwrite each other. For example, as possible name could be `client_id-oidc.env`. 
+Each client is exported to a separate file then. Otherwise, multiple clients will
+overwrite each other. For example, as possible name could be `client_id-oidc.env`.
 
 ### Sub-Command `rotate-secrets`
 
