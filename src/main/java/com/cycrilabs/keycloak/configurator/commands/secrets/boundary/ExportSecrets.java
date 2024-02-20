@@ -8,8 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,6 +21,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.runtime.parser.ParseException;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.utils.StringUtil;
 
 import com.cycrilabs.keycloak.configurator.commands.secrets.entity.ExportSecretsCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
@@ -29,10 +31,12 @@ import io.quarkus.logging.Log;
 
 @ApplicationScoped
 public class ExportSecrets {
-    private static final String VARIABLE_CLIENT_ID = "client_id";
     private static final String VARIABLE_REALM = "realm";
     private static final String VARIABLE_AUTH_SERVER_URL = "auth_server_url";
+    private static final String VARIABLE_CLIENT_ID = "client_id";
+    private static final String VARIABLE_CLIENT = "client";
     private static final String VARIABLE_SECRET = "secret";
+    private static final String VARIABLE_CLIENTS = "clients";
 
     @Inject
     ExportSecretsCommandConfiguration configuration;
@@ -45,11 +49,16 @@ public class ExportSecrets {
 
     public void export() throws IOException, ParseException, URISyntaxException {
         final Collection<Template> templates = VelocityUtils.loadTemplates(loadTemplateFiles());
-        final List<ClientRepresentation> clients = loadClientSecrets();
-        for (final ClientRepresentation client : clients) {
+        final Map<String, ClientRepresentation> clients = loadClients();
+        for (final ClientRepresentation client : clients.values()) {
+            // skip all clients without a secret
+            if (StringUtil.isBlank(client.getSecret())) {
+                continue;
+            }
+
             for (final Template template : templates) {
                 Log.infof("Generating secret file(s) for client '%s'.", client.getClientId());
-                writeFiles(client, template);
+                writeFiles(client, clients, template);
             }
         }
     }
@@ -58,17 +67,17 @@ public class ExportSecrets {
         return FileUtils.listFiles(new File(configuration.getConfigDirectory()), null, true);
     }
 
-    private List<ClientRepresentation> loadClientSecrets() {
+    private Map<String, ClientRepresentation> loadClients() {
         return keycloak.realm(configuration.getRealmName())
                 .clients()
                 .findAll()
                 .stream()
-                .filter(client -> client.getSecret() != null)
-                .toList();
+                .collect(Collectors.toMap(ClientRepresentation::getClientId, Function.identity()));
     }
 
-    private void writeFiles(final ClientRepresentation client, final Template template) {
-        final String fileContent = generateFileContent(client, template);
+    private void writeFiles(final ClientRepresentation client,
+            final Map<String, ClientRepresentation> clients, final Template template) {
+        final String fileContent = generateFileContent(client, clients, template);
         final Path targetFile = getTargetFile(client.getClientId(), template.getName());
         try {
             Files.writeString(targetFile, fileContent, StandardCharsets.UTF_8);
@@ -77,13 +86,16 @@ public class ExportSecrets {
         }
     }
 
-    private String generateFileContent(final ClientRepresentation client, final Template template) {
+    private String generateFileContent(final ClientRepresentation client,
+            final Map<String, ClientRepresentation> clients, final Template template) {
         return VelocityUtils.mergeTemplate(template, VelocityUtils.createVelocityContext(
                 Map.ofEntries(
                         Map.entry(VARIABLE_REALM, configuration.getRealmName()),
                         Map.entry(VARIABLE_AUTH_SERVER_URL, configuration.getServer()),
+                        Map.entry(VARIABLE_CLIENT_ID, client.getClientId()),
+                        Map.entry(VARIABLE_CLIENT, client),
                         Map.entry(VARIABLE_SECRET, client.getSecret()),
-                        Map.entry(VARIABLE_CLIENT_ID, client.getClientId())
+                        Map.entry(VARIABLE_CLIENTS, clients)
                 )
         ));
     }

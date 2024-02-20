@@ -47,7 +47,7 @@ public class VelocityUtils {
         return template;
     }
 
-    public static VelocityContext createVelocityContext(final Map<String, String> data) {
+    public static VelocityContext createVelocityContext(final Map<String, Object> data) {
         return data.entrySet()
                 .stream()
                 .reduce(new VelocityContext(), (c, e) -> {
