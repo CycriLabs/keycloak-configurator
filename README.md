@@ -133,7 +133,28 @@ QUARKUS_OIDC_IDENTITY_SERVICE_SECRET=$clients["identity-service"].secret
 The `client_id` variable can be used within the filename of secret templates as well.
 In comparison to the usage in templates, the `$` must be omitted.
 Each client is exported to a separate file then. Otherwise, multiple clients will
-overwrite each other. For example, as possible name could be `client_id-oidc.env`.
+overwrite each other. For example, a possible name could be `client_id-oidc.env`.
+If there are two clients, `client-a` and `client-b`, the following files are created:
+
+- `client-a-oidc.env`
+- `client-b-oidc.env`
+
+It is possible to provide multiple secret templates at once. The configurator will
+generate a file for each client and secret template combination. If a secret template
+has the same name as an expanded file would have, this file has precedence. For example,
+if the following secrets templates are provided for the clients `client-a` and `client-b`:
+
+- `client-a-oidc.env`
+- `client_id-oidc.env`
+- `client_id-oidc.json`
+
+The following files are created:
+
+- `client-a-oidc.env` (based on `client-a-oidc.env`)
+- `client-b-oidc.env` (based on `client_id-oidc.env`)
+- `client-a-oidc.json` (based on `client_id-oidc.json`)
+- `client-b-oidc.json` (based on `client_id-oidc.json`)
+
 
 ### Sub-Command `rotate-secrets`
 
