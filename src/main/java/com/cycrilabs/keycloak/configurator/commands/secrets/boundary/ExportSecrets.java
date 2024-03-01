@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -56,7 +57,8 @@ public class ExportSecrets {
                 continue;
             }
 
-            for (final Template template : templates) {
+            final Collection<Template> clientTemplates = deriveClientTemplates(client, templates);
+            for (final Template template : clientTemplates) {
                 Log.infof("Generating secret file(s) for client '%s'.", client.getClientId());
                 writeFiles(client, clients, template);
             }
@@ -73,6 +75,40 @@ public class ExportSecrets {
                 .findAll()
                 .stream()
                 .collect(Collectors.toMap(ClientRepresentation::getClientId, Function.identity()));
+    }
+
+    /**
+     * Derives all templates that must be expanded for the given client.
+     *
+     * @param client
+     *         the target client
+     * @param templates
+     *         all secret templates
+     * @return a list of relevant target secret templates for the given client
+     */
+    private Collection<Template> deriveClientTemplates(final ClientRepresentation client,
+            final Collection<Template> templates) {
+        final Map<String, Template> clientTemplates = new HashMap<>();
+        for (final Template template : templates) {
+            final String name = template.getName();
+            final String derivedName = getDerivedFilename(client.getClientId(), name);
+
+            // if the template is a generic one and there is no specialized entry at the moment
+            // it is added to the map
+            if (isGenericSecretTemplate(name) && !clientTemplates.containsKey(derivedName)) {
+                // we store the derived name temporarily to have it being overwritten by a more
+                // specific template
+                clientTemplates.put(derivedName, template);
+            }
+
+            // if the template contains the clientId in its name and is not generic
+            // it is always added to the map
+            // the generic check makes sure, there is no file that matches by accident with a client
+            if (!isGenericSecretTemplate(name) && name.contains(client.getClientId())) {
+                clientTemplates.put(name, template);
+            }
+        }
+        return clientTemplates.values();
     }
 
     private void writeFiles(final ClientRepresentation client,
@@ -101,7 +137,15 @@ public class ExportSecrets {
     }
 
     private Path getTargetFile(final String clientId, final String templateName) {
-        final String filename = templateName.replace(VARIABLE_CLIENT_ID, clientId);
+        final String filename = getDerivedFilename(clientId, templateName);
         return Paths.get(configuration.getOutputDirectory(), filename);
+    }
+
+    private String getDerivedFilename(final String clientId, final String templateName) {
+        return templateName.replace(VARIABLE_CLIENT_ID, clientId);
+    }
+
+    private boolean isGenericSecretTemplate(final String templateName) {
+        return templateName.contains(VARIABLE_CLIENT_ID);
     }
 }
