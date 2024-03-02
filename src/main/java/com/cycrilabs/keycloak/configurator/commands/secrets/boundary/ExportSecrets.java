@@ -7,9 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -51,7 +53,8 @@ public class ExportSecrets {
     public void export() throws IOException, ParseException, URISyntaxException {
         final Collection<Template> templates = VelocityUtils.loadTemplates(loadTemplateFiles());
         final Map<String, ClientRepresentation> clients = loadClients();
-        for (final ClientRepresentation client : clients.values()) {
+        final Collection<ClientRepresentation> filteredClients = getFilteredClients(clients);
+        for (final ClientRepresentation client : filteredClients) {
             // skip all clients without a secret
             if (StringUtil.isBlank(client.getSecret())) {
                 continue;
@@ -75,6 +78,18 @@ public class ExportSecrets {
                 .findAll()
                 .stream()
                 .collect(Collectors.toMap(ClientRepresentation::getClientId, Function.identity()));
+    }
+
+    private Collection<ClientRepresentation> getFilteredClients(
+            final Map<String, ClientRepresentation> clients) {
+        if (StringUtil.isBlank(configuration.getClientIds())) {
+            return clients.values();
+        }
+        final String[] split = configuration.getClientIds().split(",");
+        return Arrays.stream(split)
+                .map(clients::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
     /**

@@ -10,12 +10,14 @@ import picocli.CommandLine.ParseResult;
 public class ExportSecretsCommandConfiguration extends KeycloakConfiguration {
     private final String realmName;
     private final String configDirectory;
+    private final String clientIds;
     private final String outputDirectory;
 
     public ExportSecretsCommandConfiguration(final ParseResult parseResult) {
         super(parseResult);
         realmName = getMatchedOption(parseResult, "-r");
         configDirectory = getMatchedOption(parseResult, "-c");
+        clientIds = getMatchedOption(parseResult, "-n");
         outputDirectory = getMatchedOption(parseResult, "-o");
     }
 }
