@@ -19,6 +19,9 @@ public class ExportSecretsCommand implements Runnable {
     @CommandLine.Option(required = true, names = { "-c", "--config" },
             description = "Directory containing templates for secret output files.")
     String configDirectory;
+    @CommandLine.Option(names = { "-n", "--client-ids" },
+            description = "Comma separated list of client IDs to export secrets for.")
+    String clientIds;
     @CommandLine.Option(names = { "-o", "--output" }, defaultValue = "./",
             description = "Output directory for generate files.")
     String outputDirectory;
