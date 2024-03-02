@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.1.1...1.2.0) (2024-03-02)
+
+
+### Features
+
+* add support for defining client specific secret templates ([#40](https://github.com/CycriLabs/keycloak-configurator/issues/40)) ([2f9b428](https://github.com/CycriLabs/keycloak-configurator/commit/2f9b428785481afae59e415843322a177b5569dd))
+* allow to export only specific client secrets ([#36](https://github.com/CycriLabs/keycloak-configurator/issues/36)) ([e4cf4ce](https://github.com/CycriLabs/keycloak-configurator/commit/e4cf4ce9cbf4d0faf2ae4ffffdc65cf3b260a731))
+* bump quarkus to 3.7.1 ([1228ad8](https://github.com/CycriLabs/keycloak-configurator/commit/1228ad8bf89cf20bdca554cd442ce42bc7f106c6))
+* bump quarkus to 3.7.3 ([6966c14](https://github.com/CycriLabs/keycloak-configurator/commit/6966c14d97100022e9a1cc453625bf9a652ad1cc))
+* bump quarkus to 3.8.1 ([bb9474f](https://github.com/CycriLabs/keycloak-configurator/commit/bb9474f871feea0af574220b7a4ef1b76c14f822))
+* bump quarkus-velocity to 1.1.0 ([886477d](https://github.com/CycriLabs/keycloak-configurator/commit/886477d21e35288cec421acbd9556845f2b8b854))
+* bump quarkus-velocity to 1.2.0 ([881a14a](https://github.com/CycriLabs/keycloak-configurator/commit/881a14a89f9ae16523ad26d79f294aec20def01a))
+* extend secret export variables by client object & clients map ([#39](https://github.com/CycriLabs/keycloak-configurator/issues/39)) ([8693552](https://github.com/CycriLabs/keycloak-configurator/commit/8693552c03107eb9b8e3c9517f9a4b59db512039))
+
 ## [1.1.1](https://github.com/CycriLabs/keycloak-configurator/compare/1.1.0...1.1.1) (2024-01-28)
 
 
