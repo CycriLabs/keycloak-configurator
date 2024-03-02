@@ -87,14 +87,15 @@ given realm. The secrets are exported based on a set of provided secret template
 The following table lists all required and optional options of the `export-secrets`
 sub-command:
 
-| Option             | Required | Description                                                                               |
-|--------------------|----------|-------------------------------------------------------------------------------------------|
-| `-s`, `--server`   | yes      | The URL of the Keycloak server.                                                           |
-| `-u`, `--username` | yes      | The username of the Keycloak admin user.                                                  |
-| `-p`, `--password` | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.       |
-| `-r`, `--realm`    | yes      | The realm to export the secrets from.                                                     |
-| `-c`, `--config`   | yes      | The path to the directory containing the secret templates.                                |
-| `-o`, `--output`   | no       | The path to the directory where the secrets are exported to. Defaults to the working dir. |
+| Option               | Required | Description                                                                               |
+|----------------------|----------|-------------------------------------------------------------------------------------------|
+| `-s`, `--server`     | yes      | The URL of the Keycloak server.                                                           |
+| `-u`, `--username`   | yes      | The username of the Keycloak admin user.                                                  |
+| `-p`, `--password`   | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.       |
+| `-r`, `--realm`      | yes      | The realm to export the secrets from.                                                     |
+| `-c`, `--config`     | yes      | The path to the directory containing the secret templates.                                |
+| `-o`, `--output`     | no       | The path to the directory where the secrets are exported to. Defaults to the working dir. |
+| `-n`, `--client-ids` | no       | A comma-separated list of client ids to export the secrets from.                          |
 
 The secret templates support expanding a given set of variables. The following set
 of variables is supported:
@@ -154,7 +155,6 @@ The following files are created:
 - `client-b-oidc.env` (based on `client_id-oidc.env`)
 - `client-a-oidc.json` (based on `client_id-oidc.json`)
 - `client-b-oidc.json` (based on `client_id-oidc.json`)
-
 
 ### Sub-Command `rotate-secrets`
 
