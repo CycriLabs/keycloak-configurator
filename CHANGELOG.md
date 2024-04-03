@@ -1,3 +1,11 @@
+# [1.3.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.2.0...1.3.0) (2024-04-03)
+
+
+### Features
+
+* bump quarkus to 3.9.2 ([6b98bee](https://github.com/CycriLabs/keycloak-configurator/commit/6b98bee92eeb594afba452f5faa05d76a6637b87))
+* bump quarkus-velocity to 1.3.0 ([466ab02](https://github.com/CycriLabs/keycloak-configurator/commit/466ab0288b52bdc6158ac38b0c1ad2aa78c046ab))
+
 # [1.2.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.1.1...1.2.0) (2024-03-02)
 
 
