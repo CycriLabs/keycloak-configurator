@@ -19,15 +19,14 @@ The configurator supports the following Keycloak API:
 ## Usage
 
 The configurator prints out the help when executed with `-h` or `--help`. It
-lists all commands that are available. Currently, two commands are supported:
+lists all commands that are available. Currently, four commands are supported:
 
 * `configure` - Configures a Keycloak instance with a set of realms, clients, client-roles, etc.
 * `export-secrets` - Exports secrets of all clients of the given realm
 * `rotate-secrets` - Rotates secrets of all clients of the given realm
 * `export-entities` - Exports entities of the given realm, optionally filtered by type or name
 
-Each commands support a set of options. The options can be listed by executing
-the command with `-h` or `--help`.
+Each command supports a set of options that can be listed by executing it with `-h` or `--help`.
 
 ### Sub-Command `configure`
 
@@ -74,18 +73,19 @@ sub-command:
 | `-c`, `--config`      | yes      | The path to the directory containing the configuration files.                                     |
 | `-t`, `--entity-type` | no       | Allows to import only on specific entity type. Requires all prerequisites to be imported already. |
 
-The following table lists all supported entity types:
+The following table lists all supported entity types and the corresponding directory
+identifier to identifier configuration source directories:
 
-| Entity Type                   | Description                            |
-|-------------------------------|----------------------------------------|
-| `realm`                       | A realm.                               |
-| `client`                      | A client.                              |
-| `client-role`                 | A client role.                         |
-| `realm-role`                  | A realm role.                          |
-| `service-account-client-role` | A service account client role mapping. |
-| `group`                       | A group.                               |
-| `user`                        | A user.                                |
-| `service-account-realm-role`  | A service account realm role mapping.  |
+| Entity Type                   | Directory identifier           | Description                            |
+|-------------------------------|--------------------------------|----------------------------------------|
+| `realm`                       | `realms`                       | A realm.                               |
+| `client`                      | `clients`                      | A client.                              |
+| `client-role`                 | `client-roles`                 | A client role.                         |
+| `realm-role`                  | `realm-roles`                  | A realm role.                          |
+| `service-account-client-role` | `service-account-client-roles` | A service account client role mapping. |
+| `group`                       | `groups`                       | A group.                               |
+| `user`                        | `users`                        | A user.                                |
+| `service-account-realm-role`  | `service-account-realm-roles`  | A service account realm role mapping.  |
 
 Entities are imported as listed in the table above.
 
