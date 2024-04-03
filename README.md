@@ -6,6 +6,16 @@ realms, clients, client-roles, etc. The configuration is executed against the
 Communication is done via the
 [Quarkus Keycloak Java Admin Client](https://quarkus.io/guides/security-keycloak-admin-client).
 
+## Versions
+
+The configurator supports the following Keycloak API:
+
+| Tool Version | Quarkus Version | Keycloak Version |
+|--------------|-----------------|------------------|
+| 1.0.0        | 3.6.3           | 23.0.0           |
+| 1.1.0        | 3.6.8           | 23.0.0           |
+| 1.2.0        | 3.8.1           | 23.0.7           |
+
 ## Usage
 
 The configurator prints out the help when executed with `-h` or `--help`. It
