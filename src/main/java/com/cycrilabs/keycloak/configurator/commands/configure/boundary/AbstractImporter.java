@@ -19,6 +19,7 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 public abstract class AbstractImporter {
     /**
@@ -71,8 +72,20 @@ public abstract class AbstractImporter {
      * @return the error representation based on the exception, or null otherwise
      */
     protected ErrorRepresentation extractError(final WebApplicationException exception) {
-        return exception != null && exception.getResponse() != null
-                ? exception.getResponse().readEntity(ErrorRepresentation.class)
+        return exception != null
+                ? extractError(exception.getResponse())
+                : null;
+    }
+
+    /**
+     * Extracts a Keycloak {@link ErrorRepresentation} from the given Response.
+     *
+     * @param response the REST response
+     * @return the error representation, or null otherwise
+     */
+    protected ErrorRepresentation extractError(final Response response) {
+        return response != null
+                ? response.readEntity(ErrorRepresentation.class)
                 : null;
     }
 
