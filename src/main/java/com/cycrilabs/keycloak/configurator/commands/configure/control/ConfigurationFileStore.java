@@ -146,6 +146,7 @@ public class ConfigurationFileStore {
             return stream
                     .filter(Files::isRegularFile)
                     .filter(file -> file.toString().endsWith(".json"))
+                    .sorted()
                     .toList();
         } catch (final IOException e) {
             Log.errorf("Could not read directory '%s'.", dir);
