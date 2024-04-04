@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
 
+import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
@@ -32,7 +33,11 @@ public class RealmRoleImporter extends AbstractImporter {
                     .create(role);
             Log.infof("Realm role '%s' imported for realm '%s'.", role.getName(), realmName);
         } catch (final ClientErrorException e) {
-            Log.errorf("Could not import '%s' realm role for realm '%s': %s", role.getName(), realmName, e.getMessage());
+            final ErrorRepresentation error = extractError(e);
+            final String message = error != null
+                    ? error.getErrorMessage()
+                    : e.getMessage();
+            Log.errorf("Could not import '%s' realm role for realm '%s': %s", role.getName(), realmName, message);
         }
 
         try {

@@ -9,6 +9,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.ErrorRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.control.ConfigurationFileStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
@@ -17,6 +18,7 @@ import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
+import jakarta.ws.rs.WebApplicationException;
 
 public abstract class AbstractImporter {
     /**
@@ -60,6 +62,18 @@ public abstract class AbstractImporter {
             Log.infof("No files found for importer '%s'.", getClass().getSimpleName());
         }
         return importFiles;
+    }
+
+    /**
+     * Tries to extract Keycloak {@link ErrorRepresentation} from the exception.
+     *
+     * @param exception the thrown exception
+     * @return the error representation based on the exception, or null otherwise
+     */
+    protected ErrorRepresentation extractError(final WebApplicationException exception) {
+        return exception != null && exception.getResponse() != null
+                ? exception.getResponse().readEntity(ErrorRepresentation.class)
+                : null;
     }
 
     public int getPriority() {
