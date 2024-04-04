@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/CycriLabs/keycloak-configurator/compare/1.3.0...1.3.1) (2024-04-04)
+
+
+### Bug Fixes
+
+* generate group hierarchy base on configuration files ([#45](https://github.com/CycriLabs/keycloak-configurator/issues/45)) ([bf28181](https://github.com/CycriLabs/keycloak-configurator/commit/bf28181de72cb00895b4dff4fabca86f2359ba51))
+* import files in sorted order ([#44](https://github.com/CycriLabs/keycloak-configurator/issues/44)) ([10a4402](https://github.com/CycriLabs/keycloak-configurator/commit/10a440206077e844c549eecdd70ad1444441962c))
+
 # [1.3.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.2.0...1.3.0) (2024-04-03)
 
 
