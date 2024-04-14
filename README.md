@@ -87,6 +87,7 @@ identifier to identifier configuration source directories:
 | `group`                       | `groups`                       | A group.                               |
 | `user`                        | `users`                        | A user.                                |
 | `service-account-realm-role`  | `service-account-realm-roles`  | A service account realm role mapping.  |
+| `component`                   | `components`                   | A component, e.g. LDAP provider.       |
 
 Entities are imported as listed in the table above.
 
