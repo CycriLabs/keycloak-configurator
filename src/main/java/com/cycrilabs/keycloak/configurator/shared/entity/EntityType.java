@@ -13,7 +13,8 @@ public enum EntityType {
     SERVICE_ACCOUNT_CLIENT_ROLE(5, "service-account-client-role", "service-account-client-roles"),
     GROUP(6, "group", "groups"),
     USER(7, "user", "users"),
-    SERVICE_ACCOUNT_REALM_ROLE(8, "service-account-realm-role", "service-account-realm-roles");
+    SERVICE_ACCOUNT_REALM_ROLE(8, "service-account-realm-role", "service-account-realm-roles"),
+    COMPONENT(9, "component", "components");
 
     private final int priority;
     private final String name;
