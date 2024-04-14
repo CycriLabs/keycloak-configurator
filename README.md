@@ -269,6 +269,21 @@ It is all possible to set the log-level specific to the configurator itself:
 docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest export-secrets -s http://localhost:4080 -u keycloak -p root -r default -c /secret-templates -o /output -Dquarkus.log.category."com.cycrilabs".level=DEBUG
 ```
 
+### Exporting secrets with JVM container images
+
+When a container with JVM mode is executed to export secrets, the following error may pop up:
+
+```
+Failed to write file '/output/client.env'.
+```
+
+The application is run with the user `jboss` with ID `185`. Therefore, it is necessary to adapt
+the output directory for the secrets to be owned by this user, e.g. for directory `services-env`:
+
+```bash
+sudo chown -R 185:185 services-env
+```
+
 ## Development
 
 The configurator can be started in dev mode using the Quarkus CLI and passing the arguments via `-Dquarkus.args`.
