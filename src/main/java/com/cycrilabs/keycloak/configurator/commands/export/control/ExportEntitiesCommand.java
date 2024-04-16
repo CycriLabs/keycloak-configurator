@@ -1,8 +1,11 @@
 package com.cycrilabs.keycloak.configurator.commands.export.control;
 
+import java.util.Comparator;
+
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.boundary.AbstractImporter;
 import com.cycrilabs.keycloak.configurator.commands.export.boundary.AbstractExporter;
 import com.cycrilabs.keycloak.configurator.commands.export.entity.ExportEntitiesCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakOptions;
@@ -45,6 +48,7 @@ public class ExportEntitiesCommand implements Runnable {
         }
 
         exporters.stream()
+                .sorted(Comparator.comparingInt(AbstractExporter::getPriority))
                 .forEach(AbstractExporter::export);
     }
 }

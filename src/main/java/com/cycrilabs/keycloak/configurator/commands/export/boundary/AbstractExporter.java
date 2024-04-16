@@ -59,6 +59,10 @@ public abstract class AbstractExporter {
         }
     }
 
+    public int getPriority() {
+        return getType().getPriority();
+    }
+
     public abstract EntityType getType();
 
     protected abstract void exportEntity(String entityName);
