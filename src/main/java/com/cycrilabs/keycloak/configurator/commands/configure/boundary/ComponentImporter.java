@@ -24,7 +24,8 @@ public class ComponentImporter extends AbstractImporter {
 
     @Override
     protected Object importFile(final Path file) {
-        final CustomComponentRepresentation component = JsonUtil.loadEntity(file, CustomComponentRepresentation.class);
+        final CustomComponentRepresentation component =
+                JsonUtil.loadEntity(file, CustomComponentRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
