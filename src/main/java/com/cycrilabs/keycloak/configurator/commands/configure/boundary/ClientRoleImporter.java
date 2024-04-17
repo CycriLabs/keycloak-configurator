@@ -1,10 +1,8 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.ClientErrorException;
 
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
