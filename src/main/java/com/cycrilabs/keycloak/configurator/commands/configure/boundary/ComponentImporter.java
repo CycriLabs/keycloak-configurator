@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.ComponentRepresentation;
 
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.CustomComponentRepresentation;
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
@@ -24,8 +23,8 @@ public class ComponentImporter extends AbstractImporter {
 
     @Override
     protected Object importFile(final Path file) {
-        final CustomComponentRepresentation component =
-                JsonUtil.loadEntity(file, CustomComponentRepresentation.class);
+        final ComponentRepresentation component =
+                JsonUtil.loadEntity(file, ComponentRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
@@ -46,7 +45,7 @@ public class ComponentImporter extends AbstractImporter {
 
         try (final Response response = keycloak.realm(realmName)
                 .components()
-                .add(component.toAPI())) {
+                .add(component)) {
             if (response.getStatus() == 409) {
                 Log.errorf("Could not import component from file for realm '%s': %s", realmName,
                         extractError(response).getErrorMessage());
