@@ -235,15 +235,15 @@ docker run -v ./keycloak-configuration:/config --net="host" --pull=always --rm -
 
 ### Mounting volumes on Windows Git Bash
 
-When trying to mount a volume on Windows Git Bash, the following error may occur:
+When trying to mount a volume on Windows Git Bash, e.g. the following error may occur:
 
 ```
-TODO add error message
+Unmatched arguments from index 11: 'Files/Git/configuration', 'Files/Git/output'
 ```
 
 This is caused by the `/` in the path. The forward slash must be noted as `//`. For example,
-the following command mounts the directory `./secret-templates` and `./keycloak-secrets` to
-into the container as `/secret-templates` and `/output`, respectively. The configurator then
+the following command mounts the directory `./secret-templates` and `./keycloak-secrets`
+into the container as `/secret-templates` and `/output`. The configurator then
 executes the `export-secrets` sub-command:
 
 ```bash
