@@ -48,7 +48,6 @@ public class ConfigurationFileStore {
 
         final List<Path> allRealmDirectories = listDirectoriesInPath(configurationPath);
         for (final Path realmConfiguration : allRealmDirectories) {
-            createTypeDirectoryLookup(realmConfiguration);
             mapEntityTypes(createTypeDirectoryLookup(realmConfiguration));
         }
     }
@@ -101,8 +100,10 @@ public class ConfigurationFileStore {
                 if (compareDirectoryNames(potentialEntityTypeDirectory, entityType)) {
                     Log.debugf("Reading files from '%s' for type '%s'.", fullEntityTypePath,
                             entityType);
-                    configurationFiles.computeIfAbsent(entityType,
-                            key -> listFilesInPath(fullEntityTypePath));
+                    configurationFiles.compute(entityType, (key, value) -> value == null
+                            ? listFilesInPath(fullEntityTypePath)
+                            : Stream.concat(value.stream(),
+                                    listFilesInPath(fullEntityTypePath).stream()).toList());
                     Log.debugf("Found %d files for type '%s'.",
                             configurationFiles.get(entityType).size(), entityType);
                 } else {
