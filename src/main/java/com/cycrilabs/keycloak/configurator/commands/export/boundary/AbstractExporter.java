@@ -33,7 +33,7 @@ public abstract class AbstractExporter {
     public void writeFile(final String fileContent, final String name, final String realm,
             final String client) {
         final Path targetFile =
-                Path.of(configuration.getOutputDirectory(), getType().getDirectory(), realm, client,
+                Path.of(configuration.getOutputDirectory(), realm, getType().getDirectory(), client,
                         name + ".json");
         try {
             Files.createDirectories(targetFile.getParent());

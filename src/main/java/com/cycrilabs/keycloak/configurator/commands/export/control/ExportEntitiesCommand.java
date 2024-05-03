@@ -40,10 +40,10 @@ public class ExportEntitiesCommand implements Runnable {
     @Override
     public void run() {
         if (configuration.getEntityType() != null) {
-            Log.infof("Exporting entities from realm '%s' of type '%s'.",
-                    configuration.getRealmName(), configuration.getEntityType().getName());
+            Log.infof("Exporting entities of type '%s' only.",
+                    configuration.getEntityType().getName());
         } else {
-            Log.infof("Exporting entities from realm '%s'.", configuration.getRealmName());
+            Log.infof("Exporting all entities.");
         }
 
         exporters.stream()

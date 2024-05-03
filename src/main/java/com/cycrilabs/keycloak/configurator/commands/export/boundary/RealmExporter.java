@@ -20,7 +20,7 @@ public class RealmExporter extends AbstractExporter {
     protected void exportEntity(final String entityName) {
         final RealmRepresentation entity = keycloak.realm(entityName).toRepresentation();
         Log.infof("Exporting realm '%s'.", entity.getRealm());
-        writeFile(JsonUtil.toJson(entity), entity.getRealm(), "");
+        writeFile(JsonUtil.toJson(entity), entity.getRealm(), entity.getRealm());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RealmExporter extends AbstractExporter {
                 .findAll()
                 .forEach(entity -> {
                     Log.infof("Exporting realm '%s'.", entity.getRealm());
-                    writeFile(JsonUtil.toJson(entity), entity.getRealm(), "");
+                    writeFile(JsonUtil.toJson(entity), entity.getRealm(), entity.getRealm());
                 });
     }
 }
