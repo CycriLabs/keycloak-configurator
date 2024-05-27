@@ -1,6 +1,7 @@
 package com.cycrilabs.keycloak.configurator.commands.export.boundary;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.WebApplicationException;
 
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
@@ -28,13 +29,19 @@ public class UserExporter extends AbstractExporter {
 
     @Override
     protected void exportEntities() {
-        keycloak.realm(configuration.getRealmName())
-                .users()
-                .list()
-                .forEach(user -> {
-                    Log.infof("Exporting user '%s'.", user.getUsername());
-                    writeFile(JsonUtil.toJson(user), user.getUsername(),
-                            configuration.getRealmName());
-                });
+        try {
+            keycloak.realm(configuration.getRealmName())
+                    .users()
+                    .list()
+                    .forEach(user -> {
+                        Log.infof("Exporting user '%s'.", user.getUsername());
+                        writeFile(JsonUtil.toJson(user), user.getUsername(),
+                                configuration.getRealmName());
+                    });
+        } catch (final WebApplicationException e) {
+            // if the user export fails, log the error and continue
+            // this may be the case when e.g. testing local with an incomplete LDAP configuration
+            Log.error("Error exporting users", e);
+        }
     }
 }
