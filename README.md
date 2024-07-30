@@ -16,6 +16,7 @@ The configurator supports the following Keycloak API:
 | 1.1.x        | 3.6.8           | 23.0.0           |
 | 1.2.x        | 3.8.1           | 23.0.7           |
 | 1.3.x        | 3.9.2           | 23.0.7           |
+| 1.4.x        | 3.9.2           | 23.0.7           |
 
 ## Usage
 
