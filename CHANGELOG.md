@@ -1,3 +1,25 @@
+# [1.4.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.3.1...1.4.0) (2024-07-30)
+
+
+### Bug Fixes
+
+* adapt entit export directory structure to import structure ([#59](https://github.com/CycriLabs/keycloak-configurator/issues/59)) ([0d6c6a8](https://github.com/CycriLabs/keycloak-configurator/commit/0d6c6a8f5d58322c2da796c64d49726a13dc978d))
+* add a custom component class to resolve serialization issues with JSONB ([c9b3ad8](https://github.com/CycriLabs/keycloak-configurator/commit/c9b3ad8923bd580f938dc37cf7bc2022d4c4a54f))
+* export client roles of each client if no specific requested ([#58](https://github.com/CycriLabs/keycloak-configurator/issues/58)) ([ad15e05](https://github.com/CycriLabs/keycloak-configurator/commit/ad15e05d8491637b255b09f79fb14e80802fac80))
+* fix issues when exporting entities without given type ([5affde9](https://github.com/CycriLabs/keycloak-configurator/commit/5affde925b52a08d978c976a95c9c3160837bedd))
+* handle user export errors gracefully ([#63](https://github.com/CycriLabs/keycloak-configurator/issues/63)) ([f720340](https://github.com/CycriLabs/keycloak-configurator/commit/f7203408fa9f0640eab5d055a1680bc3f6d93d0f))
+* read in multiple realms in config store correctly ([#52](https://github.com/CycriLabs/keycloak-configurator/issues/52)) ([67adfd3](https://github.com/CycriLabs/keycloak-configurator/commit/67adfd312a086fa7c5c2862c8b7598681c6824a1))
+* replace jsonb by jackson ([#54](https://github.com/CycriLabs/keycloak-configurator/issues/54)) ([bfdbbe3](https://github.com/CycriLabs/keycloak-configurator/commit/bfdbbe37ff3967217c75bb0f2563c4f7f7b561f5))
+
+
+### Features
+
+* add component exporter ([#51](https://github.com/CycriLabs/keycloak-configurator/issues/51)) ([ff098c4](https://github.com/CycriLabs/keycloak-configurator/commit/ff098c44d58a3eb588dc5e26a3c9176038d0fb7c))
+* add importer for components ([#48](https://github.com/CycriLabs/keycloak-configurator/issues/48)) ([1da7209](https://github.com/CycriLabs/keycloak-configurator/commit/1da72090941196e02c6ca65c915d8db2ac5d06b2))
+* execute exporters based on entity priority ([652a12d](https://github.com/CycriLabs/keycloak-configurator/commit/652a12d948dadaa818bda9b67e60af8b71c20566))
+* format json on export ([#64](https://github.com/CycriLabs/keycloak-configurator/issues/64)) ([f2bd4b9](https://github.com/CycriLabs/keycloak-configurator/commit/f2bd4b9863da62a7e314bed67656b0b3bbfd2079))
+* set default log level to INFO ([3213fb9](https://github.com/CycriLabs/keycloak-configurator/commit/3213fb919a6b9a4db8189732c3ed7b52f16eda03))
+
 ## [1.3.1](https://github.com/CycriLabs/keycloak-configurator/compare/1.3.0...1.3.1) (2024-04-04)
 
 
