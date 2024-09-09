@@ -24,10 +24,10 @@ import org.apache.velocity.Template;
 import org.apache.velocity.runtime.parser.ParseException;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.utils.StringUtil;
 
 import com.cycrilabs.keycloak.configurator.commands.secrets.entity.ExportSecretsCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
+import com.cycrilabs.keycloak.configurator.shared.control.StringUtil;
 import com.cycrilabs.keycloak.configurator.shared.control.VelocityUtils;
 
 import io.quarkus.logging.Log;
