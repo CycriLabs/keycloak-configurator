@@ -114,14 +114,15 @@ sub-command:
 The secret templates support expanding a given set of variables. The following set
 of variables is supported:
 
-| Variable          | Description                                                                                                                            |
-|-------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| `auth_server_url` | The URL of the Keycloak server.                                                                                                        |
-| `realm`           | The realm of the client.                                                                                                               |
-| `client_id`       | The client id of the client.                                                                                                           |
-| `client`          | The Keycloak representation object of the current client being exported.                                                               |
-| `secret`          | The secret of the client.                                                                                                              |
-| `clients`         | The map of Keycloak representation objects of all clients belonging to the realm. The key of the map is the `clientId` of each client. |
+| Variable          | Description                                                                                                                                        |
+|-------------------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `auth_server_url` | The URL of the Keycloak server.                                                                                                                    |
+| `realm`           | The realm of the client.                                                                                                                           |
+| `client_id`       | The client id of the client.                                                                                                                       |
+| `client`          | The Keycloak representation object of the current client being exported.                                                                           |
+| `secret`          | The secret of the client.                                                                                                                          |
+| `clients`         | The map of Keycloak representation objects of all clients belonging to the realm. The key of the map is the `clientId` of each client.             |
+| `env`             | A map of environment variables that start with the prefix `kcc`. The key of the map is the environment variable name based on Microprofile schema. |
 
 Variables must be placed within the secret template as `$variable`. For example:
 
@@ -135,6 +136,13 @@ for example:
 
 ```properties
 QUARKUS_OIDC_CREDENTIALS_SECRET=$client.secret
+```
+
+To access environment variables, they must be prefixed with `kcc`. For example, to access
+the environment variable `KCC_DATABASE_NAME=database`, the following can be used:
+
+```properties
+DATASOURCE_JDBC_URL=jdbc:postgresql://$env.KCC_DATABASE_NAME:5432
 ```
 
 The same approach applies to the `clients` variable. For example, to access the secret
@@ -292,11 +300,11 @@ The configurator can be started in dev mode using the Quarkus CLI and passing th
 For example, starting the import of a configuration is done as follows:
 
 ```bash
-mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:4080 -u keycloak -p root -c ../keycloak-configuration-eam"
+mvn quarkus:dev "-Dquarkus.args=configure -s http://localhost:8080 -u keycloak -p root -c ../keycloak-configuration-eam/configuration"
 ```
 
 Specify the log level via `-Dquarkus.log.level`. For example, to set the log level to `INFO`:
 
 ```bash
-mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:4080 -u keycloak -p root -r eam" "-Dquarkus.log.level=INFO"
+mvn quarkus:dev "-Dquarkus.args=export-secrets -s http://localhost:8080 -u keycloak -p root -r eam -c ../keycloak-configuration-eam/secret-templates -o out" "-Dquarkus.log.level=INFO"
 ```
