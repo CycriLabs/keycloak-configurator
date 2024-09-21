@@ -2,7 +2,6 @@ package com.cycrilabs.keycloak.configurator.commands.secrets.boundary;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,14 +13,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.runtime.parser.ParseException;
+import org.eclipse.microprofile.config.Config;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
 
@@ -40,18 +40,26 @@ public class ExportSecrets {
     private static final String VARIABLE_CLIENT = "client";
     private static final String VARIABLE_SECRET = "secret";
     private static final String VARIABLE_CLIENTS = "clients";
+    private static final String VARIABLE_ENVIRONMENT = "env";
 
-    @Inject
+    private static final String ENV_VAR_PREFIX = "kcc";
+
     ExportSecretsCommandConfiguration configuration;
     Keycloak keycloak;
+    Config config;
 
-    @PostConstruct
-    public void init() {
-        keycloak = KeycloakFactory.create(configuration);
+    @Inject
+    public ExportSecrets(final ExportSecretsCommandConfiguration configuration,
+            final Config config) {
+        this.configuration = configuration;
+        this.config = config;
+
+        this.keycloak = KeycloakFactory.create(configuration);
     }
 
-    public void export() throws IOException, ParseException, URISyntaxException {
+    public void export() throws IOException, ParseException {
         final Collection<Template> templates = VelocityUtils.loadTemplates(loadTemplateFiles());
+        final Map<String, String> environmentVariables = loadEnvironmentVariables();
         final Map<String, ClientRepresentation> clients = loadClients();
         final Collection<ClientRepresentation> filteredClients = getFilteredClients(clients);
         for (final ClientRepresentation client : filteredClients) {
@@ -63,13 +71,20 @@ public class ExportSecrets {
             final Collection<Template> clientTemplates = deriveClientTemplates(client, templates);
             for (final Template template : clientTemplates) {
                 Log.infof("Generating secret file(s) for client '%s'.", client.getClientId());
-                writeFiles(client, clients, template);
+                writeFiles(client, environmentVariables, clients, template);
             }
         }
     }
 
     private Collection<File> loadTemplateFiles() {
         return FileUtils.listFiles(new File(configuration.getConfigDirectory()), null, true);
+    }
+
+    private Map<String, String> loadEnvironmentVariables() {
+        return StreamSupport.stream(config.getPropertyNames().spliterator(), false)
+                .filter(name -> name.toLowerCase().startsWith(ENV_VAR_PREFIX))
+                .map(name -> Map.entry(name, config.getValue(name, String.class)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private Map<String, ClientRepresentation> loadClients() {
@@ -127,8 +142,10 @@ public class ExportSecrets {
     }
 
     private void writeFiles(final ClientRepresentation client,
+            final Map<String, String> environmentVariables,
             final Map<String, ClientRepresentation> clients, final Template template) {
-        final String fileContent = generateFileContent(client, clients, template);
+        final String fileContent =
+                generateFileContent(client, environmentVariables, clients, template);
         final Path targetFile = getTargetFile(client.getClientId(), template.getName());
         try {
             Files.writeString(targetFile, fileContent, StandardCharsets.UTF_8);
@@ -138,6 +155,7 @@ public class ExportSecrets {
     }
 
     private String generateFileContent(final ClientRepresentation client,
+            final Map<String, String> environmentVariables,
             final Map<String, ClientRepresentation> clients, final Template template) {
         return VelocityUtils.mergeTemplate(template, VelocityUtils.createVelocityContext(
                 Map.ofEntries(
@@ -146,7 +164,8 @@ public class ExportSecrets {
                         Map.entry(VARIABLE_CLIENT_ID, client.getClientId()),
                         Map.entry(VARIABLE_CLIENT, client),
                         Map.entry(VARIABLE_SECRET, client.getSecret()),
-                        Map.entry(VARIABLE_CLIENTS, clients)
+                        Map.entry(VARIABLE_CLIENTS, clients),
+                        Map.entry(VARIABLE_ENVIRONMENT, environmentVariables)
                 )
         ));
     }
