@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.1...1.4.2) (2024-10-10)
+
+
+### Bug Fixes
+
+* compare env var with boolean 'strings' ([9a531b3](https://github.com/CycriLabs/keycloak-configurator/commit/9a531b3f3590278aee6a5531314e9c30baf76877))
+
 ## [1.4.1](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.0...1.4.1) (2024-10-10)
 
 
