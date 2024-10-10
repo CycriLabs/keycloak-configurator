@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.0...1.4.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* disable native image build & artifacts creation ([69daf52](https://github.com/CycriLabs/keycloak-configurator/commit/69daf52f8213b45b24d950d5831128258fd6dcfb))
+
 # [1.4.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.3.1...1.4.0) (2024-07-30)
 
 
