@@ -101,8 +101,8 @@ jobs:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
 
-      - name: Deploy project & image
-        if: ${{ env.build-native-image == true }}
+      - name: Deploy project & native image
+        if: ${{ env.build-native-image == 'true' }}
         run: >
           mvn -B package -Pgithub -DskipTests
           -Dquarkus.container-image.build=true
@@ -113,7 +113,7 @@ jobs:
           -Dquarkus.container-image.password=${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy project & image
-        if: ${{ env.build-native-image == false }}
+        if: ${{ env.build-native-image == 'false' }}
         run: >
           mvn -B package -Pgithub -DskipTests
           -Dquarkus.container-image.build=true
@@ -149,12 +149,12 @@ jobs:
           githubServer: false
 
       - name: Build artifacts
-        if: ${{ env.publish-artifacts == true }}
+        if: ${{ env.publish-artifacts == 'true' }}
         run: mvn -B package -DskipTests -P github,dist,native # space between -P and dist,native is important for Windows PowerShell build
 
       - name: Upload artifacts
         uses: CycriLabs/publish-assets@v1
-        if: ${{ env.publish-artifacts == true }}
+        if: ${{ env.publish-artifacts == 'true' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
