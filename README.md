@@ -1,9 +1,15 @@
 # Keycloak Configurator
 
-The Keycloak Configurator allows to set up a Keycloak instance with a set of
-realms, clients, client-roles, etc. The configuration is executed against the
+The Keycloak Configurator allows to __configure__ Keycloak based on a set of
+realms, clients, client-roles, etc. represented by JSON files (configuration-as-code).
+In addition, it allows to __export secrets__ of all clients of a given realm based
+on a set of provided secret templates.
+Furthermore, it is possible to __export the configuration__ of Keycloak back to JSON
+files.
+
+All communication happens via the
 [Keycloak REST API](https://www.keycloak.org/docs-api/22.0.1/rest-api/index.html).
-Communication is done via the
+Internally, it is done via the
 [Quarkus Keycloak Java Admin Client](https://quarkus.io/guides/security-keycloak-admin-client).
 
 ## Versions
