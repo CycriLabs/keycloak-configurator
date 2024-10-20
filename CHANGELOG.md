@@ -1,3 +1,15 @@
+# [1.5.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.2...1.5.0) (2024-10-20)
+
+
+### Features
+
+* add additional tags to container images ([#73](https://github.com/CycriLabs/keycloak-configurator/issues/73)) ([00e22c7](https://github.com/CycriLabs/keycloak-configurator/commit/00e22c7c539e7171f4b6efc415c0364cb6b1a426))
+* add support for env var usage in secret templates ([#71](https://github.com/CycriLabs/keycloak-configurator/issues/71)) ([53ab483](https://github.com/CycriLabs/keycloak-configurator/commit/53ab4832b88ff7c52952810d1328fbcc8ea2172f))
+* bump lombok to 1.18.34 ([e4af760](https://github.com/CycriLabs/keycloak-configurator/commit/e4af760f88113f62eee64bafeb4f5e75bda6ef43))
+* bump quarkus to 3.14.2 ([7c7c7c7](https://github.com/CycriLabs/keycloak-configurator/commit/7c7c7c73e743ab222dc1b0baf4ef8ce0ad87ba89))
+* bump quarkus to 3.15.1 ([9c91846](https://github.com/CycriLabs/keycloak-configurator/commit/9c918461262db29abe98a7139b94ef6376ec47e5))
+* bump quarkus-velocity to 1.4.0 ([cd90497](https://github.com/CycriLabs/keycloak-configurator/commit/cd9049753cf7bdc1527765747d36b2c3d02ba363))
+
 ## [1.4.2](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.1...1.4.2) (2024-10-10)
 
 
