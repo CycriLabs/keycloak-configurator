@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.Response;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.ErrorRepresentation;
 
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -23,7 +22,7 @@ public class ClientImporter extends AbstractImporter {
 
     @Override
     protected ClientRepresentation importFile(final Path file) {
-        final ClientRepresentation client = JsonUtil.loadEntity(file, ClientRepresentation.class);
+        final ClientRepresentation client = loadEntity(file, ClientRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
@@ -45,7 +44,7 @@ public class ClientImporter extends AbstractImporter {
         final ClientRepresentation importedClient = keycloak.realm(realmName)
                 .clients()
                 .findByClientId(client.getClientId())
-                .get(0);
+                .getFirst();
         Log.infof("Loaded client '%s' from realm '%s'.", importedClient.getClientId(),
                 realmName);
         entityStore.addClient(realmName, importedClient);

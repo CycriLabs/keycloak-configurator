@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ErrorRepresentation;
@@ -14,12 +16,12 @@ import org.keycloak.representations.idm.ErrorRepresentation;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.ConfigurationFileStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.quarkus.logging.Log;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
 
 public abstract class AbstractImporter {
     /**
@@ -68,29 +70,39 @@ public abstract class AbstractImporter {
     /**
      * Tries to extract Keycloak {@link ErrorRepresentation} from the exception.
      *
-     * @param exception the thrown exception
+     * @param exception
+     *         the thrown exception
      * @return the error representation based on the exception, or null otherwise
      */
     protected ErrorRepresentation extractError(final WebApplicationException exception) {
         return exception != null
-                ? extractError(exception.getResponse())
-                : null;
+               ? extractError(exception.getResponse())
+               : null;
     }
 
     /**
      * Extracts a Keycloak {@link ErrorRepresentation} from the given Response.
      *
-     * @param response the REST response
+     * @param response
+     *         the REST response
      * @return the error representation, or null otherwise
      */
     protected ErrorRepresentation extractError(final Response response) {
         return response != null
-                ? response.readEntity(ErrorRepresentation.class)
-                : null;
+               ? response.readEntity(ErrorRepresentation.class)
+               : null;
     }
 
     public int getPriority() {
         return getType().getPriority();
+    }
+
+    protected <T> T loadEntity(final Path filepath, final Class<T> dtoClass) {
+        return JsonUtil.loadEntity(filepath, dtoClass);
+    }
+
+    public <T> T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
+        return JsonUtil.loadEntity(filepath, dtoType);
     }
 
     public abstract EntityType getType();

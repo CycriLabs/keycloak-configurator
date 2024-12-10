@@ -12,7 +12,6 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ServiceUserRealmRoleMappingDTO;
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -67,7 +66,7 @@ public class ServiceAccountRealmRoleImporter extends AbstractImporter {
     private void importServiceUserRealmRoleMappings(final Path file, final String realmName,
             final UserRepresentation serviceUser) {
         final ServiceUserRealmRoleMappingDTO serviceUserRealmRoleMappings =
-                JsonUtil.loadEntity(file, ServiceUserRealmRoleMappingDTO.class);
+                loadEntity(file, ServiceUserRealmRoleMappingDTO.class);
         final List<String> roles = serviceUserRealmRoleMappings.getRoles();
 
         Log.debugf("Importing realm roles '%s' for service user '%s' of realm '%s'.",

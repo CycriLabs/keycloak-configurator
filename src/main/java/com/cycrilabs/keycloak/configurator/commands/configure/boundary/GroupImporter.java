@@ -3,17 +3,16 @@ package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import io.quarkus.runtime.util.StringUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.GroupRepresentation;
 
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
+import io.quarkus.runtime.util.StringUtil;
 
 @ApplicationScoped
 public class GroupImporter extends AbstractImporter {
@@ -24,7 +23,7 @@ public class GroupImporter extends AbstractImporter {
 
     @Override
     protected Object importFile(final Path file) {
-        final GroupRepresentation group = JsonUtil.loadEntity(file, GroupRepresentation.class);
+        final GroupRepresentation group = loadEntity(file, GroupRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
@@ -56,11 +55,14 @@ public class GroupImporter extends AbstractImporter {
     }
 
     /**
-     * This implements a naive approach of creating the group hierarchy for the given set of group configurations.
-     * It assumes that the groups are imported in the correct order in regard to their hierarchy and the hierarchy
+     * This implements a naive approach of creating the group hierarchy for the given set of group
+     * configurations.
+     * It assumes that the groups are imported in the correct order in regard to their hierarchy and
+     * the hierarchy
      * is linear as well.
      */
-    private void applyGroupHierarchy(final String realmName, final String path, final GroupRepresentation group) {
+    private void applyGroupHierarchy(final String realmName, final String path,
+            final GroupRepresentation group) {
         if (StringUtil.isNullOrEmpty(path)) {
             return;
         }
@@ -80,7 +82,8 @@ public class GroupImporter extends AbstractImporter {
                         .groups()
                         .group(parentGroup.getId())
                         .subGroup(group)) {
-                    Log.infof("Adding group '%s' as child to '%s'.", group.getName(), parentGroup.getName());
+                    Log.infof("Adding group '%s' as child to '%s'.", group.getName(),
+                            parentGroup.getName());
                 }
             }
         }

@@ -13,7 +13,6 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ServiceUserClientRoleMappingDTO;
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -69,7 +68,7 @@ public class ServiceAccountClientRoleImporter extends AbstractImporter {
     private void importServiceUserClientRoleMappings(final Path file, final String realmName,
             final UserRepresentation serviceUser) {
         final List<ServiceUserClientRoleMappingDTO> serviceUserClientRoleMappings =
-                JsonUtil.loadEntity(file, new TypeReference<>() {
+                loadEntity(file, new TypeReference<>() {
                 });
         for (final ServiceUserClientRoleMappingDTO mapping : serviceUserClientRoleMappings) {
             final String clientName = mapping.getClient();

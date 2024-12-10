@@ -8,7 +8,6 @@ import jakarta.ws.rs.ClientErrorException;
 import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -22,7 +21,7 @@ public class RealmRoleImporter extends AbstractImporter {
 
     @Override
     protected Object importFile(final Path file) {
-        final RoleRepresentation role = JsonUtil.loadEntity(file, RoleRepresentation.class);
+        final RoleRepresentation role = loadEntity(file, RoleRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
@@ -35,9 +34,10 @@ public class RealmRoleImporter extends AbstractImporter {
         } catch (final ClientErrorException e) {
             final ErrorRepresentation error = extractError(e);
             final String message = error != null
-                    ? error.getErrorMessage()
-                    : e.getMessage();
-            Log.errorf("Could not import '%s' realm role for realm '%s': %s", role.getName(), realmName, message);
+                                   ? error.getErrorMessage()
+                                   : e.getMessage();
+            Log.errorf("Could not import '%s' realm role for realm '%s': %s", role.getName(),
+                    realmName, message);
         }
 
         try {
@@ -49,7 +49,8 @@ public class RealmRoleImporter extends AbstractImporter {
                     realmName);
             return importedRole;
         } catch (final ClientErrorException e) {
-            Log.errorf("Could not load imported realm role '%s' from realm '%s': %s", role.getName(),
+            Log.errorf("Could not load imported realm role '%s' from realm '%s': %s",
+                    role.getName(),
                     realmName, e.getMessage());
             return null;
         }
