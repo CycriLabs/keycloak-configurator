@@ -1,8 +1,10 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import jakarta.annotation.PostConstruct;
@@ -10,14 +12,18 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
+import org.apache.velocity.Template;
+import org.apache.velocity.runtime.parser.ParseException;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ErrorRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.control.ConfigurationFileStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.shared.control.EnvironmentVariableProvider;
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
+import com.cycrilabs.keycloak.configurator.shared.control.VelocityUtils;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import com.fasterxml.jackson.core.type.TypeReference;
 
@@ -31,18 +37,24 @@ public abstract class AbstractImporter {
     public static final String PATH_SEPARATOR =
             Pattern.quote(FileSystems.getDefault().getSeparator());
 
+    private static final String VARIABLE_ENVIRONMENT = "env";
+
     @Inject
     protected ConfigureCommandConfiguration configuration;
     @Inject
     protected ConfigurationFileStore configurationFileStore;
     @Inject
     protected EntityStore entityStore;
+    @Inject
+    protected EnvironmentVariableProvider environmentVariableProvider;
 
     protected Keycloak keycloak;
+    private Map<String, String> environmentVariables;
 
     @PostConstruct
     public void init() {
         keycloak = KeycloakFactory.create(configuration);
+        environmentVariables = environmentVariableProvider.load();
     }
 
     public void runImport() {
@@ -98,11 +110,23 @@ public abstract class AbstractImporter {
     }
 
     protected <T> T loadEntity(final Path filepath, final Class<T> dtoClass) {
-        return JsonUtil.loadEntity(filepath, dtoClass);
+        final String content = loadContent(filepath);
+        return JsonUtil.fromJson(content, dtoClass);
     }
 
-    public <T> T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
-        return JsonUtil.loadEntity(filepath, dtoType);
+    protected <T> T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
+        final String content = loadContent(filepath);
+        return JsonUtil.fromJson(content, dtoType);
+    }
+
+    private String loadContent(final Path filepath) {
+        try {
+            final Template template = VelocityUtils.loadTemplate(filepath.toFile());
+            return VelocityUtils.mergeTemplate(template,
+                    Map.ofEntries(Map.entry(VARIABLE_ENVIRONMENT, environmentVariables)));
+        } catch (final IOException | ParseException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     public abstract EntityType getType();
