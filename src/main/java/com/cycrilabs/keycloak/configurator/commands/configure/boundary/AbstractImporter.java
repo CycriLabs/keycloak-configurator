@@ -128,6 +128,10 @@ public abstract class AbstractImporter {
                : null;
     }
 
+    protected boolean isConflict(final Response response) {
+        return response != null && response.getStatus() == Response.Status.CONFLICT.getStatusCode();
+    }
+
     public int getPriority() {
         return getType().getPriority();
     }

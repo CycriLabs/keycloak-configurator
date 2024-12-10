@@ -3,6 +3,7 @@ package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 import java.nio.file.Path;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.ClientErrorException;
 
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -36,10 +37,15 @@ public class ClientRoleImporter extends AbstractImporter {
                     .create(role);
             Log.infof("Client role '%s' imported for client '%s' of realm '%s'.", role.getName(),
                     clientId, realmName);
-        } catch (final Exception e) {
-            setStatus(ImporterStatus.FAILURE);
-            Log.errorf("Could not import client role for client '%s' of realm '%s': %s", clientId,
-                    realmName, e.getMessage());
+        } catch (final ClientErrorException e) {
+            if (isConflict(e.getResponse())) {
+                Log.infof("Could not import client role for client '%s' of realm '%s': %s",
+                        clientId, realmName, extractError(e).getErrorMessage());
+            } else {
+                setStatus(ImporterStatus.FAILURE);
+                Log.errorf("Could not import client role for client '%s' of realm '%s': %s",
+                        clientId, realmName, e.getMessage());
+            }
         }
 
         return keycloak.realm(realmName)

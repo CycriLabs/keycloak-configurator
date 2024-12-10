@@ -46,8 +46,8 @@ public class ComponentImporter extends AbstractImporter {
         try (final Response response = keycloak.realm(realmName)
                 .components()
                 .add(component)) {
-            if (response.getStatus() == 409) {
-                Log.errorf("Could not import component from file for realm '%s': %s", realmName,
+            if (isConflict(response)) {
+                Log.infof("Could not import component from file for realm '%s': %s", realmName,
                         extractError(response).getErrorMessage());
             } else {
                 Log.infof("Component '%s' imported for realm '%s'.", component.getName(),

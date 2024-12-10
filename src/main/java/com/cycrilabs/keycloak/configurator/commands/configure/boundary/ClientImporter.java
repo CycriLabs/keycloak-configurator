@@ -7,7 +7,6 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.ClientRepresentation;
-import org.keycloak.representations.idm.ErrorRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
@@ -31,10 +30,9 @@ public class ClientImporter extends AbstractImporter {
         try (final Response response = keycloak.realm(realmName)
                 .clients()
                 .create(client)) {
-            if (response.getStatus() == 409) {
-                Log.errorf("Could not import client for realm '%s': %s", realmName,
-                        response.readEntity(ErrorRepresentation.class)
-                                .getErrorMessage());
+            if (isConflict(response)) {
+                Log.infof("Could not import client for realm '%s': %s", realmName,
+                        extractError(response).getErrorMessage());
             } else {
                 Log.infof("Client '%s' imported for realm '%s'.", client.getClientId(), realmName);
             }

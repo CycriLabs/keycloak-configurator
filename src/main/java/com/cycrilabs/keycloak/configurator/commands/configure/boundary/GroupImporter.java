@@ -32,8 +32,8 @@ public class GroupImporter extends AbstractImporter {
         try (final Response response = keycloak.realm(realmName)
                 .groups()
                 .add(group)) {
-            if (response.getStatus() == 409) {
-                Log.errorf("Could not import group for realm '%s': %s", realmName,
+            if (isConflict(response)) {
+                Log.infof("Could not import group for realm '%s': %s", realmName,
                         extractError(response).getErrorMessage());
             } else {
                 Log.infof("Group '%s' imported for realm '%s'.", group.getName(), realmName);

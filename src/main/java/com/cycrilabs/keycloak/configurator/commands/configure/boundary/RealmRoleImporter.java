@@ -33,13 +33,18 @@ public class RealmRoleImporter extends AbstractImporter {
                     .create(role);
             Log.infof("Realm role '%s' imported for realm '%s'.", role.getName(), realmName);
         } catch (final ClientErrorException e) {
-            setStatus(ImporterStatus.FAILURE);
-            final ErrorRepresentation error = extractError(e);
-            final String message = error != null
-                                   ? error.getErrorMessage()
-                                   : e.getMessage();
-            Log.errorf("Could not import '%s' realm role for realm '%s': %s", role.getName(),
-                    realmName, message);
+            if (isConflict(e.getResponse())) {
+                Log.infof("Could not import '%s' realm role for realm '%s': %s", role.getName(),
+                        realmName, extractError(e).getErrorMessage());
+            } else {
+                setStatus(ImporterStatus.FAILURE);
+                final ErrorRepresentation error = extractError(e);
+                final String message = error != null
+                                       ? error.getErrorMessage()
+                                       : e.getMessage();
+                Log.errorf("Could not import '%s' realm role for realm '%s': %s", role.getName(),
+                        realmName, message);
+            }
         }
 
         try {

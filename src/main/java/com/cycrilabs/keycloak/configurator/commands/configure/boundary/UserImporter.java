@@ -37,8 +37,8 @@ public class UserImporter extends AbstractImporter {
         try (final Response response = keycloak.realm(realmName)
                 .users()
                 .create(user)) {
-            if (response.getStatus() == 409) {
-                Log.errorf("Could not import user from file for realm '%s': %s", realmName,
+            if (isConflict(response)) {
+                Log.infof("Could not import user from file for realm '%s': %s", realmName,
                         response.readEntity(ErrorRepresentation.class)
                                 .getErrorMessage());
             } else {
