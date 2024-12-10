@@ -12,6 +12,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.runtime.parser.ParseException;
 import org.keycloak.admin.client.Keycloak;
@@ -19,7 +22,9 @@ import org.keycloak.representations.idm.ErrorRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.control.ConfigurationFileStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationException;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.control.EnvironmentVariableProvider;
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
@@ -50,6 +55,9 @@ public abstract class AbstractImporter {
 
     protected Keycloak keycloak;
     private Map<String, String> environmentVariables;
+    @Getter
+    @Setter
+    private ImporterStatus status = ImporterStatus.NOT_STARTED;
 
     @PostConstruct
     public void init() {
@@ -57,7 +65,9 @@ public abstract class AbstractImporter {
         environmentVariables = environmentVariableProvider.load();
     }
 
-    public void runImport() {
+    public void runImport() throws ConfigurationException {
+        setStatus(ImporterStatus.STARTED);
+
         if (configuration.getEntityType() != null && configuration.getEntityType() != getType()) {
             Log.infof("Skipping importer '%s' for entity type '%s'.", getClass().getSimpleName(),
                     configuration.getEntityType());
@@ -66,9 +76,22 @@ public abstract class AbstractImporter {
 
         Log.infof("Executing importer '%s'.", getClass().getSimpleName());
         for (final Path importFile : getImportFiles()) {
-            Log.debugf("Importing file '%s'.", importFile);
-            importFile(importFile);
+            try {
+                Log.debugf("Importing file '%s'.", importFile);
+                importFile(importFile);
+
+                if (getStatus() == ImporterStatus.FAILURE && configuration.isExitOnError()) {
+                    throw new ConfigurationException(
+                            "Importer '%s' failed.".formatted(getClass().getSimpleName()));
+                }
+            } catch (final Exception e) {
+                if (configuration.isExitOnError()) {
+                    throw e;
+                }
+            }
         }
+
+        setStatus(ImporterStatus.FINISHED);
     }
 
     private List<Path> getImportFiles() {

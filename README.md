@@ -81,6 +81,7 @@ sub-command:
 | `-p`, `--password`    | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.               |
 | `-c`, `--config`      | yes      | The path to the directory containing the configuration files.                                     |
 | `-t`, `--entity-type` | no       | Allows to import only on specific entity type. Requires all prerequisites to be imported already. |
+| `--exit-on-error`     | no       | Exits the application directly when a configuration command occurs.                               |
 
 The following table lists all supported entity types and the corresponding directory
 identifier to identifier configuration source directories:

@@ -16,6 +16,9 @@ public class ConfigureCommand implements Runnable {
     @CommandLine.Option(names = { "-t", "--entity-type" },
             description = "Entity type to configure. If not provided, all entities are configured.")
     String entityType;
+    @CommandLine.Option(names = { "--exit-on-error"},
+            description = "Exit the application if an error occurs during configuration.")
+    boolean exitOnError;
 
     @Inject
     ConfigurationFileStore configurationFileStore;

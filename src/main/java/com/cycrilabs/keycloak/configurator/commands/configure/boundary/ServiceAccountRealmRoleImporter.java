@@ -11,6 +11,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ServiceUserRealmRoleMappingDTO;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
@@ -57,6 +58,7 @@ public class ServiceAccountRealmRoleImporter extends AbstractImporter {
             Log.warnf("Found %d users '%s' of realm '%s'. Skipping import.",
                     Integer.valueOf(userRepresentations.size()), username, realmName);
         } catch (final Exception e) {
+            setStatus(ImporterStatus.FAILURE);
             Log.errorf("Could not find user '%s' of realm '%s': %s", username, realmName,
                     e.getMessage());
         }

@@ -15,6 +15,7 @@ import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -44,6 +45,7 @@ public class UserImporter extends AbstractImporter {
                 Log.infof("User '%s' imported for realm '%s'.", user.getEmail(), realmName);
             }
         } catch (final ClientErrorException e) {
+            setStatus(ImporterStatus.FAILURE);
             Log.errorf("Could not import user from file for realm '%s': %s", realmName,
                     e.getMessage());
             return null;

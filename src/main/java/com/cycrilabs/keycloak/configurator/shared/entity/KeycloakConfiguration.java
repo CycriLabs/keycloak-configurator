@@ -20,7 +20,7 @@ public abstract class KeycloakConfiguration {
         password = getMatchedOption(parseResult, "-p");
     }
 
-    protected String getMatchedOption(final ParseResult parseResult, final String name) {
+    protected <T> T getMatchedOption(final ParseResult parseResult, final String name) {
         return parseResult.subcommand().commandSpec().optionsMap().get(name).getValue();
     }
 }

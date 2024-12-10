@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.ComponentRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -31,6 +32,7 @@ public class ComponentImporter extends AbstractImporter {
             final ComponentRepresentation parent =
                     findComponentByName(realmName, component.getParentId());
             if (parent == null) {
+                setStatus(ImporterStatus.FAILURE);
                 Log.errorf(
                         "Could not import component from file '%s' for realm '%s' because of missing parent '%s'.",
                         file, realmName, component.getParentId());
@@ -52,6 +54,7 @@ public class ComponentImporter extends AbstractImporter {
                         realmName);
             }
         } catch (final ClientErrorException e) {
+            setStatus(ImporterStatus.FAILURE);
             Log.errorf("Could not import component from file for realm '%s': %s", realmName,
                     e.getMessage());
             return null;
