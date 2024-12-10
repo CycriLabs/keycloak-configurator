@@ -76,6 +76,25 @@ public class JsonUtil {
     }
 
     /**
+     * Converts the given JSON string to an object of the given class.
+     *
+     * @param content
+     *         JSON string
+     * @param dtoType
+     *         type of the object to convert to
+     * @param <T>
+     *         type of the object to convert to
+     * @return object of the given class
+     */
+    public static <T> T fromJson(final String content, final TypeReference<T> dtoType) {
+        try {
+            return OBJECT_MAPPER.readValue(content, dtoType);
+        } catch (final JsonProcessingException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    /**
      * Loads an entity from the given file path. The file is expected to be a JSON file.
      * The JSON is converted to an object of the given type.
      *
@@ -88,12 +107,8 @@ public class JsonUtil {
      * @return object of the given type
      */
     public static <T> T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
-        try {
-            final String json = loadJsonFromPath(filepath);
-            return OBJECT_MAPPER.readValue(json, dtoType);
-        } catch (final JsonProcessingException e) {
-            throw new IllegalStateException(e);
-        }
+        final String json = loadJsonFromPath(filepath);
+        return fromJson(json, dtoType);
     }
 
     /**

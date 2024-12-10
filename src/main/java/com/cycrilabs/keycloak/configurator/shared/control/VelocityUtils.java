@@ -47,6 +47,10 @@ public class VelocityUtils {
         return template;
     }
 
+    public static String mergeTemplate(final Template template, final Map<String, Object> data) {
+        return VelocityUtils.mergeTemplate(template, VelocityUtils.createVelocityContext(data));
+    }
+
     public static VelocityContext createVelocityContext(final Map<String, Object> data) {
         return data.entrySet()
                 .stream()

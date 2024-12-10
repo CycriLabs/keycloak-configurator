@@ -99,6 +99,23 @@ identifier to identifier configuration source directories:
 
 Entities are imported as listed in the table above.
 
+The `configure`-command allows expanding a given set of variables. The following set
+of variables is supported:
+
+| Variable | Description                                                                                                                                        |
+|----------|----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `env`    | A map of environment variables that start with the prefix `kcc`. The key of the map is the environment variable name based on Microprofile schema. |
+
+To access environment variables, they must be prefixed with `kcc`. For example, to access
+the environment variable `KCC_LDAP_BIND_PW=password`, the following can be used:
+
+```json
+{
+    "type": "password",
+    "value": "$env.KCC_LDAP_BIND_PW"
+}
+```
+
 ### Sub-Command `export-secrets`
 
 The `export-secrets` sub-command allows to export secrets of all clients of the
