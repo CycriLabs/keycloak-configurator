@@ -15,7 +15,6 @@ import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -29,7 +28,7 @@ public class UserImporter extends AbstractImporter {
 
     @Override
     protected Object importFile(final Path file) {
-        final UserRepresentation user = JsonUtil.loadEntity(file, UserRepresentation.class);
+        final UserRepresentation user = loadEntity(file, UserRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];

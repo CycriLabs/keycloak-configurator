@@ -7,7 +7,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -21,7 +20,7 @@ public class ClientRoleImporter extends AbstractImporter {
 
     @Override
     protected RoleRepresentation importFile(final Path file) {
-        final RoleRepresentation role = JsonUtil.loadEntity(file, RoleRepresentation.class);
+        final RoleRepresentation role = loadEntity(file, RoleRepresentation.class);
 
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 4];
