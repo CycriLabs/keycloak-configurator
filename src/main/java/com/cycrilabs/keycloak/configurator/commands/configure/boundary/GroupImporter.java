@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.GroupRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -38,6 +39,7 @@ public class GroupImporter extends AbstractImporter {
                 Log.infof("Group '%s' imported for realm '%s'.", group.getName(), realmName);
             }
         } catch (final ClientErrorException e) {
+            setStatus(ImporterStatus.FAILURE);
             Log.errorf("Could not import group for realm '%s': %s", realmName, e.getMessage());
             return null;
         }

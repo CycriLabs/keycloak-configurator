@@ -8,6 +8,7 @@ import jakarta.ws.rs.ClientErrorException;
 import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -32,6 +33,7 @@ public class RealmRoleImporter extends AbstractImporter {
                     .create(role);
             Log.infof("Realm role '%s' imported for realm '%s'.", role.getName(), realmName);
         } catch (final ClientErrorException e) {
+            setStatus(ImporterStatus.FAILURE);
             final ErrorRepresentation error = extractError(e);
             final String message = error != null
                                    ? error.getErrorMessage()

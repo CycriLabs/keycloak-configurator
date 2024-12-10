@@ -7,6 +7,7 @@ import jakarta.ws.rs.ClientErrorException;
 
 import org.keycloak.representations.idm.RealmRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -27,6 +28,7 @@ public class RealmImporter extends AbstractImporter {
                     .create(realm);
             Log.infof("Realm '%s' imported.", realm.getRealm());
         } catch (final ClientErrorException e) {
+            setStatus(ImporterStatus.FAILURE);
             Log.errorf("Could not import realm from file: %s", e.getMessage());
         }
 

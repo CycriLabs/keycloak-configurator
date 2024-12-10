@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -36,6 +37,7 @@ public class ClientRoleImporter extends AbstractImporter {
             Log.infof("Client role '%s' imported for client '%s' of realm '%s'.", role.getName(),
                     clientId, realmName);
         } catch (final Exception e) {
+            setStatus(ImporterStatus.FAILURE);
             Log.errorf("Could not import client role for client '%s' of realm '%s': %s", clientId,
                     realmName, e.getMessage());
         }
