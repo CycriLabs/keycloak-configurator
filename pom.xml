@@ -40,8 +40,8 @@
         <!-- /Extension versions -->
 
         <!-- Plugin versions -->
-        <compiler-plugin.version>3.11.0</compiler-plugin.version>
-        <surefire-plugin.version>3.0.0</surefire-plugin.version>
+        <compiler-plugin.version>3.13.0</compiler-plugin.version>
+        <surefire-plugin.version>3.5.0</surefire-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
         <!-- /Plugin versions -->
 
