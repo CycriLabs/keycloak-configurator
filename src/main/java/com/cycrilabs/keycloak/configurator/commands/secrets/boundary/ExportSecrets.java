@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -26,6 +25,7 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.secrets.entity.ExportSecretsCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.shared.control.EnvironmentVariableProvider;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 import com.cycrilabs.keycloak.configurator.shared.control.StringUtil;
 import com.cycrilabs.keycloak.configurator.shared.control.VelocityUtils;
@@ -42,16 +42,17 @@ public class ExportSecrets {
     private static final String VARIABLE_CLIENTS = "clients";
     private static final String VARIABLE_ENVIRONMENT = "env";
 
-    private static final String ENV_VAR_PREFIX = "kcc";
-
     ExportSecretsCommandConfiguration configuration;
+    EnvironmentVariableProvider environmentVariableProvider;
     Keycloak keycloak;
     Config config;
 
     @Inject
     public ExportSecrets(final ExportSecretsCommandConfiguration configuration,
+            final EnvironmentVariableProvider environmentVariableProvider,
             final Config config) {
         this.configuration = configuration;
+        this.environmentVariableProvider = environmentVariableProvider;
         this.config = config;
 
         this.keycloak = KeycloakFactory.create(configuration);
@@ -59,7 +60,7 @@ public class ExportSecrets {
 
     public void export() throws IOException, ParseException {
         final Collection<Template> templates = VelocityUtils.loadTemplates(loadTemplateFiles());
-        final Map<String, String> environmentVariables = loadEnvironmentVariables();
+        final Map<String, String> environmentVariables = environmentVariableProvider.load();
         final Map<String, ClientRepresentation> clients = loadClients();
         final Collection<ClientRepresentation> filteredClients = getFilteredClients(clients);
         for (final ClientRepresentation client : filteredClients) {
@@ -78,13 +79,6 @@ public class ExportSecrets {
 
     private Collection<File> loadTemplateFiles() {
         return FileUtils.listFiles(new File(configuration.getConfigDirectory()), null, true);
-    }
-
-    private Map<String, String> loadEnvironmentVariables() {
-        return StreamSupport.stream(config.getPropertyNames().spliterator(), false)
-                .filter(name -> name.toLowerCase().startsWith(ENV_VAR_PREFIX))
-                .map(name -> Map.entry(name, config.getValue(name, String.class)))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private Map<String, ClientRepresentation> loadClients() {
