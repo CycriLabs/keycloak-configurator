@@ -30,8 +30,8 @@
         <maven.compiler.target>21</maven.compiler.target>
 
         <!-- Dependency versions -->
-        <quarkus.platform.version>3.17.3</quarkus.platform.version>
-        <quarkus.velocity.version>1.7.0</quarkus.velocity.version>
+        <quarkus.platform.version>3.18.1</quarkus.platform.version>
+        <quarkus.velocity.version>1.8.0</quarkus.velocity.version>
         <lombok.version>1.18.36</lombok.version>
         <!-- /Dependency versions -->
 
