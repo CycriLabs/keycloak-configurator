@@ -1,3 +1,25 @@
+# [2.0.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.5.0...2.0.0) (2025-02-28)
+
+
+### Features
+
+* add exit-on-error cli param to fail configure command fast on erros ([#69](https://github.com/CycriLabs/keycloak-configurator/issues/69)) ([069662f](https://github.com/CycriLabs/keycloak-configurator/commit/069662f1351313583c3a96f943629553d7502ed8))
+* add variable replacement support to configure command ([#74](https://github.com/CycriLabs/keycloak-configurator/issues/74)) ([04c8b94](https://github.com/CycriLabs/keycloak-configurator/commit/04c8b94f7d20d6403cb9b14581f3fddc04778f10))
+* bump lombok to 1.18.36 ([df4e3e5](https://github.com/CycriLabs/keycloak-configurator/commit/df4e3e58fb12a8da2d04745798aca8dffb64e746))
+* bump quarkus to 3.16.1 ([1cd2b68](https://github.com/CycriLabs/keycloak-configurator/commit/1cd2b68373d9eb80add13858951accbfc64d798f))
+* bump quarkus to 3.17.3 & bump quarkus-velocity to 1.7.0 ([ca38117](https://github.com/CycriLabs/keycloak-configurator/commit/ca38117f711c1125058b3ecc7d02d7d9b3a72c00))
+* bump quarkus to 3.18.1/quarkus-velocity to 1.8.0 ([c3d1001](https://github.com/CycriLabs/keycloak-configurator/commit/c3d1001fdc10eba22e1991ba276e96565ae27046))
+* bump quarkus to 3.19.1 ([30b0ce3](https://github.com/CycriLabs/keycloak-configurator/commit/30b0ce312fca98d44ebfa6bbd8f1e97df2563feb))
+* bump quarkus-velocity to 1.6.0 ([e9c6b9c](https://github.com/CycriLabs/keycloak-configurator/commit/e9c6b9c35aa798831149043ebd7a73944bf8751e))
+* bump quarkus-velocity to 1.9.0 ([973e24e](https://github.com/CycriLabs/keycloak-configurator/commit/973e24edd20ed300a88586951a450a4c158d0e87))
+* improve duplicate entity error checking & change log from error to warn ([8b63a73](https://github.com/CycriLabs/keycloak-configurator/commit/8b63a73d00a37a31b6cd0817a703050458f21c24))
+
+
+### BREAKING CHANGES
+
+* the configure command only exits on errors now if
+`--exit-on-error` param is provided
+
 # [1.5.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.2...1.5.0) (2024-10-20)
 
 
