@@ -22,8 +22,8 @@ services:
       database:
         condition: service_healthy
     environment:
-      KEYCLOAK_ADMIN: ${KC_USER:-keycloak}
-      KEYCLOAK_ADMIN_PASSWORD: ${KC_PASSWORD:-root}
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_USER:-keycloak}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_PASSWORD:-root}
       KC_DB_URL: ${KC_DB_URL:-jdbc:postgresql://database/keycloak}
       KC_DB_SCHEMA: keycloak
       KC_DB_USERNAME: ${KC_DB_USERNAME:-keycloak}
