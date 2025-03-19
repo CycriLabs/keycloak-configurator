@@ -9,7 +9,7 @@ import io.quarkus.picocli.runtime.annotations.TopCommand;
 import picocli.CommandLine;
 
 @TopCommand
-@CommandLine.Command(mixinStandardHelpOptions = true, version = "0.1.0",
+@CommandLine.Command(mixinStandardHelpOptions = true, versionProvider = VersionProvider.class,
         subcommands = { ConfigureCommand.class, ExportEntitiesCommand.class,
                 ExportSecretsCommand.class, GenerateSecretsCommand.class })
 public class EntryCommand {
