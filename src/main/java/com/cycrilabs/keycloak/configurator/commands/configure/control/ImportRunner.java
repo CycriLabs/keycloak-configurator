@@ -16,25 +16,29 @@ import io.quarkus.logging.Log;
 @ApplicationScoped
 public class ImportRunner {
     private final ConfigureCommandConfiguration configuration;
-    private final Instance<AbstractImporter> importers;
+    private final Instance<AbstractImporter<?>> importers;
 
     @Inject
     public ImportRunner(
             final ConfigureCommandConfiguration configuration,
-            final Instance<AbstractImporter> importers
+            final Instance<AbstractImporter<?>> importers
     ) {
         this.configuration = configuration;
         this.importers = importers;
     }
 
     public void run() {
+        if (configuration.isDryRun()) {
+            Log.info("Running in dry-run mode. No changes will be made.");
+        }
+
         try {
             Log.infof("Running importers for server %s with configuration %s.",
                     configuration.getServer(), configuration.getConfigDirectory());
-            final List<AbstractImporter> sortedImporters = importers.stream()
+            final List<AbstractImporter<?>> sortedImporters = importers.stream()
                     .sorted(Comparator.comparingInt(AbstractImporter::getPriority))
                     .toList();
-            for (final AbstractImporter importer : sortedImporters) {
+            for (final AbstractImporter<?> importer : sortedImporters) {
                 importer.runImport();
             }
         } catch (final ConfigurationException e) {

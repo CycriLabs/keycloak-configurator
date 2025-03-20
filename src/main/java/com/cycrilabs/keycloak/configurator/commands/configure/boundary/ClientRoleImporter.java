@@ -14,16 +14,23 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
-public class ClientRoleImporter extends AbstractImporter {
+public class ClientRoleImporter extends AbstractImporter<RoleRepresentation> {
     @Override
     public EntityType getType() {
         return EntityType.CLIENT_ROLE;
     }
 
     @Override
-    protected RoleRepresentation importFile(final Path file) {
-        final RoleRepresentation role = loadEntity(file, RoleRepresentation.class);
+    protected RoleRepresentation loadEntity(final Path file) {
+        final RoleRepresentation entity = loadEntity(file, RoleRepresentation.class);
+        if (configuration.isDryRun()) {
+            Log.infof("Loaded client role '%s' from file '%s'.", entity.getName(), file);
+        }
+        return entity;
+    }
 
+    @Override
+    protected RoleRepresentation executeImport(final Path file, final RoleRepresentation role) {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 4];
         final String clientId = fileNameParts[fileNameParts.length - 2];
