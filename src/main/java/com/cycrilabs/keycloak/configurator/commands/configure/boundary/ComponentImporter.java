@@ -15,16 +15,24 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
-public class ComponentImporter extends AbstractImporter {
+public class ComponentImporter extends AbstractImporter<ComponentRepresentation> {
     @Override
     public EntityType getType() {
         return EntityType.COMPONENT;
     }
 
     @Override
-    protected Object importFile(final Path file) {
-        final ComponentRepresentation component = loadEntity(file, ComponentRepresentation.class);
+    protected ComponentRepresentation loadEntity(final Path file) {
+        final ComponentRepresentation entity = loadEntity(file, ComponentRepresentation.class);
+        if (configuration.isDryRun()) {
+            Log.infof("Loaded component '%s' from file '%s'.", entity.getName(), file);
+        }
+        return entity;
+    }
 
+    @Override
+    protected ComponentRepresentation executeImport(final Path file,
+            final ComponentRepresentation component) {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
 

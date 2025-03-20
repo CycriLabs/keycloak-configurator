@@ -34,7 +34,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.quarkus.logging.Log;
 
-public abstract class AbstractImporter {
+public abstract class AbstractImporter<T> {
     /**
      * The path separator for the current operating system. This is used to split the file path into
      * its parts. This is used in a regular expression, so special characters need to be escaped.
@@ -78,7 +78,7 @@ public abstract class AbstractImporter {
         for (final Path importFile : getImportFiles()) {
             try {
                 Log.debugf("Importing file '%s'.", importFile);
-                importFile(importFile);
+                runImport(importFile);
 
                 if (getStatus() == ImporterStatus.FAILURE && configuration.isExitOnError()) {
                     throw new ConfigurationException(
@@ -92,6 +92,14 @@ public abstract class AbstractImporter {
         }
 
         setStatus(ImporterStatus.FINISHED);
+    }
+
+    private void runImport(final Path file) {
+        final T entity = loadEntity(file);
+
+        if (!configuration.isDryRun()) {
+            executeImport(file, entity);
+        }
     }
 
     private List<Path> getImportFiles() {
@@ -136,12 +144,12 @@ public abstract class AbstractImporter {
         return getType().getPriority();
     }
 
-    protected <T> T loadEntity(final Path filepath, final Class<T> dtoClass) {
+    protected T loadEntity(final Path filepath, final Class<T> dtoClass) {
         final String content = loadContent(filepath);
         return JsonUtil.fromJson(content, dtoClass);
     }
 
-    protected <T> T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
+    protected T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
         final String content = loadContent(filepath);
         return JsonUtil.fromJson(content, dtoType);
     }
@@ -158,5 +166,7 @@ public abstract class AbstractImporter {
 
     public abstract EntityType getType();
 
-    protected abstract Object importFile(final Path file);
+    protected abstract T loadEntity(final Path file);
+
+    protected abstract T executeImport(final Path file, final T entity);
 }

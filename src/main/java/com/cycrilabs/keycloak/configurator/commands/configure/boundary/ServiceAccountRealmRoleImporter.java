@@ -18,14 +18,25 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
-public class ServiceAccountRealmRoleImporter extends AbstractImporter {
+public class ServiceAccountRealmRoleImporter
+        extends AbstractImporter<ServiceUserRealmRoleMappingDTO> {
     @Override
     public EntityType getType() {
         return EntityType.SERVICE_ACCOUNT_REALM_ROLE;
     }
 
     @Override
-    protected Object importFile(final Path file) {
+    protected ServiceUserRealmRoleMappingDTO loadEntity(final Path file) {
+        final ServiceUserRealmRoleMappingDTO entity = loadEntity(file, ServiceUserRealmRoleMappingDTO.class);
+        if (configuration.isDryRun()) {
+            Log.infof("Loaded service account realm roles '%s' from file '%s'.", entity.getRoles(), file);
+        }
+        return entity;
+    }
+
+    @Override
+    protected ServiceUserRealmRoleMappingDTO executeImport(final Path file,
+            final ServiceUserRealmRoleMappingDTO serviceUserRealmRoleMappings) {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 4];
         final String serviceUsername = fileNameParts[fileNameParts.length - 2];
@@ -41,7 +52,7 @@ public class ServiceAccountRealmRoleImporter extends AbstractImporter {
 
         Log.debugf("Found service user '%s' of realm '%s'.", user.getUsername(), realmName);
 
-        importServiceUserRealmRoleMappings(file, realmName, user);
+        importServiceUserRealmRoleMappings(serviceUserRealmRoleMappings, realmName, user);
 
         return null;
     }
@@ -65,10 +76,9 @@ public class ServiceAccountRealmRoleImporter extends AbstractImporter {
         return null;
     }
 
-    private void importServiceUserRealmRoleMappings(final Path file, final String realmName,
-            final UserRepresentation serviceUser) {
-        final ServiceUserRealmRoleMappingDTO serviceUserRealmRoleMappings =
-                loadEntity(file, ServiceUserRealmRoleMappingDTO.class);
+    private void importServiceUserRealmRoleMappings(
+            final ServiceUserRealmRoleMappingDTO serviceUserRealmRoleMappings,
+            final String realmName, final UserRepresentation serviceUser) {
         final List<String> roles = serviceUserRealmRoleMappings.getRoles();
 
         Log.debugf("Importing realm roles '%s' for service user '%s' of realm '%s'.",

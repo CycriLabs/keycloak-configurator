@@ -9,6 +9,7 @@ public abstract class KeycloakConfiguration {
     private String server;
     private String username;
     private String password;
+    private boolean dryRun;
 
     protected KeycloakConfiguration() {
         // required to avoid "No default constructor for class" error
@@ -18,6 +19,7 @@ public abstract class KeycloakConfiguration {
         server = getMatchedOption(parseResult, "-s");
         username = getMatchedOption(parseResult, "-u");
         password = getMatchedOption(parseResult, "-p");
+        dryRun = this.<Boolean>getMatchedOption(parseResult, "--dry-run").booleanValue();
     }
 
     protected <T> T getMatchedOption(final ParseResult parseResult, final String name) {

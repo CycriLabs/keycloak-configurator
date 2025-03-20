@@ -16,16 +16,23 @@ import io.quarkus.logging.Log;
 import io.quarkus.runtime.util.StringUtil;
 
 @ApplicationScoped
-public class GroupImporter extends AbstractImporter {
+public class GroupImporter extends AbstractImporter<GroupRepresentation> {
     @Override
     public EntityType getType() {
         return EntityType.GROUP;
     }
 
     @Override
-    protected Object importFile(final Path file) {
-        final GroupRepresentation group = loadEntity(file, GroupRepresentation.class);
+    protected GroupRepresentation loadEntity(final Path file) {
+        final GroupRepresentation entity = loadEntity(file, GroupRepresentation.class);
+        if (configuration.isDryRun()) {
+            Log.infof("Loaded group '%s' from file '%s'.", entity.getName(), file);
+        }
+        return entity;
+    }
 
+    @Override
+    protected GroupRepresentation executeImport(final Path file, final GroupRepresentation group) {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
 

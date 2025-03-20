@@ -20,14 +20,27 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
-public class ServiceAccountClientRoleImporter extends AbstractImporter {
+public class ServiceAccountClientRoleImporter
+        extends AbstractImporter<List<ServiceUserClientRoleMappingDTO>> {
     @Override
     public EntityType getType() {
         return EntityType.SERVICE_ACCOUNT_CLIENT_ROLE;
     }
 
     @Override
-    protected Object importFile(final Path file) {
+    protected List<ServiceUserClientRoleMappingDTO> loadEntity(final Path file) {
+        final List<ServiceUserClientRoleMappingDTO> entity =
+                loadEntity(file, new TypeReference<>() {
+                });
+        if (configuration.isDryRun()) {
+            Log.infof("Loaded service account client roles from file '%s'.", file);
+        }
+        return entity;
+    }
+
+    @Override
+    protected List<ServiceUserClientRoleMappingDTO> executeImport(final Path file,
+            final List<ServiceUserClientRoleMappingDTO> serviceUserClientRoleMappings) {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 4];
         final String serviceUsername = fileNameParts[fileNameParts.length - 2];
@@ -43,7 +56,7 @@ public class ServiceAccountClientRoleImporter extends AbstractImporter {
 
         Log.debugf("Found service user '%s' of realm '%s'.", user.getUsername(), realmName);
 
-        importServiceUserClientRoleMappings(file, realmName, user);
+        importServiceUserClientRoleMappings(serviceUserClientRoleMappings, realmName, user);
 
         return null;
     }
@@ -67,11 +80,9 @@ public class ServiceAccountClientRoleImporter extends AbstractImporter {
         return null;
     }
 
-    private void importServiceUserClientRoleMappings(final Path file, final String realmName,
-            final UserRepresentation serviceUser) {
-        final List<ServiceUserClientRoleMappingDTO> serviceUserClientRoleMappings =
-                loadEntity(file, new TypeReference<>() {
-                });
+    private void importServiceUserClientRoleMappings(
+            final List<ServiceUserClientRoleMappingDTO> serviceUserClientRoleMappings,
+            final String realmName, final UserRepresentation serviceUser) {
         for (final ServiceUserClientRoleMappingDTO mapping : serviceUserClientRoleMappings) {
             final String clientName = mapping.getClient();
             final List<String> roles = mapping.getRoles();

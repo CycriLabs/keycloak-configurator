@@ -21,16 +21,23 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
-public class UserImporter extends AbstractImporter {
+public class UserImporter extends AbstractImporter<UserRepresentation> {
     @Override
     public EntityType getType() {
         return EntityType.USER;
     }
 
     @Override
-    protected Object importFile(final Path file) {
-        final UserRepresentation user = loadEntity(file, UserRepresentation.class);
+    protected UserRepresentation loadEntity(final Path file) {
+        final UserRepresentation entity = loadEntity(file, UserRepresentation.class);
+        if (configuration.isDryRun()) {
+            Log.infof("Loaded user '%s' from file '%s'.", entity.getUsername(), file);
+        }
+        return entity;
+    }
 
+    @Override
+    protected UserRepresentation executeImport(final Path file, final UserRepresentation user) {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
 

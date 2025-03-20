@@ -13,16 +13,23 @@ import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import io.quarkus.logging.Log;
 
 @ApplicationScoped
-public class RealmImporter extends AbstractImporter {
+public class RealmImporter extends AbstractImporter<RealmRepresentation> {
     @Override
     public EntityType getType() {
         return EntityType.REALM;
     }
 
     @Override
-    protected RealmRepresentation importFile(final Path file) {
-        final RealmRepresentation realm = loadEntity(file, RealmRepresentation.class);
+    protected RealmRepresentation loadEntity(final Path file) {
+        final RealmRepresentation entity = loadEntity(file, RealmRepresentation.class);
+        if (configuration.isDryRun()) {
+            Log.infof("Loaded realm '%s' from file '%s'.", entity.getRealm(), file);
+        }
+        return entity;
+    }
 
+    @Override
+    protected RealmRepresentation executeImport(final Path file, final RealmRepresentation realm) {
         try {
             keycloak.realms()
                     .create(realm);

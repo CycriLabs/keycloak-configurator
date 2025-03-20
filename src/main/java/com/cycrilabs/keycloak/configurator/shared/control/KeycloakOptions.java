@@ -15,4 +15,8 @@ public class KeycloakOptions {
             description = "Password of the admin user that is used for configuration.",
             scope = CommandLine.ScopeType.INHERIT, arity = "0..1", interactive = true)
     String password = "";
+    @CommandLine.Option(names = { "--dry-run" },
+            description = "If set, the configuration will not be applied to the server.",
+            scope = CommandLine.ScopeType.INHERIT)
+    boolean dryRun = false;
 }
