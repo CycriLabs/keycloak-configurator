@@ -1,0 +1,15 @@
+{
+    "name": "blog-administration",
+    "description": "Standard role for administrating blogs",
+    "composite": true,
+    "composites": {
+        "realm": [],
+        "client": {
+            "blog": [
+                "posts-create"
+            ]
+        }
+    },
+    "clientRole": false,
+    "attributes": {}
+}

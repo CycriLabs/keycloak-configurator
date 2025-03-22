@@ -11,12 +11,14 @@ import picocli.CommandLine.ParseResult;
 public class ConfigureCommandConfiguration extends KeycloakConfiguration {
     private final String configDirectory;
     private final EntityType entityType;
+    private final boolean flatFiles;
     private final boolean exitOnError;
 
     public ConfigureCommandConfiguration(final ParseResult parseResult) {
         super(parseResult);
         configDirectory = getMatchedOption(parseResult, "-c");
         entityType = EntityType.fromName(getMatchedOption(parseResult, "-t"));
+        flatFiles = this.<Boolean>getMatchedOption(parseResult, "--flat-files").booleanValue();
         exitOnError = this.<Boolean>getMatchedOption(parseResult, "--exit-on-error").booleanValue();
     }
 }

@@ -1,6 +1,5 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.GroupRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
@@ -23,18 +23,18 @@ public class GroupImporter extends AbstractImporter<GroupRepresentation> {
     }
 
     @Override
-    protected GroupRepresentation loadEntity(final Path file) {
+    protected GroupRepresentation loadEntity(final ConfigurationFile file) {
         final GroupRepresentation entity = loadEntity(file, GroupRepresentation.class);
         if (configuration.isDryRun()) {
-            Log.infof("Loaded group '%s' from file '%s'.", entity.getName(), file);
+            Log.infof("Loaded group '%s' from file '%s'.", entity.getName(), file.getFile());
         }
         return entity;
     }
 
     @Override
-    protected GroupRepresentation executeImport(final Path file, final GroupRepresentation group) {
-        final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
-        final String realmName = fileNameParts[fileNameParts.length - 3];
+    protected GroupRepresentation executeImport(final ConfigurationFile file,
+            final GroupRepresentation group) {
+        final String realmName = file.getRealmName();
 
         try (final Response response = keycloak.realm(realmName)
                 .groups()

@@ -1,6 +1,5 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -15,6 +14,7 @@ import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
@@ -28,18 +28,18 @@ public class UserImporter extends AbstractImporter<UserRepresentation> {
     }
 
     @Override
-    protected UserRepresentation loadEntity(final Path file) {
+    protected UserRepresentation loadEntity(final ConfigurationFile file) {
         final UserRepresentation entity = loadEntity(file, UserRepresentation.class);
         if (configuration.isDryRun()) {
-            Log.infof("Loaded user '%s' from file '%s'.", entity.getUsername(), file);
+            Log.infof("Loaded user '%s' from file '%s'.", entity.getUsername(), file.getFile());
         }
         return entity;
     }
 
     @Override
-    protected UserRepresentation executeImport(final Path file, final UserRepresentation user) {
-        final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
-        final String realmName = fileNameParts[fileNameParts.length - 3];
+    protected UserRepresentation executeImport(final ConfigurationFile file,
+            final UserRepresentation user) {
+        final String realmName = file.getRealmName();
 
         try (final Response response = keycloak.realm(realmName)
                 .users()

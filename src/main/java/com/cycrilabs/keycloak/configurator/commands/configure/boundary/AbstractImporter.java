@@ -1,11 +1,9 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
@@ -23,6 +21,7 @@ import org.keycloak.representations.idm.ErrorRepresentation;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.ConfigurationFileStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationException;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.control.EnvironmentVariableProvider;
@@ -35,13 +34,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import io.quarkus.logging.Log;
 
 public abstract class AbstractImporter<T> {
-    /**
-     * The path separator for the current operating system. This is used to split the file path into
-     * its parts. This is used in a regular expression, so special characters need to be escaped.
-     */
-    public static final String PATH_SEPARATOR =
-            Pattern.quote(FileSystems.getDefault().getSeparator());
-
     private static final String VARIABLE_ENVIRONMENT = "env";
 
     @Inject
@@ -75,9 +67,9 @@ public abstract class AbstractImporter<T> {
         }
 
         Log.infof("Executing importer '%s'.", getClass().getSimpleName());
-        for (final Path importFile : getImportFiles()) {
+        for (final ConfigurationFile importFile : getImportFiles()) {
             try {
-                Log.debugf("Importing file '%s'.", importFile);
+                Log.debugf("Importing file '%s'.", importFile.getFile());
                 runImport(importFile);
 
                 if (getStatus() == ImporterStatus.FAILURE && configuration.isExitOnError()) {
@@ -94,7 +86,7 @@ public abstract class AbstractImporter<T> {
         setStatus(ImporterStatus.FINISHED);
     }
 
-    private void runImport(final Path file) {
+    private void runImport(final ConfigurationFile file) {
         final T entity = loadEntity(file);
 
         if (!configuration.isDryRun()) {
@@ -102,8 +94,9 @@ public abstract class AbstractImporter<T> {
         }
     }
 
-    private List<Path> getImportFiles() {
-        final List<Path> importFiles = configurationFileStore.getImportFiles(getType());
+    private List<ConfigurationFile> getImportFiles() {
+        final List<ConfigurationFile> importFiles =
+                configurationFileStore.getImportFiles(getType());
         if (importFiles.isEmpty()) {
             Log.infof("No files found for importer '%s'.", getClass().getSimpleName());
         }
@@ -144,13 +137,13 @@ public abstract class AbstractImporter<T> {
         return getType().getPriority();
     }
 
-    protected T loadEntity(final Path filepath, final Class<T> dtoClass) {
-        final String content = loadContent(filepath);
+    protected T loadEntity(final ConfigurationFile filepath, final Class<T> dtoClass) {
+        final String content = loadContent(filepath.getFile());
         return JsonUtil.fromJson(content, dtoClass);
     }
 
-    protected T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
-        final String content = loadContent(filepath);
+    protected T loadEntity(final ConfigurationFile filepath, final TypeReference<T> dtoType) {
+        final String content = loadContent(filepath.getFile());
         return JsonUtil.fromJson(content, dtoType);
     }
 
@@ -166,7 +159,7 @@ public abstract class AbstractImporter<T> {
 
     public abstract EntityType getType();
 
-    protected abstract T loadEntity(final Path file);
+    protected abstract T loadEntity(final ConfigurationFile file);
 
-    protected abstract T executeImport(final Path file, final T entity);
+    protected abstract T executeImport(final ConfigurationFile file, final T entity);
 }

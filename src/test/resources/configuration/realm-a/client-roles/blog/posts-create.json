@@ -1,0 +1,7 @@
+{
+    "name": "posts-create",
+    "description": "Allows to create new blog posts",
+    "composite": false,
+    "clientRole": true,
+    "attributes": {}
+}

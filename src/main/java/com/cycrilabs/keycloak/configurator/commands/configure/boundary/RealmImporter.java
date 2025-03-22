@@ -1,12 +1,11 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.nio.file.Path;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
 
 import org.keycloak.representations.idm.RealmRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
@@ -20,16 +19,17 @@ public class RealmImporter extends AbstractImporter<RealmRepresentation> {
     }
 
     @Override
-    protected RealmRepresentation loadEntity(final Path file) {
+    protected RealmRepresentation loadEntity(final ConfigurationFile file) {
         final RealmRepresentation entity = loadEntity(file, RealmRepresentation.class);
         if (configuration.isDryRun()) {
-            Log.infof("Loaded realm '%s' from file '%s'.", entity.getRealm(), file);
+            Log.infof("Loaded realm '%s' from file '%s'.", entity.getRealm(), file.getFile());
         }
         return entity;
     }
 
     @Override
-    protected RealmRepresentation executeImport(final Path file, final RealmRepresentation realm) {
+    protected RealmRepresentation executeImport(final ConfigurationFile file,
+            final RealmRepresentation realm) {
         try {
             keycloak.realms()
                     .create(realm);

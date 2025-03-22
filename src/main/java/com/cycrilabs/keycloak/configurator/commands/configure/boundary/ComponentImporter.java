@@ -1,6 +1,5 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.ComponentRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
@@ -22,19 +22,18 @@ public class ComponentImporter extends AbstractImporter<ComponentRepresentation>
     }
 
     @Override
-    protected ComponentRepresentation loadEntity(final Path file) {
+    protected ComponentRepresentation loadEntity(final ConfigurationFile file) {
         final ComponentRepresentation entity = loadEntity(file, ComponentRepresentation.class);
         if (configuration.isDryRun()) {
-            Log.infof("Loaded component '%s' from file '%s'.", entity.getName(), file);
+            Log.infof("Loaded component '%s' from file '%s'.", entity.getName(), file.getFile());
         }
         return entity;
     }
 
     @Override
-    protected ComponentRepresentation executeImport(final Path file,
+    protected ComponentRepresentation executeImport(final ConfigurationFile file,
             final ComponentRepresentation component) {
-        final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
-        final String realmName = fileNameParts[fileNameParts.length - 3];
+        final String realmName = file.getRealmName();
 
         if (component.getParentId() != null && !component.getParentId().equals(realmName)) {
             final ComponentRepresentation parent =
@@ -43,7 +42,7 @@ public class ComponentImporter extends AbstractImporter<ComponentRepresentation>
                 setStatus(ImporterStatus.FAILURE);
                 Log.errorf(
                         "Could not import component from file '%s' for realm '%s' because of missing parent '%s'.",
-                        file, realmName, component.getParentId());
+                        file.getFile(), realmName, component.getParentId());
                 return null;
             }
 

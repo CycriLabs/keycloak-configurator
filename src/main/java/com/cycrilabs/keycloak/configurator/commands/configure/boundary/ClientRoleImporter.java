@@ -1,13 +1,12 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.nio.file.Path;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
 
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
@@ -21,19 +20,19 @@ public class ClientRoleImporter extends AbstractImporter<RoleRepresentation> {
     }
 
     @Override
-    protected RoleRepresentation loadEntity(final Path file) {
+    protected RoleRepresentation loadEntity(final ConfigurationFile file) {
         final RoleRepresentation entity = loadEntity(file, RoleRepresentation.class);
         if (configuration.isDryRun()) {
-            Log.infof("Loaded client role '%s' from file '%s'.", entity.getName(), file);
+            Log.infof("Loaded client role '%s' from file '%s'.", entity.getName(), file.getFile());
         }
         return entity;
     }
 
     @Override
-    protected RoleRepresentation executeImport(final Path file, final RoleRepresentation role) {
-        final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
-        final String realmName = fileNameParts[fileNameParts.length - 4];
-        final String clientId = fileNameParts[fileNameParts.length - 2];
+    protected RoleRepresentation executeImport(final ConfigurationFile file,
+            final RoleRepresentation role) {
+        final String realmName = file.getRealmName();
+        final String clientId = file.getClientId();
         final ClientRepresentation client = entityStore.getClient(realmName, clientId);
 
         try {

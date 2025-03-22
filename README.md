@@ -55,10 +55,18 @@ an entity of the Keycloak REST API. The following directory structure is expecte
 │   │   │   ├── client-a
 │   │   │   │   ├── role-a.json
 │   │   ├── realm-roles
-│   │   │   ├── ...
+│   │   │   ├── realm-role-a.json
+│   │   ├── service-account-client-roles
+│   │   │   ├── client-a
+│   │   │   │   ├── role-a.json
 │   │   ├── groups
 │   │   │   ├── ...
 │   │   ├── users
+│   │   │   ├── ...
+│   │   ├── service-account-client-roles
+│   │   │   ├── client-a
+│   │   │   │   ├── realm-role-a.json
+│   │   ├── components
 │   │   │   ├── ...
 │   ├── realm-b
 │   │   ├── realms
@@ -72,6 +80,29 @@ represents one realm to be imported together with the respective configuration.
 All directories containing one of the keywords shown above are treated as
 configuration input.
 
+Alternatively, a flat-file structure can be used. In this case, all configuration
+files are placed in the same directory. The configurator then imports all files
+in the directory. The respective entity type is determined based on the file name.
+Type and name are separated by an underscore (`_`). For example:
+
+```
+├── configuration
+│   ├── realm-a
+│   │   ├── realms_realm-a.json
+│   │   ├── clients_client-a.json
+│   │   ├── client-roles_client-a_role-a.json
+│   │   ├── realm-roles_realm-role-a.json
+│   │   ├── service-account-client-roles_client-a_role-a.json
+│   │   ├── groups_group-a.json
+│   │   ├── users_user-a.json
+│   │   ├── service-account-client-roles_client-a_realm-role-a.json
+│   │   ├── components_component-a.json
+│   ├── realm-b
+│   │   ├── realms_realm-b.json
+│   │   ├── clients_client-b.json
+│   │   ├── ...
+```
+
 The following table lists all required and optional options of the `configure`
 sub-command:
 
@@ -82,7 +113,8 @@ sub-command:
 | `-p`, `--password`    | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.               |
 | `-c`, `--config`      | yes      | The path to the directory containing the configuration files.                                     |
 | `-t`, `--entity-type` | no       | Allows to import only on specific entity type. Requires all prerequisites to be imported already. |
-| `--exit-on-error`     | no       | Exits the application directly when a configuration command occurs.                               |
+| `--flat-files`        | no       | Imports configuration files from a flat file directory structure.                                 |
+| `--exit-on-error`     | no       | Exits the application directly when a configuration command error occurs.                         |
 
 The following table lists all supported entity types and the corresponding directory
 identifier to identifier configuration source directories:

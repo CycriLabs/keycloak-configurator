@@ -1,0 +1,15 @@
+{
+    "name": "projects-administration",
+    "description": "Standard role for administrating projects",
+    "composite": true,
+    "composites": {
+        "realm": [],
+        "client": {
+            "projects": [
+                "projects-create"
+            ]
+        }
+    },
+    "clientRole": false,
+    "attributes": {}
+}
