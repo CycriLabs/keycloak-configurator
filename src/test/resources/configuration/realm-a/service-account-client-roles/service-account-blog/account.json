@@ -1,0 +1,9 @@
+[
+    {
+        "client": "account",
+        "roles": [
+            "view-profile",
+            "manage-account"
+        ]
+    }
+]

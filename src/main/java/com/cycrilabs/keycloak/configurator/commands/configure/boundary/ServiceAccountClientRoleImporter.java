@@ -1,6 +1,5 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -12,6 +11,7 @@ import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ServiceUserClientRoleMappingDTO;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
@@ -28,26 +28,25 @@ public class ServiceAccountClientRoleImporter
     }
 
     @Override
-    protected List<ServiceUserClientRoleMappingDTO> loadEntity(final Path file) {
+    protected List<ServiceUserClientRoleMappingDTO> loadEntity(final ConfigurationFile file) {
         final List<ServiceUserClientRoleMappingDTO> entity =
                 loadEntity(file, new TypeReference<>() {
                 });
         if (configuration.isDryRun()) {
-            Log.infof("Loaded service account client roles from file '%s'.", file);
+            Log.infof("Loaded service account client roles from file '%s'.", file.getFile());
         }
         return entity;
     }
 
     @Override
-    protected List<ServiceUserClientRoleMappingDTO> executeImport(final Path file,
+    protected List<ServiceUserClientRoleMappingDTO> executeImport(final ConfigurationFile file,
             final List<ServiceUserClientRoleMappingDTO> serviceUserClientRoleMappings) {
-        final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
-        final String realmName = fileNameParts[fileNameParts.length - 4];
-        final String serviceUsername = fileNameParts[fileNameParts.length - 2];
+        final String realmName = file.getRealmName();
+        final String serviceUsername = file.getServiceUsername();
 
         Log.debugf(
                 "Importing service account client roles '%s' for service user '%s' of realm '%s'.",
-                file.getFileName(), serviceUsername, realmName);
+                file.getFile().getFileName(), serviceUsername, realmName);
 
         final UserRepresentation user = loadUserByUsername(realmName, serviceUsername);
         if (user == null) {

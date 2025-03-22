@@ -1,0 +1,7 @@
+{
+    "name": "projects-create",
+    "description": "Allows to create new projects",
+    "composite": false,
+    "clientRole": true,
+    "attributes": {}
+}
