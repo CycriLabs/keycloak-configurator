@@ -3,6 +3,7 @@ package com.cycrilabs.keycloak.configurator.commands.configure.control;
 import jakarta.inject.Inject;
 
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakOptions;
+import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import picocli.CommandLine;
 
@@ -14,8 +15,9 @@ public class ConfigureCommand implements Runnable {
             description = "Directory containing the keycloak configuration files.")
     String configDirectory = "";
     @CommandLine.Option(names = { "-t", "--entity-type" },
-            description = "Entity type to configure. If not provided, all entities are configured.")
-    String entityType;
+            description = "Entity type to configure. If not provided, all entities are configured.",
+            converter = EntityTypeConverter.class)
+    EntityType entityType;
     @CommandLine.Option(names = { "--flat-files" },
             description = "Import configuration files from a flat file list instead of nested type directories.")
     boolean flatFiles;

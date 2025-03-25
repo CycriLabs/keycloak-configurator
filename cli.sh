@@ -8,6 +8,7 @@ function show_usage {
   echo "Options:"
   echo "  --start          Start the Keycloak container"
   echo "  --stop           Stop and remove the Keycloak container (including volumes)"
+  echo "  --dev            Start Keycloak configurator via maven in dev mode"
   echo "  --help           Display this help message"
   echo ""
   echo "Example: $0 --start"
@@ -41,7 +42,7 @@ function stop_keycloak {
 # Function to start Keycloak configurator in dev mode
 function start_dev {
   echo "Starting Keycloak configurator in dev mode..."
-  mvn quarkus:dev -Dquarkus.args="configure -s http://localhost:8080 -u keycloak -p root -c ../keycloak-configuration-eam/configuration --dry-run" -Dgithub
+  mvn quarkus:dev -Dquarkus.args="configure -s http://localhost:8080 -u keycloak -p root -c ./src/test/resources/configuration --dry-run" -Dgithub
 }
 
 # Check if no arguments were provided
