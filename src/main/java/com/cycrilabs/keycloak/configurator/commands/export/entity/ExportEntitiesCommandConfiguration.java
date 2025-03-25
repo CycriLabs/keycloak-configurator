@@ -19,7 +19,7 @@ public class ExportEntitiesCommandConfiguration extends KeycloakConfiguration {
         super(parseResult);
         realmName = getMatchedOption(parseResult, "-r");
         client = getMatchedOption(parseResult, "-c");
-        entityType = EntityType.fromName(getMatchedOption(parseResult, "-t"));
+        entityType = getMatchedOption(parseResult, "-t");
         entityName = getMatchedOption(parseResult, "-n");
         outputDirectory = getMatchedOption(parseResult, "-o");
     }

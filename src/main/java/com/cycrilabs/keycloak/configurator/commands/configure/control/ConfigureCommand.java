@@ -2,6 +2,7 @@ package com.cycrilabs.keycloak.configurator.commands.configure.control;
 
 import jakarta.inject.Inject;
 
+import com.cycrilabs.keycloak.configurator.shared.control.EntityTypeConverter;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakOptions;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 

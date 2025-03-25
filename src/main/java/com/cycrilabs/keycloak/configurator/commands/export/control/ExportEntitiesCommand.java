@@ -7,7 +7,9 @@ import jakarta.inject.Inject;
 
 import com.cycrilabs.keycloak.configurator.commands.export.boundary.AbstractExporter;
 import com.cycrilabs.keycloak.configurator.commands.export.entity.ExportEntitiesCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.shared.control.EntityTypeConverter;
 import com.cycrilabs.keycloak.configurator.shared.control.KeycloakOptions;
+import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 import picocli.CommandLine;
@@ -23,8 +25,9 @@ public class ExportEntitiesCommand implements Runnable {
             description = "Client name to export entities from.")
     String client;
     @CommandLine.Option(names = { "-t", "--entity-type" },
-            description = "Entity type to export. If not provided, all entities of the realm & client are exported.")
-    String entityType;
+            description = "Entity type to export. If not provided, all entities of the realm & client are exported.",
+            converter = EntityTypeConverter.class)
+    EntityType entityType;
     @CommandLine.Option(names = { "-n", "--entity-name" },
             description = "Name of the entity to export. If not provided, all entities of the given type are exported.")
     String entityName;

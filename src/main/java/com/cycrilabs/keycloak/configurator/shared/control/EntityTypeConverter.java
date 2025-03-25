@@ -1,4 +1,4 @@
-package com.cycrilabs.keycloak.configurator.commands.configure.control;
+package com.cycrilabs.keycloak.configurator.shared.control;
 
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 

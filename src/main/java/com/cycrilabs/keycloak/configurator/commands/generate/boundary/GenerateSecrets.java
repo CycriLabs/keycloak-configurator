@@ -31,14 +31,14 @@ public class GenerateSecrets {
 
     private Stream<ClientRepresentation> getClients() {
         return configuration.getClientId() == null
-                ? keycloak.realm(configuration.getRealmName())
-                .clients()
-                .findAll()
-                .stream()
-                : keycloak.realm(configuration.getRealmName())
-                .clients()
-                .findByClientId(configuration.getClientId())
-                .stream();
+               ? keycloak.realm(configuration.getRealmName())
+                       .clients()
+                       .findAll()
+                       .stream()
+               : keycloak.realm(configuration.getRealmName())
+                       .clients()
+                       .findByClientId(configuration.getClientId())
+                       .stream();
     }
 
     private String generateSecret(final String id) {
