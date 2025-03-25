@@ -42,7 +42,7 @@ function stop_keycloak {
 # Function to start Keycloak configurator in dev mode
 function start_dev {
   echo "Starting Keycloak configurator in dev mode..."
-  mvn quarkus:dev -Dquarkus.args="configure -s http://localhost:8080 -u keycloak -p root -c ./src/test/resources/configuration --dry-run" -Dgithub
+  mvn quarkus:dev -Dquarkus.args="configure -s http://localhost:8080 -u keycloak -p root -c ./src/test/resources/configuration -t client-role" -Dgithub
 }
 
 # Check if no arguments were provided

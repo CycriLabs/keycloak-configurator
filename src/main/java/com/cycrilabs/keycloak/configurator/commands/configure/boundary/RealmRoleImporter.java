@@ -54,17 +54,14 @@ public class RealmRoleImporter extends AbstractImporter<RoleRepresentation> {
         }
 
         try {
-            final RoleRepresentation importedRole = keycloak.realm(realmName)
-                    .roles()
-                    .get(role.getName())
-                    .toRepresentation();
+            final RoleRepresentation importedRole =
+                    keycloakCache.getRoleByName(realmName, role.getName());
             Log.infof("Loaded imported realm role '%s' from realm '%s'.", importedRole.getName(),
                     realmName);
             return importedRole;
         } catch (final ClientErrorException e) {
             Log.errorf("Could not load imported realm role '%s' from realm '%s': %s",
-                    role.getName(),
-                    realmName, e.getMessage());
+                    role.getName(), realmName, e.getMessage());
             return null;
         }
     }

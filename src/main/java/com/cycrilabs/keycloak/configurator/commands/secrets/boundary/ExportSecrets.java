@@ -26,7 +26,6 @@ import org.keycloak.representations.idm.ClientRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.secrets.entity.ExportSecretsCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.shared.control.EnvironmentVariableProvider;
-import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 import com.cycrilabs.keycloak.configurator.shared.control.StringUtil;
 import com.cycrilabs.keycloak.configurator.shared.control.VelocityUtils;
 
@@ -48,14 +47,16 @@ public class ExportSecrets {
     Config config;
 
     @Inject
-    public ExportSecrets(final ExportSecretsCommandConfiguration configuration,
+    public ExportSecrets(
+            final ExportSecretsCommandConfiguration configuration,
+            final Keycloak keycloak,
             final EnvironmentVariableProvider environmentVariableProvider,
-            final Config config) {
+            final Config config
+    ) {
         this.configuration = configuration;
+        this.keycloak = keycloak;
         this.environmentVariableProvider = environmentVariableProvider;
         this.config = config;
-
-        this.keycloak = KeycloakFactory.create(configuration);
     }
 
     public void export() throws IOException, ParseException {

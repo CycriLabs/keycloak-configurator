@@ -73,14 +73,11 @@ public class UserImporter extends AbstractImporter<UserRepresentation> {
     }
 
     private UserRepresentation fetchUserByUsername(final String realmName, final String username) {
-        final List<UserRepresentation> searchResult = keycloak.realm(realmName)
-                .users()
-                .search(username);
-        if (searchResult.isEmpty()) {
+        final UserRepresentation user = keycloakCache.getUserByUsername(realmName, username);
+        if (user == null) {
             Log.infof("Could not load imported user '%s' from realm '%s'.", username, realmName);
             return null;
         }
-        final UserRepresentation user = searchResult.getFirst();
         Log.infof("Loaded imported user '%s' from realm '%s'.", user.getUsername(), realmName);
         return user;
     }
@@ -112,7 +109,8 @@ public class UserImporter extends AbstractImporter<UserRepresentation> {
             Log.infof("Adding client roles '%s' to user '%s' for client '%s' in realm '%s'.",
                     roles, user.getUsername(), clientName, realmName);
 
-            final ClientRepresentation client = entityStore.getClient(realmName, clientName);
+            final ClientRepresentation client =
+                    keycloakCache.getClientByClientId(realmName, clientName);
             final Map<String, RoleRepresentation> availableClientRoles = keycloak.realm(realmName)
                     .clients()
                     .get(client.getId())

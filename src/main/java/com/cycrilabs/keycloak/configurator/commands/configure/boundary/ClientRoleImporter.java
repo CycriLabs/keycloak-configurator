@@ -33,7 +33,7 @@ public class ClientRoleImporter extends AbstractImporter<RoleRepresentation> {
             final RoleRepresentation role) {
         final String realmName = file.getRealmName();
         final String clientId = file.getClientId();
-        final ClientRepresentation client = entityStore.getClient(realmName, clientId);
+        final ClientRepresentation client = keycloakCache.getClientByClientId(realmName, clientId);
 
         try {
             keycloak.realm(realmName)
@@ -54,11 +54,6 @@ public class ClientRoleImporter extends AbstractImporter<RoleRepresentation> {
             }
         }
 
-        return keycloak.realm(realmName)
-                .clients()
-                .get(client.getId())
-                .roles()
-                .get(role.getName())
-                .toRepresentation();
+        return keycloakCache.getClientRoleByName(realmName, client.getClientId(), role.getName());
     }
 }
