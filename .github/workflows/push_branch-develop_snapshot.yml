@@ -31,8 +31,15 @@ jobs:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
 
+      - name: Start containers
+        run: chmod +x ./cli.sh && ./cli.sh --start
+
       - name: Test
         run: mvn -B verify -Pgithub
+
+      - name: Stop containers
+        if: always()
+        run: chmod +x ./cli.sh && ./cli.sh --stop
 
   build-container-image:
     needs: test

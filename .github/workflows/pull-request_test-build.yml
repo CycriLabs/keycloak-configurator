@@ -42,4 +42,3 @@ jobs:
       - name: Stop containers
         if: always()
         run: chmod +x ./cli.sh && ./cli.sh --stop
-
