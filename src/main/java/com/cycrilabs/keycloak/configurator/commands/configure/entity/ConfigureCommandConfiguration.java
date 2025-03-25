@@ -17,7 +17,7 @@ public class ConfigureCommandConfiguration extends KeycloakConfiguration {
     public ConfigureCommandConfiguration(final ParseResult parseResult) {
         super(parseResult);
         configDirectory = getMatchedOption(parseResult, "-c");
-        entityType = EntityType.fromName(getMatchedOption(parseResult, "-t"));
+        entityType = getMatchedOption(parseResult, "-t");
         flatFiles = this.<Boolean>getMatchedOption(parseResult, "--flat-files").booleanValue();
         exitOnError = this.<Boolean>getMatchedOption(parseResult, "--exit-on-error").booleanValue();
     }
