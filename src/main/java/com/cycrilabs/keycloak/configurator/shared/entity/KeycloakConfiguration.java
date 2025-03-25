@@ -5,17 +5,17 @@ import lombok.Getter;
 import picocli.CommandLine.ParseResult;
 
 @Getter
-public abstract class KeycloakConfiguration {
+public class KeycloakConfiguration {
     private String server;
     private String username;
     private String password;
     private boolean dryRun;
 
-    protected KeycloakConfiguration() {
+    public KeycloakConfiguration() {
         // required to avoid "No default constructor for class" error
     }
 
-    protected KeycloakConfiguration(final ParseResult parseResult) {
+    public KeycloakConfiguration(final ParseResult parseResult) {
         server = getMatchedOption(parseResult, "-s");
         username = getMatchedOption(parseResult, "-u");
         password = getMatchedOption(parseResult, "-p");

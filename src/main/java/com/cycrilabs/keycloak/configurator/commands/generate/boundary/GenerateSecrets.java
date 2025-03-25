@@ -3,7 +3,6 @@ package com.cycrilabs.keycloak.configurator.commands.generate.boundary;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -11,7 +10,6 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.generate.entity.GenerateSecretsCommandConfiguration;
-import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 
 import io.quarkus.logging.Log;
 
@@ -19,12 +17,8 @@ import io.quarkus.logging.Log;
 public class GenerateSecrets {
     @Inject
     GenerateSecretsCommandConfiguration configuration;
+    @Inject
     Keycloak keycloak;
-
-    @PostConstruct
-    public void init() {
-        keycloak = KeycloakFactory.create(configuration);
-    }
 
     public void run() {
         final List<String> generatedIds = getClients()

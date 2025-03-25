@@ -5,13 +5,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
 import org.keycloak.admin.client.Keycloak;
 
 import com.cycrilabs.keycloak.configurator.commands.export.entity.ExportEntitiesCommandConfiguration;
-import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -19,12 +17,8 @@ import io.quarkus.logging.Log;
 public abstract class AbstractExporter {
     @Inject
     protected ExportEntitiesCommandConfiguration configuration;
+    @Inject
     protected Keycloak keycloak;
-
-    @PostConstruct
-    public void init() {
-        keycloak = KeycloakFactory.create(configuration);
-    }
 
     public void writeFile(final String fileContent, final String name, final String realm) {
         writeFile(fileContent, name, realm, "");

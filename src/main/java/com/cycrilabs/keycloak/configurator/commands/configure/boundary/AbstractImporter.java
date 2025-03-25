@@ -19,14 +19,13 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ErrorRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.control.ConfigurationFileStore;
-import com.cycrilabs.keycloak.configurator.commands.configure.control.EntityStore;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationException;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
+import com.cycrilabs.keycloak.configurator.shared.boundary.KeycloakCache;
 import com.cycrilabs.keycloak.configurator.shared.control.EnvironmentVariableProvider;
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
-import com.cycrilabs.keycloak.configurator.shared.control.KeycloakFactory;
 import com.cycrilabs.keycloak.configurator.shared.control.VelocityUtils;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -41,11 +40,12 @@ public abstract class AbstractImporter<T> {
     @Inject
     protected ConfigurationFileStore configurationFileStore;
     @Inject
-    protected EntityStore entityStore;
-    @Inject
     protected EnvironmentVariableProvider environmentVariableProvider;
-
+    @Inject
+    protected KeycloakCache keycloakCache;
+    @Inject
     protected Keycloak keycloak;
+
     private Map<String, String> environmentVariables;
     @Getter
     @Setter
@@ -53,7 +53,6 @@ public abstract class AbstractImporter<T> {
 
     @PostConstruct
     public void init() {
-        keycloak = KeycloakFactory.create(configuration);
         environmentVariables = environmentVariableProvider.load();
     }
 

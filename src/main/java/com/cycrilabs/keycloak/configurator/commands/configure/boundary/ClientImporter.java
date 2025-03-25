@@ -47,13 +47,10 @@ public class ClientImporter extends AbstractImporter<ClientRepresentation> {
             Log.errorf("Could not import client for realm '%s': %s", realmName, e.getMessage());
         }
 
-        final ClientRepresentation importedClient = keycloak.realm(realmName)
-                .clients()
-                .findByClientId(client.getClientId())
-                .getFirst();
+        final ClientRepresentation importedClient =
+                keycloakCache.getClientByClientId(realmName, client.getClientId());
         Log.infof("Loaded client '%s' from realm '%s'.", importedClient.getClientId(),
                 realmName);
-        entityStore.addClient(realmName, importedClient);
         return importedClient;
     }
 }

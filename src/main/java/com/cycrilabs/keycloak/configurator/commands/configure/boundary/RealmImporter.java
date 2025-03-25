@@ -44,11 +44,8 @@ public class RealmImporter extends AbstractImporter<RealmRepresentation> {
             }
         }
 
-        final RealmRepresentation importedRealm = keycloak.realms()
-                .realm(realm.getRealm())
-                .toRepresentation();
+        final RealmRepresentation importedRealm = keycloakCache.getRealmByName(realm.getRealm());
         Log.infof("Loaded realm '%s' from server.", importedRealm.getRealm());
-        entityStore.addRealm(importedRealm);
         return importedRealm;
     }
 }
