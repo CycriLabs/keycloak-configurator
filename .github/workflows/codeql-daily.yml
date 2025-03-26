@@ -37,8 +37,15 @@ jobs:
           languages: java
           tools: linked
 
+      - name: Start containers
+        run: chmod +x ./cli.sh && ./cli.sh --start
+
       - name: Test
         run: mvn -B verify -Pgithub
+
+      - name: Stop containers
+        if: always()
+        run: chmod +x ./cli.sh && ./cli.sh --stop
 
       - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v3
