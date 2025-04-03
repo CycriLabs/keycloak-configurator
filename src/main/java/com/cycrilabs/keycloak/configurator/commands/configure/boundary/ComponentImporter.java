@@ -75,7 +75,7 @@ public class ComponentImporter extends AbstractImporter<ComponentRepresentation>
                 .components()
                 .query(realmName)
                 .stream()
-                .filter(c -> c.getName().equals(name))
+                .filter(c -> name.equals(c.getName()))
                 .findFirst();
         return importedComponent.orElse(null);
     }
