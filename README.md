@@ -283,6 +283,55 @@ After the version is printed, the container is stopped and removed:
 docker run --rm -it ghcr.io/cycrilabs/keycloak-configurator:latest -V
 ```
 
+### Running with docker-compose
+
+In case of configuring existing keycloak container in docker-compose. This can be done via this sample setup
+
+```docker-compose
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    environment:
+      KC_HTTP_RELATIVE_PATH: auth
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: ["start-dev", "--http-relative-path=auth", "--http-port=5050", "--import-realm","--hostname=localhost", "--hostname-port=5050"]
+    ports:
+      - 5050:5050
+    volumes:
+      - ./../keycloak/setup:/opt/keycloak/data/import:Z
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - ./postgresql/postgres-init-user-db.sql:/docker-entrypoint-initdb.d/init-users.sql:Z
+      
+  keycloak-configurator:
+    image: ghcr.io/cycrilabs/keycloak-configurator:latest
+    environment:
+      KC_PORT: 8080
+      KC_USER: admin
+      KC_PASSWORD: admin
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloak
+    volumes:
+      - ./export:/output
+      - ./export-template:/configuration
+    command: [ "export-secrets", "-s", "http://keycloak:5050/auth", "-u", "admin", "-p", "admin", "-c", "/configuration", "-o", "/output", "-r", "default" ]
+```
+
+The sample docker-compose file consist of a keycloak running on port `5050`. It connects to postgres database on port `5432`. To configure output directory that is mounted from host machine, the volume is configured. Exporting template files are defined under `./export-template` mounted to `/configuration`.
+
+To execute command defined in [Usage](#Usage), container `keycloak-configurator` needs to provide `command` with mandatory parameters.
+
+After completing the defined command, the container stops. To verify the result, execute command `docker-compose logs keycloak-configurator`
+
 ### Providing configuration files
 
 Several sub-commands require configuration files. The configuration files must
