@@ -326,7 +326,7 @@ services:
     command: [ "export-secrets", "-s", "http://keycloak:5050/auth", "-u", "admin", "-p", "admin", "-c", "/configuration", "-o", "/output", "-r", "default" ]
 ```
 
-The sample docker-compose file consist of a keycloak running on port `5050`. It connects to postgres database on port `5432`. To configure output directory that is mounted from host machine, the volume is configured. Exporting template files are defined under `./export-template` mounted to `/configuration`.
+The sample docker-compose file consists of a keycloak running on port `5050`. It connects to postgres database on port `5432`. To configure output directory that is mounted from host machine, the volume is configured. Exporting template files are defined under `./export-template` mounted to `/configuration`.
 
 To execute command defined in [Usage](#Usage), container `keycloak-configurator` needs to provide `command` with mandatory parameters.
 
