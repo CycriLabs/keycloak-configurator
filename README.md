@@ -313,13 +313,6 @@ services:
       
   keycloak-configurator:
     image: ghcr.io/cycrilabs/keycloak-configurator:latest
-    environment:
-      KC_PORT: 8080
-      KC_USER: admin
-      KC_PASSWORD: admin
-      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
-      KC_DB_USERNAME: keycloak
-      KC_DB_PASSWORD: keycloak
     volumes:
       - ./export:/output
       - ./export-template:/configuration
