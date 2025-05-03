@@ -1,3 +1,22 @@
+# [2.1.0](https://github.com/CycriLabs/keycloak-configurator/compare/2.0.0...2.1.0) (2025-05-03)
+
+
+### Bug Fixes
+
+* **configure:** fix loading clients for client role import through cache call-through ([#83](https://github.com/CycriLabs/keycloak-configurator/issues/83)) ([a23e5c1](https://github.com/CycriLabs/keycloak-configurator/commit/a23e5c16ce5ea99c741687129a6e37addd966a11))
+* **configure:** flip name comparison for components to avoid NPEs ([e8809d0](https://github.com/CycriLabs/keycloak-configurator/commit/e8809d010d58c4c90fe561c486ac747f665e06bb))
+* **export:** throw error if provided entity type to -t is unknown ([#82](https://github.com/CycriLabs/keycloak-configurator/issues/82)) ([66436b2](https://github.com/CycriLabs/keycloak-configurator/commit/66436b227818817cedde9e90f40055b4cd89a602))
+* return correct version for --version param ([d3c6d46](https://github.com/CycriLabs/keycloak-configurator/commit/d3c6d4629f141c124681fc0343c56658e09973f1))
+* throw error if provided entity type to -t is unknown ([#82](https://github.com/CycriLabs/keycloak-configurator/issues/82)) ([c4d094f](https://github.com/CycriLabs/keycloak-configurator/commit/c4d094f45ce6fd5418fd7e6e95310afba8a187cf))
+
+
+### Features
+
+* add arm64 build ([63bec11](https://github.com/CycriLabs/keycloak-configurator/commit/63bec11bbfcf30ce0dc1083ebbc4400e2429c409))
+* add multi-arch builds on release & introduce next tag for develop ([cced9fc](https://github.com/CycriLabs/keycloak-configurator/commit/cced9fc68e457e7b76c3f0d87b772f6ded423195))
+* **configure:** add --dry-run support ([#57](https://github.com/CycriLabs/keycloak-configurator/issues/57)) ([57cdcfd](https://github.com/CycriLabs/keycloak-configurator/commit/57cdcfd3a22ec6c5f4805fe7ad1a7c65c0195961))
+* **configure:** add param --flat-files to load configuration from flat file list ([#79](https://github.com/CycriLabs/keycloak-configurator/issues/79)) ([0a45313](https://github.com/CycriLabs/keycloak-configurator/commit/0a4531348a09dc975ea39d209f34d321123410f1))
+
 # [2.0.0](https://github.com/CycriLabs/keycloak-configurator/compare/1.5.0...2.0.0) (2025-02-28)
 
 
