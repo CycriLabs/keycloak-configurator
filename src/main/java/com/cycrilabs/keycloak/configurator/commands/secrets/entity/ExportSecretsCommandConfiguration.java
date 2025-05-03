@@ -8,10 +8,14 @@ import picocli.CommandLine.ParseResult;
 
 @Getter
 public class ExportSecretsCommandConfiguration extends KeycloakConfiguration {
-    private final String realmName;
-    private final String configDirectory;
-    private final String clientIds;
-    private final String outputDirectory;
+    private String realmName;
+    private String configDirectory;
+    private String clientIds;
+    private String outputDirectory;
+
+    public ExportSecretsCommandConfiguration() {
+        // required to avoid "No default constructor for class" error
+    }
 
     public ExportSecretsCommandConfiguration(final ParseResult parseResult) {
         super(parseResult);
