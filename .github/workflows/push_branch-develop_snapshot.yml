@@ -6,9 +6,10 @@ on:
       - develop
 
 env:
-  java-version: '21'
-  distribution: 'graalvm'
+  java-version: 21
+  distribution: graalvm
   IMAGE_NAME: ghcr.io/cycrilabs/keycloak-configurator
+  image-tag-short: next
 
 jobs:
   test:
@@ -26,7 +27,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Adapt maven settings
-        uses: s4u/maven-settings-action@v2
+        uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
@@ -65,7 +66,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Adapt maven settings
-        uses: s4u/maven-settings-action@v2
+        uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
@@ -73,9 +74,9 @@ jobs:
       - name: Deploy project & image
         run: >
           mvn -B package -Pgithub -DskipTests
-          -Dquarkus.container-image.tag=latest-${{ matrix.architecture }}
-          -Dquarkus.container-image.build=true
           -Dquarkus.jib.platforms=linux/${{ matrix.architecture }}
+          -Dquarkus.container-image.tag=${{env.image-tag-short}}-${{ matrix.architecture }}
+          -Dquarkus.container-image.build=true
           -Dquarkus.container-image.push=true
           -Dquarkus.container-image.registry=ghcr.io
           -Dquarkus.container-image.username=${{ github.actor }}
@@ -100,15 +101,15 @@ jobs:
           IMAGE_WITHOUT_TAG=${IMAGE_NAME#*/}
 
           # Create the manifest
-          docker manifest create ghcr.io/${IMAGE_WITHOUT_TAG}:latest \
-            ghcr.io/${IMAGE_WITHOUT_TAG}:latest-amd64 \
-            ghcr.io/${IMAGE_WITHOUT_TAG}:latest-arm64
+          docker manifest create ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}} \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-amd64 \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-arm64
 
           # Add platform-specific annotations
-          docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:latest \
-            ghcr.io/${IMAGE_WITHOUT_TAG}:latest-amd64 --os linux --arch amd64
-          docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:latest \
-            ghcr.io/${IMAGE_WITHOUT_TAG}:latest-arm64 --os linux --arch arm64
+          docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}} \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-amd64 --os linux --arch amd64
+          docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}} \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-arm64 --os linux --arch arm64
 
           # Push the manifest
-          docker manifest push ghcr.io/${IMAGE_WITHOUT_TAG}:latest
+          docker manifest push ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}

@@ -15,11 +15,13 @@ on:
 env:
   java-version: 21
   distribution: graalvm
-  node-js-version: 20.x
+  node-js-version: 22.x
   author-name: Marc Scheib
   author-email: marc.scheib@cycrilabs.com
   publish-artifacts: false
   build-native-image: false
+  IMAGE_NAME: ghcr.io/cycrilabs/keycloak-configurator
+  image-tag-short: latest
 
 jobs:
   test:
@@ -37,7 +39,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Adapt maven settings
-        uses: s4u/maven-settings-action@v2
+        uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
@@ -55,6 +57,10 @@ jobs:
   release:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      TAG_MAJOR_MINOR_PATCH: ${{ steps.version.outputs.TAG_MAJOR_MINOR_PATCH }}
+      TAG_MAJOR_MINOR: ${{ steps.version.outputs.TAG_MAJOR_MINOR }}
+      TAG_MAJOR: ${{ steps.version.outputs.TAG_MAJOR }}
     steps:
       - name: Checkout [${{ github.head_ref || github.ref_name }}]
         uses: actions/checkout@v4
@@ -68,7 +74,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Adapt maven settings
-        uses: s4u/maven-settings-action@v2
+        uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
@@ -85,18 +91,29 @@ jobs:
           GIT_AUTHOR_NAME: ${{ env.author-name }}
           GIT_AUTHOR_EMAIL: ${{ env.author-email }}
 
+      - name: Store additional tags
+        id: version
+        run: |
+          echo "TAG_MAJOR_MINOR_PATCH=$(git describe --abbrev=0 --tags)" >> $GITHUB_OUTPUT
+          echo "TAG_MAJOR_MINOR=$(git describe --abbrev=0 --tags | cut -d. -f1,2)" >> $GITHUB_OUTPUT
+          echo "TAG_MAJOR=$(git describe --abbrev=0 --tags | cut -d. -f1)" >> $GITHUB_OUTPUT
+
   build-container-image:
     needs: release
     strategy:
       matrix:
         architecture: [amd64, arm64]
-    runs-on: ubuntu-latest
+        include:
+          - architecture: amd64
+            runner: ubuntu-24.04
+          - architecture: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout [${{ github.head_ref || github.ref_name }}]
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-          fetch-depth: 0 # required to get all history for git describe
 
       - name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
@@ -112,20 +129,15 @@ jobs:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
 
-      - name: Create additional tags
-        run: |
-          echo "TAG_MAJOR_MINOR=$(git describe --abbrev=0 --tags | cut -d. -f1,2)" >> $GITHUB_OUTPUT
-          echo "TAG_MAJOR=$(git describe --abbrev=0 --tags | cut -d. -f1)" >> $GITHUB_OUTPUT
-        id: version
-
       - name: Deploy project & native image
         if: ${{ env.build-native-image == 'true' }}
         run: >
           mvn -B package -Pgithub -DskipTests
-          -Dquarkus.container-image.build=true
           -Dquarkus.native.container-build=true -Dnative
           -Dquarkus.jib.platforms=linux/${{ matrix.architecture }}
-          -Dquarkus.container-image.additional-tags=${{ steps.version.outputs.TAG_MAJOR_MINOR }},${{ steps.version.outputs.TAG_MAJOR }}
+          -Dquarkus.container-image.tag=${{env.image-tag-short}}-${{ matrix.architecture }}
+          -Dquarkus.container-image.additional-tags=${{needs.release.outputs.TAG_MAJOR_MINOR_PATCH}}-${{ matrix.architecture }},${{ needs.release.outputs.TAG_MAJOR_MINOR }}-${{ matrix.architecture }},${{ needs.release.outputs.TAG_MAJOR }}-${{ matrix.architecture }}
+          -Dquarkus.container-image.build=true
           -Dquarkus.container-image.push=true
           -Dquarkus.container-image.registry=ghcr.io
           -Dquarkus.container-image.username=${{ github.actor }}
@@ -135,13 +147,67 @@ jobs:
         if: ${{ env.build-native-image == 'false' }}
         run: >
           mvn -B package -Pgithub -DskipTests
-          -Dquarkus.container-image.build=true
           -Dquarkus.jib.platforms=linux/${{ matrix.architecture }}
-          -Dquarkus.container-image.additional-tags=${{ steps.version.outputs.TAG_MAJOR_MINOR }},${{ steps.version.outputs.TAG_MAJOR }}
+          -Dquarkus.container-image.tag=${{env.image-tag-short}}-${{ matrix.architecture }}
+          -Dquarkus.container-image.additional-tags=${{needs.release.outputs.TAG_MAJOR_MINOR_PATCH}}-${{ matrix.architecture }},${{ needs.release.outputs.TAG_MAJOR_MINOR }}-${{ matrix.architecture }},${{ needs.release.outputs.TAG_MAJOR }}-${{ matrix.architecture }}
+          -Dquarkus.container-image.build=true
           -Dquarkus.container-image.push=true
           -Dquarkus.container-image.registry=ghcr.io
           -Dquarkus.container-image.username=${{ github.actor }}
           -Dquarkus.container-image.password=${{ secrets.GITHUB_TOKEN }}
+
+  create-manifest:
+    needs: [ release, build-container-image ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and Push Manifest
+        run: |
+          IMAGE_WITHOUT_TAG=${IMAGE_NAME#*/}
+
+          # Version tags to create manifests for
+          VERSION_TAGS=("${{needs.release.outputs.TAG_MAJOR_MINOR_PATCH}}" "${{needs.release.outputs.TAG_MAJOR_MINOR}}" "${{needs.release.outputs.TAG_MAJOR}}")
+
+          for VERSION_TAG in "${VERSION_TAGS[@]}"; do
+            echo "Creating and pushing manifest for version: ${VERSION_TAG}"
+
+            # Create the manifest
+            docker manifest create ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG} \
+              ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG}-amd64 \
+              ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG}-arm64
+
+            # Add platform-specific annotations
+            docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG} \
+              ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG}-amd64 --os linux --arch amd64
+            docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG} \
+              ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG}-arm64 --os linux --arch arm64
+
+            # Push the manifest
+            docker manifest push ghcr.io/${IMAGE_WITHOUT_TAG}:${VERSION_TAG}
+          done
+
+          # Create the manifest
+          docker manifest create ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}} \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-amd64 \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-arm64
+
+          # Add platform-specific annotations
+          docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}} \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-amd64 --os linux --arch amd64
+          docker manifest annotate ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}} \
+            ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}-arm64 --os linux --arch arm64
+
+          # Push the manifest
+          docker manifest push ghcr.io/${IMAGE_WITHOUT_TAG}:${{env.image-tag-short}}
 
   build-artifacts:
     needs: release
@@ -164,7 +230,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Adapt maven settings
-        uses: s4u/maven-settings-action@v2
+        uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
@@ -200,7 +266,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Adapt maven settings
-        uses: s4u/maven-settings-action@v2
+        uses: s4u/maven-settings-action@v3.1.0
         with:
           servers: '[{"id": "github", "username": "dummy", "password": "${{ secrets.GITHUB_TOKEN }}"}]'
           githubServer: false
