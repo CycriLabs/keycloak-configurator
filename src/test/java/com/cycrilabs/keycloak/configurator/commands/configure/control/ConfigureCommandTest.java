@@ -1,7 +1,5 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.control;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
