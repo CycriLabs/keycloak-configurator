@@ -1,0 +1,15 @@
+{
+    "name": "org-b",
+    "path": "/cycrilabs/org-b",
+    "attributes": {
+        "active": [
+            "true"
+        ],
+        "agentSeparation": [
+            "false"
+        ]
+    },
+    "realmRoles": [],
+    "clientRoles": {},
+    "subGroups": []
+}
