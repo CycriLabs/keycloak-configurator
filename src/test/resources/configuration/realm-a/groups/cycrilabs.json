@@ -9,7 +9,7 @@
             "false"
         ]
     },
-    "realmRoles": [],
+    "realmRoles": ["blog-administration"],
     "clientRoles": {},
     "subGroups": []
 }

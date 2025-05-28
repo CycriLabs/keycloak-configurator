@@ -76,6 +76,8 @@ public abstract class AbstractImporter<T> {
                             "Importer '%s' failed.".formatted(getClass().getSimpleName()));
                 }
             } catch (final Exception e) {
+                Log.errorf("Error during import of file '%s' in importer '%s': %s",
+                        importFile.getFile(), getClass().getSimpleName(), e.getMessage());
                 if (configuration.isExitOnError()) {
                     throw e;
                 }
