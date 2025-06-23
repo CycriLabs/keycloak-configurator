@@ -1,8 +1,9 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
+import static jakarta.ws.rs.core.Response.Status.Family.familyOf;
+
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,7 +11,6 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 
-import org.keycloak.admin.client.resource.GroupsResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
@@ -19,9 +19,6 @@ import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterSta
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
-import io.quarkus.runtime.util.StringUtil;
-
-import static jakarta.ws.rs.core.Response.Status.Family.familyOf;
 
 @ApplicationScoped
 public class GroupImporter extends AbstractImporter<GroupRepresentation> {
@@ -44,25 +41,26 @@ public class GroupImporter extends AbstractImporter<GroupRepresentation> {
             final GroupRepresentation group) {
         final String realmName = file.getRealmName();
 
-        final var existingGroup = findGroupByPath(realmName, group.getPath());
+        final GroupRepresentation existingGroup = findGroupByPath(realmName, group.getPath());
         if (existingGroup != null) {
+            Log.infof("Group '%s' already exists in realm '%s'. Skipping import.", group.getName(),
+                    realmName);
             return existingGroup;
         }
 
         // Documentation suggests, that child groups could be created the same way as root level groups.
         // (See org.keycloak.admin.client.resource.GroupsResource#add)
         // Alas, this does not seem to work. So we have to make a distinction here
-
-        final var parentGroup = findParentGroup (realmName,  group.getPath() );
+        final GroupRepresentation parentGroup = findParentGroup(realmName, group.getPath());
         if (parentGroup == null) {
-             greateGroupAtRoot (realmName, group);
+            createGroupAtRoot(realmName, group);
         } else {
-             createChildGroup (realmName, parentGroup, group);
+            createChildGroup(realmName, parentGroup, group);
         }
 
         final GroupRepresentation importedGroup = findGroupByPath(realmName, group.getPath());
         if (importedGroup == null) {
-            Log.errorf("Could not import group '%s' for realm '%s'", group.getName(),realmName);
+            Log.errorf("Could not import group '%s' for realm '%s'", group.getName(), realmName);
             return null;
         }
         Log.infof("Loaded imported group '%s' from realm '%s'.", importedGroup.getName(),
@@ -74,10 +72,7 @@ public class GroupImporter extends AbstractImporter<GroupRepresentation> {
         return importedGroup;
     }
 
-
-    private void greateGroupAtRoot(
-            final String realmName,
-            final GroupRepresentation group) {
+    private void createGroupAtRoot(final String realmName, final GroupRepresentation group) {
         try (final Response response = keycloak.realm(realmName)
                 .groups()
                 .add(group)) {
@@ -93,51 +88,45 @@ public class GroupImporter extends AbstractImporter<GroupRepresentation> {
         }
     }
 
-    private void createChildGroup(
-            final String realmName,
-            final GroupRepresentation parentGroup,
+    private void createChildGroup(final String realmName, final GroupRepresentation parentGroup,
             final GroupRepresentation group) {
+        final Response response = keycloak.realm(realmName)
+                .groups()
+                .group(parentGroup.getId()).subGroup(group);
 
-        final var response =  keycloak.realm(realmName).groups().group(parentGroup.getId()).subGroup(group);
-
-        if (familyOf(response.getStatus())!= Response.Status.Family.SUCCESSFUL){
-            Log.errorf("Could not import group for realm '%s': %s", realmName, extractError(response).getErrorMessage());
+        if (familyOf(response.getStatus()) != Response.Status.Family.SUCCESSFUL) {
+            Log.errorf("Could not import group for realm '%s': %s", realmName,
+                    extractError(response).getErrorMessage());
         }
     }
 
-    GroupRepresentation findGroupByPath (
-            final String realmName,
-            final String  path){
-		try {
-			return keycloak.realm(realmName).getGroupByPath(path);
-		} catch (NotFoundException e) {
-			return null;
-		}
+    private GroupRepresentation findGroupByPath(final String realmName, final String path) {
+        try {
+            return keycloak.realm(realmName).getGroupByPath(path);
+        } catch (final NotFoundException e) {
+            return null;
+        }
     }
 
-	private GroupRepresentation findParentGroup(
-			final String realmName,
-			final String path) {
-		final var optParentPath = getParentPath(path);
-		if (optParentPath == null) {
-			return null;
-		}
-		return findGroupByPath(realmName, optParentPath);
-	}
+    private GroupRepresentation findParentGroup(final String realmName, final String path) {
+        final String optParentPath = getParentPath(path);
+        if (optParentPath == null) {
+            return null;
+        }
+        return findGroupByPath(realmName, optParentPath);
+    }
 
-    private static String getParentPath(
-            final String path) {
-		final var components = Arrays.stream(path.split("/"))
-				.filter(s -> !s.isEmpty())
-				.toList();
-		if (components.size() <= 1) {
-			return null;
-		}
-		return components.subList(0, components.size() - 1)
-				.stream()
-				.collect(
-						Collectors.joining("/", "/", ""));
-	}
+    private String getParentPath(final String path) {
+        final List<String> components = Arrays.stream(path.split("/"))
+                .filter(s -> !s.isEmpty())
+                .toList();
+        if (components.size() <= 1) {
+            return null;
+        }
+        return components.subList(0, components.size() - 1)
+                .stream()
+                .collect(Collectors.joining("/", "/", ""));
+    }
 
     private void addRealmRoles(final String realmName, final GroupRepresentation importedGroup,
             final List<String> realmRoles) {
