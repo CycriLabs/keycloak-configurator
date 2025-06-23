@@ -1,5 +1,7 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.control;
 
+import static com.cycrilabs.keycloak.configurator.shared.control.MeasuredMethodExecutor.measureExecutionTime;
+
 import jakarta.inject.Inject;
 
 import com.cycrilabs.keycloak.configurator.shared.control.EntityTypeConverter;
@@ -33,7 +35,9 @@ public class ConfigureCommand implements Runnable {
 
     @Override
     public void run() {
-        configurationFileStore.init();
-        importRunner.run();
+        measureExecutionTime(() -> {
+            configurationFileStore.init();
+            importRunner.run();
+        }, "ConfigureCommand");
     }
 }
