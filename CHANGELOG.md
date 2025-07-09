@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.2...1.4.3) (2025-07-09)
+
+
+### Bug Fixes
+
+* **configure:** flip name comparison for components to avoid NPEs ([b6e14d7](https://github.com/CycriLabs/keycloak-configurator/commit/b6e14d7c20d6c9ec4dcfdd7250ac737211f50fac))
+
 ## [1.4.2](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.1...1.4.2) (2024-10-10)
 
 
