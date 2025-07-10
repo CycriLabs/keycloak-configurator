@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.3...1.4.4) (2025-07-10)
+
+
+### Bug Fixes
+
+* **configure:** use realm id instead of name for component parent mapping ([cc6a897](https://github.com/CycriLabs/keycloak-configurator/commit/cc6a897ad2a4f46492713657e021b317ef44457b))
+
 ## [1.4.3](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.2...1.4.3) (2025-07-09)
 
 
