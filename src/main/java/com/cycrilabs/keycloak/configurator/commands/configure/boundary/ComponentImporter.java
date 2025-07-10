@@ -7,6 +7,7 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.ComponentRepresentation;
+import org.keycloak.representations.idm.RealmRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
@@ -35,9 +36,10 @@ public class ComponentImporter extends AbstractImporter<ComponentRepresentation>
             final ComponentRepresentation component) {
         final String realmName = file.getRealmName();
 
-        if (component.getParentId() != null && !component.getParentId().equals(realmName)) {
+        final RealmRepresentation realm = keycloak.realm(realmName).toRepresentation();
+        if (component.getParentId() != null && !component.getParentId().equals(realm.getId())) {
             final ComponentRepresentation parent =
-                    findComponentByName(realmName, component.getParentId());
+                    findComponentByName(realmName, realm.getId(), component.getParentId());
             if (parent == null) {
                 setStatus(ImporterStatus.FAILURE);
                 Log.errorf(
@@ -67,13 +69,14 @@ public class ComponentImporter extends AbstractImporter<ComponentRepresentation>
             return null;
         }
 
-        return findComponentByName(realmName, component.getName());
+        return findComponentByName(realmName, realm.getId(), component.getName());
     }
 
-    private ComponentRepresentation findComponentByName(final String realmName, final String name) {
+    private ComponentRepresentation findComponentByName(final String realmName,
+            final String realmId, final String name) {
         final Optional<ComponentRepresentation> importedComponent = keycloak.realm(realmName)
                 .components()
-                .query(realmName)
+                .query(realmId)
                 .stream()
                 .filter(c -> name.equals(c.getName()))
                 .findFirst();
