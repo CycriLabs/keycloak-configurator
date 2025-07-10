@@ -8,6 +8,7 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.ComponentRepresentation;
+import org.keycloak.representations.idm.RealmRepresentation;
 
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
@@ -29,9 +30,10 @@ public class ComponentImporter extends AbstractImporter {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
 
-        if (component.getParentId() != null && !component.getParentId().equals(realmName)) {
+        final RealmRepresentation realm = keycloak.realm(realmName).toRepresentation();
+        if (component.getParentId() != null && !component.getParentId().equals(realm.getId())) {
             final ComponentRepresentation parent =
-                    findComponentByName(realmName, component.getParentId());
+                    findComponentByName(realmName, realm.getId(), component.getParentId());
             if (parent == null) {
                 Log.errorf(
                         "Could not import component from file '%s' for realm '%s' because of missing parent '%s'.",
@@ -59,13 +61,14 @@ public class ComponentImporter extends AbstractImporter {
             return null;
         }
 
-        return findComponentByName(realmName, component.getName());
+        return findComponentByName(realmName, realm.getId(), component.getName());
     }
 
-    private ComponentRepresentation findComponentByName(final String realmName, final String name) {
+    private ComponentRepresentation findComponentByName(final String realmName,
+            final String realmId, final String name) {
         final Optional<ComponentRepresentation> importedComponent = keycloak.realm(realmName)
                 .components()
-                .query(realmName)
+                .query(realmId)
                 .stream()
                 .filter(c -> name.equals(c.getName()))
                 .findFirst();
