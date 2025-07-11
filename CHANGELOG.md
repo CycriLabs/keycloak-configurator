@@ -1,3 +1,10 @@
+## [1.4.5](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.4...1.4.5) (2025-07-11)
+
+
+### Bug Fixes
+
+* **configure:** fix createing and finding child groups ([12e33b9](https://github.com/CycriLabs/keycloak-configurator/commit/12e33b9b32060b164aafdc7e26821bfac3856c9d))
+
 ## [1.4.4](https://github.com/CycriLabs/keycloak-configurator/compare/1.4.3...1.4.4) (2025-07-10)
 
 
