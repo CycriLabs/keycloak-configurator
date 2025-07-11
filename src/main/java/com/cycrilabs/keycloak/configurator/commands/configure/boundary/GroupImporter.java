@@ -1,11 +1,15 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.nio.file.Path;
-import java.util.Optional;
+import static jakarta.ws.rs.core.Response.Status.Family.familyOf;
 
-import io.quarkus.runtime.util.StringUtil;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 
 import org.keycloak.representations.idm.GroupRepresentation;
@@ -29,60 +33,87 @@ public class GroupImporter extends AbstractImporter {
         final String[] fileNameParts = file.toString().split(PATH_SEPARATOR);
         final String realmName = fileNameParts[fileNameParts.length - 3];
 
+        final GroupRepresentation existingGroup = findGroupByPath(realmName, group.getPath());
+        if (existingGroup != null) {
+            Log.infof("Group '%s' already exists in realm '%s'. Skipping import.", group.getName(),
+                    realmName);
+            return existingGroup;
+        }
+
+        // Documentation suggests, that child groups could be created the same way as root level groups.
+        // (See org.keycloak.admin.client.resource.GroupsResource#add)
+        // Alas, this does not seem to work. So we have to make a distinction here
+        final GroupRepresentation parentGroup = findParentGroup(realmName, group.getPath());
+        if (parentGroup == null) {
+            createGroupAtRoot(realmName, group);
+        } else {
+            createChildGroup(realmName, parentGroup, group);
+        }
+
+        final GroupRepresentation importedGroup = findGroupByPath(realmName, group.getPath());
+        if (importedGroup == null) {
+            Log.errorf("Could not import group '%s' for realm '%s'", group.getName(), realmName);
+            return null;
+        }
+        Log.infof("Loaded imported group '%s' from realm '%s'.", importedGroup.getName(),
+                realmName);
+
+        return importedGroup;
+    }
+
+    private void createGroupAtRoot(final String realmName, final GroupRepresentation group) {
         try (final Response response = keycloak.realm(realmName)
                 .groups()
                 .add(group)) {
             if (response.getStatus() == 409) {
-                Log.errorf("Could not import group for realm '%s': %s", realmName,
+                Log.infof("Could not import group for realm '%s': %s", realmName,
                         extractError(response).getErrorMessage());
             } else {
                 Log.infof("Group '%s' imported for realm '%s'.", group.getName(), realmName);
             }
         } catch (final ClientErrorException e) {
             Log.errorf("Could not import group for realm '%s': %s", realmName, e.getMessage());
-            return null;
         }
-
-        final GroupRepresentation importedGroup = keycloak.realm(realmName)
-                .groups()
-                .groups(group.getName(), Boolean.TRUE, null, null, false)
-                .getFirst();
-        Log.infof("Loaded imported group '%s' from realm '%s'.", importedGroup.getName(),
-                realmName);
-
-        applyGroupHierarchy(realmName, group.getPath(), importedGroup);
-
-        return importedGroup;
     }
 
-    /**
-     * This implements a naive approach of creating the group hierarchy for the given set of group configurations.
-     * It assumes that the groups are imported in the correct order in regard to their hierarchy and the hierarchy
-     * is linear as well.
-     */
-    private void applyGroupHierarchy(final String realmName, final String path, final GroupRepresentation group) {
-        if (StringUtil.isNullOrEmpty(path)) {
-            return;
-        }
+    private void createChildGroup(final String realmName, final GroupRepresentation parentGroup,
+            final GroupRepresentation group) {
+        final Response response = keycloak.realm(realmName)
+                .groups()
+                .group(parentGroup.getId())
+                .subGroup(group);
 
-        final String[] groupHierarchy = path.split("/");
-        if (groupHierarchy.length > 2) {
-            final String groupName = groupHierarchy[groupHierarchy.length - 2];
-            final Optional<GroupRepresentation> potentialGroup = keycloak.realm(realmName)
-                    .groups()
-                    .query(groupName, false, null, null, false)
-                    .stream()
-                    .filter(grp -> grp.getName().equals(groupName))
-                    .findFirst();
-            if (potentialGroup.isPresent()) {
-                final GroupRepresentation parentGroup = potentialGroup.get();
-                try (final Response response = keycloak.realm(realmName)
-                        .groups()
-                        .group(parentGroup.getId())
-                        .subGroup(group)) {
-                    Log.infof("Adding group '%s' as child to '%s'.", group.getName(), parentGroup.getName());
-                }
-            }
+        if (familyOf(response.getStatus()) != Response.Status.Family.SUCCESSFUL) {
+            Log.errorf("Could not import group for realm '%s': %s", realmName,
+                    extractError(response).getErrorMessage());
         }
+    }
+
+    private GroupRepresentation findGroupByPath(final String realmName, final String path) {
+        try {
+            return keycloak.realm(realmName).getGroupByPath(path);
+        } catch (final NotFoundException e) {
+            return null;
+        }
+    }
+
+    private GroupRepresentation findParentGroup(final String realmName, final String path) {
+        final String optParentPath = getParentPath(path);
+        if (optParentPath == null) {
+            return null;
+        }
+        return findGroupByPath(realmName, optParentPath);
+    }
+
+    private String getParentPath(final String path) {
+        final List<String> components = Arrays.stream(path.split("/"))
+                .filter(s -> !s.isEmpty())
+                .toList();
+        if (components.size() <= 1) {
+            return null;
+        }
+        return components.subList(0, components.size() - 1)
+                .stream()
+                .collect(Collectors.joining("/", "/", ""));
     }
 }
