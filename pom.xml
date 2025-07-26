@@ -30,8 +30,9 @@
         <maven.compiler.target>21</maven.compiler.target>
 
         <!-- Dependency versions -->
-        <quarkus.platform.version>3.22.1</quarkus.platform.version>
-        <quarkus.velocity.version>1.11.0</quarkus.velocity.version>
+        <quarkus.platform.version>3.24.5</quarkus.platform.version>
+        <quarkus.velocity.version>1.13.0</quarkus.velocity.version>
+        <keycloak-client.version>26.0.6</keycloak-client.version>
         <lombok.version>1.18.38</lombok.version>
         <!-- /Dependency versions -->
 
@@ -69,6 +70,11 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-admin-client</artifactId>
+                <version>${keycloak-client.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

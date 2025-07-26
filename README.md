@@ -27,6 +27,12 @@ The configurator supports the following Keycloak API:
 | 2.0.x        | 3.19.1          | 26.1.3           |
 | 2.1.x        | 3.19.1          | 26.1.3           |
 
+Starting with version 3.x, the Keycloak Admin Client version is tracked:
+
+| Tool Version | Quarkus Version | Keycloak Admin Client Version |
+|--------------|-----------------|-------------------------------|
+| 3.0.x        | 3.24.5          | 26.0.6                        |
+
 ## Usage
 
 The configurator prints out the help when executed with `-h` or `--help`. It
