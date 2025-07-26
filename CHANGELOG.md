@@ -1,3 +1,27 @@
+# [3.0.0](https://github.com/CycriLabs/keycloak-configurator/compare/2.1.0...3.0.0) (2025-07-26)
+
+
+### Bug Fixes
+
+* **configure:** fix createing and finding child groups ([#93](https://github.com/CycriLabs/keycloak-configurator/issues/93)) ([f4e5e6d](https://github.com/CycriLabs/keycloak-configurator/commit/f4e5e6d239d8e431ea00ba3f593a7863d6c74725))
+* **configure:** use realm id instead of name for component parent mapping ([b7f4e7e](https://github.com/CycriLabs/keycloak-configurator/commit/b7f4e7e379c105178fbcd8cb5396ac615cb2f1c8))
+* **secrets:** fix export for clients with overlapping naming and specialized templates ([#88](https://github.com/CycriLabs/keycloak-configurator/issues/88)) ([c453d03](https://github.com/CycriLabs/keycloak-configurator/commit/c453d03959e4e602702dda5a799b3c19e7da03eb))
+
+
+### Features
+
+* bump lombok to 1.18.38 ([f0633b5](https://github.com/CycriLabs/keycloak-configurator/commit/f0633b51f056ae753be69036fc262cdf1e021723))
+* bump quarkus to 3.22.1 ([372f656](https://github.com/CycriLabs/keycloak-configurator/commit/372f6565765a88fb45b9c0a5d2d2ad36684537e8))
+* bump quarkus to 3.24.5 & bump keycloak-client to 26.0.6 ([ee665bf](https://github.com/CycriLabs/keycloak-configurator/commit/ee665bf2d16344e38140e31ed54c256d28afe225))
+* bump quarkus-velocity to 1.11.0 ([fddb69d](https://github.com/CycriLabs/keycloak-configurator/commit/fddb69d2a201d1455f38a9eb00ba836a94da92a7))
+* **configure:** add realm role import support to group importer ([#90](https://github.com/CycriLabs/keycloak-configurator/issues/90)) ([ef51226](https://github.com/CycriLabs/keycloak-configurator/commit/ef51226b0840f71d504453c3bce7b7df08a0e70e))
+
+
+### BREAKING CHANGES
+
+* the keycloak-admin-client is now tracked within the
+project directly instead of relying on the quarkus version only
+
 # [2.1.0](https://github.com/CycriLabs/keycloak-configurator/compare/2.0.0...2.1.0) (2025-05-03)
 
 
