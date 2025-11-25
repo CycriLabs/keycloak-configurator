@@ -1,3 +1,18 @@
+# [3.1.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.0.0...3.1.0) (2025-11-25)
+
+
+### Bug Fixes
+
+* configure custom resteasy client with low read timeout ([c826486](https://github.com/CycriLabs/keycloak-configurator/commit/c8264866eb57e77c3d567f59b5e1a19fa6e10eda))
+
+
+### Features
+
+* bump keycloak-admin-client to 26.0.7 ([9c0dd2f](https://github.com/CycriLabs/keycloak-configurator/commit/9c0dd2f62ca72f6123cca65c82921a3d406859c1))
+* bump lombok to 1.18.42 ([64467ae](https://github.com/CycriLabs/keycloak-configurator/commit/64467ae8c80785abbc5bc80f83ae52ade0f62ec8))
+* bump quarkus to 3.29.4 ([fd4f771](https://github.com/CycriLabs/keycloak-configurator/commit/fd4f771e306d9dfb773e0fe5c0c44de3446a86e8))
+* bump quarkus-velocity to 1.15.0 ([e624451](https://github.com/CycriLabs/keycloak-configurator/commit/e6244515965ca424872b2dbd28da90977c9cd046))
+
 # [3.0.0](https://github.com/CycriLabs/keycloak-configurator/compare/2.1.0...3.0.0) (2025-07-26)
 
 
