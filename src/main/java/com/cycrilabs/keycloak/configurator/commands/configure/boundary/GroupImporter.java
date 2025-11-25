@@ -48,7 +48,7 @@ public class GroupImporter extends AbstractImporter<GroupRepresentation> {
             return existingGroup;
         }
 
-        // Documentation suggests, that child groups could be created the same way as root level groups.
+        // Documentation suggests that child groups could be created the same way as root level groups.
         // (See org.keycloak.admin.client.resource.GroupsResource#add)
         // Alas, this does not seem to work. So we have to make a distinction here
         final GroupRepresentation parentGroup = findParentGroup(realmName, group.getPath());
@@ -92,11 +92,13 @@ public class GroupImporter extends AbstractImporter<GroupRepresentation> {
             final GroupRepresentation group) {
         final Response response = keycloak.realm(realmName)
                 .groups()
-                .group(parentGroup.getId()).subGroup(group);
-
+                .group(parentGroup.getId())
+                .subGroup(group);
         if (familyOf(response.getStatus()) != Response.Status.Family.SUCCESSFUL) {
             Log.errorf("Could not import group for realm '%s': %s", realmName,
                     extractError(response).getErrorMessage());
+        } else {
+            Log.infof("Child Group '%s' imported for realm '%s'.", group.getName(), realmName);
         }
     }
 

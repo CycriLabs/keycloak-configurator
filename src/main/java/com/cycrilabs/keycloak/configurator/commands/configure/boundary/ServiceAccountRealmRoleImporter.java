@@ -48,6 +48,9 @@ public class ServiceAccountRealmRoleImporter
 
         final UserRepresentation user = loadUserByUsername(realmName, serviceUsername);
         if (user == null) {
+            Log.infof(
+                    "Skipping import for file '%s' because service account '%s' was not found in realm '%s'.",
+                    file.getFile().getFileName(), serviceUsername, realmName);
             return null;
         }
 
@@ -92,14 +95,17 @@ public class ServiceAccountRealmRoleImporter
         Log.debugf("Found %d roles of realm '%s'.", Integer.valueOf(availableRealmRoles.size()),
                 realmName);
 
+        final List<RoleRepresentation> roleImports = roles.stream()
+                .filter(availableRealmRoles::containsKey)
+                .map(availableRealmRoles::get)
+                .toList();
         keycloak.realm(realmName)
                 .users()
                 .get(serviceUser.getId())
                 .roles()
                 .realmLevel()
-                .add(roles.stream()
-                        .filter(availableRealmRoles::containsKey)
-                        .map(availableRealmRoles::get)
-                        .toList());
+                .add(roleImports);
+        Log.infof("Imported %d realm roles for service user '%s' of realm '%s'.",
+                Integer.valueOf(roleImports.size()), serviceUser.getUsername(), realmName);
     }
 }
