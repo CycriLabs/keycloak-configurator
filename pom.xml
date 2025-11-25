@@ -32,7 +32,7 @@
         <!-- Dependency versions -->
         <quarkus.platform.version>3.29.4</quarkus.platform.version>
         <quarkus.velocity.version>1.15.0</quarkus.velocity.version>
-        <keycloak-client.version>26.0.6</keycloak-client.version>
+        <keycloak-admin-client.version>26.0.7</keycloak-admin-client.version>
         <lombok.version>1.18.42</lombok.version>
         <!-- /Dependency versions -->
 
@@ -74,7 +74,7 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-admin-client</artifactId>
-                <version>${keycloak-client.version}</version>
+                <version>${keycloak-admin-client.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
