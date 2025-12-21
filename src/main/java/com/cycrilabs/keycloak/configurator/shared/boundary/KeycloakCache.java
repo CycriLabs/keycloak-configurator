@@ -9,6 +9,7 @@ import jakarta.inject.Inject;
 
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ClientRepresentation;
+import org.keycloak.representations.idm.ClientScopeRepresentation;
 import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
@@ -80,6 +81,39 @@ public class KeycloakCache {
         }
 
         return client;
+    }
+
+    public ClientScopeRepresentation getClientScopeByName(final String realmName, final String scopeName) {
+        final Map<String, Map<String, Object>> realmCache =
+                cache.computeIfAbsent(EntityType.CLIENT_SCOPE, k -> new ConcurrentHashMap<>());
+        final Map<String, Object> clientScopeCache =
+                realmCache.computeIfAbsent(realmName, k -> new ConcurrentHashMap<>());
+
+        ClientScopeRepresentation clientScope = (ClientScopeRepresentation) clientScopeCache.get(scopeName);
+
+        if (clientScope == null) {
+            Log.debugf("Client scope '%s' not found in cache for realm '%s', fetching from Keycloak.",
+                    scopeName, realmName);
+            final List<ClientScopeRepresentation> clientScopes = keycloak.realm(realmName)
+                    .clientScopes()
+                    .findAll();
+            if (!clientScopes.isEmpty()) {
+                clientScope = clientScopes.stream()
+                        .filter(s -> s.getName().equals(scopeName))
+                        .findFirst()
+                        .orElse(null);
+                if (clientScope != null) {
+                    clientScopeCache.put(scopeName, clientScope);
+                    Log.debugf("Cached client scope '%s' for realm '%s'.", scopeName, realmName);
+                } else {
+                    Log.debugf("Could not find client scope '%s' in realm '%s'", scopeName, realmName);
+                }
+            }
+        } else {
+            Log.debugf("Retrieved client '%s' for realm '%s' from cache.", scopeName, realmName);
+        }
+
+        return clientScope;
     }
 
     public RoleRepresentation getRoleByName(final String realmName, final String roleName) {
