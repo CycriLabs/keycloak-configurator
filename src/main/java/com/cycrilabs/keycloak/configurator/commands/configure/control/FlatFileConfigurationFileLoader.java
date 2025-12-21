@@ -22,6 +22,7 @@ import io.quarkus.logging.Log;
  * │   ├── realm-a
  * │   │   ├── realms_realm-a.json
  * │   │   ├── clients_client-a.json
+ * │   │   ├── clients-scopes_client-scope-a.json
  * │   │   ├── client-roles_client-a_role-a.json
  * │   │   ├── realm-roles_realm-role-a.json
  * │   │   ├── service-account-client-roles_client-a_role-a.json
@@ -104,6 +105,7 @@ public class FlatFileConfigurationFileLoader extends ConfigurationFileLoader {
         switch (entityType) {
             case REALM:
             case CLIENT:
+            case CLIENT_SCOPE:
             case REALM_ROLE:
             case GROUP:
             case USER:

@@ -7,14 +7,15 @@ import lombok.Getter;
 @Getter
 public enum EntityType {
     REALM(1, "realm", "realms"),
-    CLIENT(2, "client", "clients"),
-    CLIENT_ROLE(3, "client-role", "client-roles"),
-    REALM_ROLE(4, "realm-role", "realm-roles"),
-    SERVICE_ACCOUNT_CLIENT_ROLE(5, "service-account-client-role", "service-account-client-roles"),
-    GROUP(6, "group", "groups"),
-    USER(7, "user", "users"),
-    SERVICE_ACCOUNT_REALM_ROLE(8, "service-account-realm-role", "service-account-realm-roles"),
-    COMPONENT(9, "component", "components");
+    CLIENT_SCOPE(2, "client-scope", "client-scopes"),
+    CLIENT(3, "client", "clients"),
+    CLIENT_ROLE(4, "client-role", "client-roles"),
+    REALM_ROLE(5, "realm-role", "realm-roles"),
+    SERVICE_ACCOUNT_CLIENT_ROLE(6, "service-account-client-role", "service-account-client-roles"),
+    GROUP(7, "group", "groups"),
+    USER(8, "user", "users"),
+    SERVICE_ACCOUNT_REALM_ROLE(9, "service-account-realm-role", "service-account-realm-roles"),
+    COMPONENT(10, "component", "components");
 
     private final int priority;
     private final String name;

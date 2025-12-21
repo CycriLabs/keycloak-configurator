@@ -1,0 +1,40 @@
+{
+	"name": "user-info-scope",
+	"description": "Adds roles to UserInfo endpoint",
+	"protocol": "openid-connect",
+	"attributes": {
+		"include.in.token.scope": "true",
+		"display.on.consent.screen": "false"
+	},
+	"protocolMappers": [
+		{
+			"name": "realm-roles-userinfo",
+			"protocol": "openid-connect",
+			"protocolMapper": "oidc-usermodel-realm-role-mapper",
+			"consentRequired": false,
+			"config": {
+				"claim.name": "realm_access.roles",
+				"jsonType.label": "String",
+				"multivalued": "true",
+				"userinfo.token.claim": "true",
+				"id.token.claim": "true",
+				"access.token.claim": "true"
+			}
+		},
+		{
+			"name": "client-roles-userinfo",
+			"protocol": "openid-connect",
+			"protocolMapper": "oidc-usermodel-client-role-mapper",
+			"consentRequired": false,
+			"config": {
+				"claim.name": "resource_access.${client_id}.roles",
+				"jsonType.label": "String",
+				"multivalued": "true",
+				"userinfo.token.claim": "true",
+				"id.token.claim": "true",
+				"access.token.claim": "true",
+				"usermodel.clientRoleMapping.clientId": "your-client-id"
+			}
+		}
+	]
+}

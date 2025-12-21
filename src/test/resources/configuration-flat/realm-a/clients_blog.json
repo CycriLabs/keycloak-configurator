@@ -24,7 +24,8 @@
         "acr",
         "profile",
         "roles",
-        "email"
+        "email",
+        "user-info-scope"
     ],
     "description": "",
     "directAccessGrantsEnabled": true,

@@ -26,6 +26,8 @@ import io.quarkus.logging.Log;
  * │   │   │   ├── realm-a.json
  * │   │   ├── clients
  * │   │   │   ├── client-a.json
+ * │   │   ├── client-scopes
+ * │   │   │   ├── client-scope-a.json
  * │   │   ├── client-roles
  * │   │   │   ├── client-a
  * │   │   │   │   ├── role-a.json
@@ -142,6 +144,7 @@ public class DirectoryConfigurationFileLoader extends ConfigurationFileLoader {
             case REALM:
                 break;
             case CLIENT:
+            case CLIENT_SCOPE:
             case REALM_ROLE:
             case GROUP:
             case USER:
