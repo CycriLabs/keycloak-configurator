@@ -1,3 +1,11 @@
+# [3.2.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.1.0...3.2.0) (2026-02-26)
+
+
+### Features
+
+* add cli option to take password using an environment variable ([#96](https://github.com/CycriLabs/keycloak-configurator/issues/96)) ([b081d26](https://github.com/CycriLabs/keycloak-configurator/commit/b081d26587fb9230bdb6617f8304f39508f74e07))
+* **configure:** add client-scope importer ([dbf2269](https://github.com/CycriLabs/keycloak-configurator/commit/dbf226997194986c9d103cc1042c9db231e5fffb))
+
 # [3.1.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.0.0...3.1.0) (2025-11-25)
 
 
