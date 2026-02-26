@@ -32,6 +32,8 @@ Starting with version 3.x, the Keycloak Admin Client version is tracked:
 | Tool Version | Quarkus Version | Keycloak Admin Client Version |
 |--------------|-----------------|-------------------------------|
 | 3.0.x        | 3.24.5          | 26.0.6                        |
+| 3.1.x        | 3.29.4          | 26.0.7                        |
+| 3.2.x        | 3.29.4          | 26.0.7                        |
 
 ## Usage
 
