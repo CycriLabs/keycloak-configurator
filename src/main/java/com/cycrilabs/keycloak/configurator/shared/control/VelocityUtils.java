@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Map;
 
 import lombok.NoArgsConstructor;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -38,6 +37,7 @@ public class VelocityUtils {
     public static Template loadTemplateFromString(final String name, final String templateString)
             throws ParseException {
         final RuntimeServices runtimeServices = RuntimeSingleton.getRuntimeServices();
+        runtimeServices.addProperty("parser.allow_hyphen_in_identifiers", Boolean.TRUE);
         final StringReader reader = new StringReader(templateString);
         final Template template = new Template();
         template.setName(name);
