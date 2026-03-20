@@ -4,19 +4,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.core.Response;
 
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
+import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
+import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.ErrorRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
-import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
 
@@ -38,7 +36,7 @@ public class UserImporter extends AbstractImporter<UserRepresentation> {
 
     @Override
     protected UserRepresentation executeImport(final ConfigurationFile file,
-            final UserRepresentation user) {
+                                               final UserRepresentation user) {
         final String realmName = file.getRealmName();
 
         try (final Response response = keycloak.realm(realmName)
@@ -83,7 +81,10 @@ public class UserImporter extends AbstractImporter<UserRepresentation> {
     }
 
     private void addRealmRoles(final String realmName, final UserRepresentation user,
-            final List<String> realmRoles) {
+                               final List<String> realmRoles) {
+        if (realmRoles == null || realmRoles.isEmpty()) {
+            return;
+        }
         Log.infof("Adding realm roles '%s' to user '%s' in realm '%s'.", realmRoles,
                 user.getUsername(), realmName);
 
@@ -104,7 +105,10 @@ public class UserImporter extends AbstractImporter<UserRepresentation> {
     }
 
     private void addClientRoles(final String realmName, final UserRepresentation user,
-            final Map<String, List<String>> clientRoles) {
+                                final Map<String, List<String>> clientRoles) {
+        if (clientRoles == null || clientRoles.isEmpty()) {
+            return;
+        }
         clientRoles.forEach((clientName, roles) -> {
             Log.infof("Adding client roles '%s' to user '%s' for client '%s' in realm '%s'.",
                     roles, user.getUsername(), clientName, realmName);
