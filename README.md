@@ -14,7 +14,16 @@ Internally, it is done via the
 
 ## Versions
 
-The configurator supports the following Keycloak API:
+The configurator supports the following Keycloak API.
+
+| Tool Version | Quarkus Version | Keycloak Admin Client Version |
+|--------------|-----------------|-------------------------------|
+| 3.0.x        | 3.24.5          | 26.0.6                        |
+| 3.1.x        | 3.29.4          | 26.0.7                        |
+| 3.2.x        | 3.29.4          | 26.0.7                        |
+| 3.3.x        | 3.34.1          | 26.0.8                        |
+
+Previous to version 3.x, the Keycloak version itself is tracked:
 
 | Tool Version | Quarkus Version | Keycloak Version |
 |--------------|-----------------|------------------|
@@ -26,14 +35,6 @@ The configurator supports the following Keycloak API:
 | 1.5.x        | 3.15.1          | 25.0.6           |
 | 2.0.x        | 3.19.1          | 26.1.3           |
 | 2.1.x        | 3.19.1          | 26.1.3           |
-
-Starting with version 3.x, the Keycloak Admin Client version is tracked:
-
-| Tool Version | Quarkus Version | Keycloak Admin Client Version |
-|--------------|-----------------|-------------------------------|
-| 3.0.x        | 3.24.5          | 26.0.6                        |
-| 3.1.x        | 3.29.4          | 26.0.7                        |
-| 3.2.x        | 3.29.4          | 26.0.7                        |
 
 ## Usage
 
