@@ -1,3 +1,19 @@
+# [3.3.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.2.0...3.3.0) (2026-03-29)
+
+
+### Bug Fixes
+
+* **configure:** UserImporter - check for nulls when importing realmroles and clientroles ([735fadd](https://github.com/CycriLabs/keycloak-configurator/commit/735faddf042f87307eceb3e4f1818bf2c5bff688))
+
+
+### Features
+
+* add parameter to RuntimeServices of Velocity allow variables with hyphens ([7835780](https://github.com/CycriLabs/keycloak-configurator/commit/7835780a59b01b3620c97f0765e69f7e37e4e8ba))
+* bump keycloak-admin-client to 26.0.8 ([c2916ad](https://github.com/CycriLabs/keycloak-configurator/commit/c2916ad9d2bef0dfc45c03e512bd77aec97f0b07))
+* bump lombok to 1.18.44 ([e49bc92](https://github.com/CycriLabs/keycloak-configurator/commit/e49bc92fde05ea1b303c52b6ad82e9566c0a63eb))
+* bump quarkus to 3.34.1 ([c8f65e0](https://github.com/CycriLabs/keycloak-configurator/commit/c8f65e0998814b4d0fe425cc2b6a34be57f09acd))
+* bump quarkus-velocity to 1.16.0 ([798a318](https://github.com/CycriLabs/keycloak-configurator/commit/798a318b23ee8773e15130d404031f97ee82178f))
+
 # [3.2.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.1.0...3.2.0) (2026-02-26)
 
 
