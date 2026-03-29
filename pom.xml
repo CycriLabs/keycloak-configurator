@@ -32,7 +32,7 @@
         <!-- Dependency versions -->
         <quarkus.platform.version>3.34.1</quarkus.platform.version>
         <quarkus.velocity.version>1.16.0</quarkus.velocity.version>
-        <keycloak-admin-client.version>26.0.7</keycloak-admin-client.version>
+        <keycloak-admin-client.version>26.0.8</keycloak-admin-client.version>
         <lombok.version>1.18.44</lombok.version>
         <!-- /Dependency versions -->
 
