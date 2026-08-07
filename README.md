@@ -5,7 +5,8 @@ realms, clients, client-roles, etc. represented by JSON files (configuration-as-
 In addition, it allows to __export secrets__ of all clients of a given realm based
 on a set of provided secret templates.
 Furthermore, it is possible to __export the configuration__ of Keycloak back to JSON
-files.
+files, and to __diff__ a Keycloak instance against the local configuration without
+modifying the server.
 
 All communication happens via the
 [Keycloak REST API](https://www.keycloak.org/docs-api/22.0.1/rest-api/index.html).
@@ -39,9 +40,10 @@ Previous to version 3.x, the Keycloak version itself is tracked:
 ## Usage
 
 The configurator prints out the help when executed with `-h` or `--help`. It
-lists all commands that are available. Currently, four commands are supported:
+lists all commands that are available. Currently, five commands are supported:
 
 * `configure` - Configures a Keycloak instance with a set of realms, clients, client-roles, etc.
+* `diff` - Reports all differences between a Keycloak instance and the local configuration
 * `export-secrets` - Exports secrets of all clients of the given realm
 * `rotate-secrets` - Rotates secrets of all clients of the given realm
 * `export-entities` - Exports entities of the given realm, optionally filtered by type or name
@@ -280,6 +282,62 @@ table lists all required and optional options of the `export-entities` sub-comma
 If no realm is provided, all realms are exported. If no client is provided, all clients
 of the given realm are exported. If no entity type is provided, all entity types are exported.
 If no entity name is provided, all entities of the given type are exported.
+
+### Sub-Command `diff`
+
+The `diff` sub-command reports all differences between a Keycloak instance and the local
+configuration. The server is only read and never modified, which makes the command usable
+as a drift check in a pipeline or as a preview before running `configure`.
+
+It reads the same configuration files as the `configure` sub-command and supports both the
+nested directory and the flat-file layout. The following table lists all required and
+optional options of the `diff` sub-command:
+
+| Option                  | Required | Description                                                                                              |
+|-------------------------|----------|----------------------------------------------------------------------------------------------------------|
+| `-s`, `--server`        | yes      | The URL of the Keycloak server.                                                                          |
+| `-u`, `--username`      | yes      | The username of the Keycloak admin user.                                                                 |
+| `-p`, `--password`      | yes      | The password of the Keycloak admin user. Can be omitted and read in via user input.                      |
+| `-c`, `--config`        | yes      | The path to the directory containing the configuration files.                                            |
+| `-t`, `--entity-type`   | no       | Allows to compare only one specific entity type.                                                         |
+| `--flat-files`          | no       | Reads configuration files from a flat file directory structure.                                          |
+| `--include-built-ins`   | no       | Also reports Keycloak built-in and auto-generated entities that are not configured locally.              |
+| `--ignore-extra`        | no       | An entity that must not be reported when it only exists on the server, e.g. `client:legacy-app`. Repeatable. |
+
+The command reports three kinds of differences:
+
+| Kind               | Meaning                                                                    |
+|--------------------|----------------------------------------------------------------------------|
+| `MISSING on server` | The entity is configured locally but does not exist on the server.        |
+| `~ <field>`        | The entity exists on both sides, but a locally declared field differs.      |
+| `EXTRA on server`  | The entity exists on the server but is not configured locally.              |
+
+For example:
+
+```
+=== realm-a ===
+  client 'blog'
+    ~ description: local="The blog" server="Blog"
+    ~ redirectUris: only in local: [https://blog.example/*]
+  client-role 'blog:posts-create'
+    MISSING on server
+  EXTRA on server: client 'legacy-app'
+
+3 differences across 3 entities in 1 realm(s). 14 entities checked.
+```
+
+The command returns the following exit codes, so that it can be used as a check:
+
+| Exit Code | Meaning                                                                  |
+|-----------|--------------------------------------------------------------------------|
+| `0`       | The server matches the local configuration.                              |
+| `1`       | Differences were found.                                                  |
+| `2`       | The command was called incorrectly.                                      |
+| `3`       | The server could not be reached, or it rejected the given credentials.    |
+
+Exit code `3` exists so that an unreachable server is not mistaken for a configuration that was
+never applied. The command authenticates before it compares anything, because otherwise every
+configured entity would be reported as missing on the server.
 
 ## Running via docker
 
