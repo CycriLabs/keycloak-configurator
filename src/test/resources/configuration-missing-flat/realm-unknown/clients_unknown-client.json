@@ -1,0 +1,5 @@
+{
+    "clientId": "unknown-client",
+    "enabled": true,
+    "protocol": "openid-connect"
+}
