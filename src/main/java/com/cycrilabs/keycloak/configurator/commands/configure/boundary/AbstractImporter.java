@@ -1,11 +1,7 @@
 package com.cycrilabs.keycloak.configurator.commands.configure.boundary;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
@@ -13,8 +9,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
 
-import org.apache.velocity.Template;
-import org.apache.velocity.runtime.parser.ParseException;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.ErrorRepresentation;
 
@@ -24,37 +18,27 @@ import com.cycrilabs.keycloak.configurator.commands.configure.entity.Configurati
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ImporterStatus;
 import com.cycrilabs.keycloak.configurator.shared.boundary.KeycloakCache;
-import com.cycrilabs.keycloak.configurator.shared.control.EnvironmentVariableProvider;
-import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
-import com.cycrilabs.keycloak.configurator.shared.control.VelocityUtils;
+import com.cycrilabs.keycloak.configurator.shared.control.ConfigurationEntityLoader;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import io.quarkus.logging.Log;
 
 public abstract class AbstractImporter<T> {
-    private static final String VARIABLE_ENVIRONMENT = "env";
-
     @Inject
     protected ConfigureCommandConfiguration configuration;
     @Inject
     protected ConfigurationFileStore configurationFileStore;
     @Inject
-    protected EnvironmentVariableProvider environmentVariableProvider;
+    protected ConfigurationEntityLoader entityLoader;
     @Inject
     protected KeycloakCache keycloakCache;
     @Inject
     protected Keycloak keycloak;
 
-    private Map<String, String> environmentVariables;
     @Getter
     @Setter
     private ImporterStatus status = ImporterStatus.NOT_STARTED;
-
-    @PostConstruct
-    public void init() {
-        environmentVariables = environmentVariableProvider.load();
-    }
 
     public void runImport() throws ConfigurationException {
         setStatus(ImporterStatus.STARTED);
@@ -139,23 +123,11 @@ public abstract class AbstractImporter<T> {
     }
 
     protected T loadEntity(final ConfigurationFile filepath, final Class<T> dtoClass) {
-        final String content = loadContent(filepath.getFile());
-        return JsonUtil.fromJson(content, dtoClass);
+        return entityLoader.loadEntity(filepath.getFile(), dtoClass);
     }
 
     protected T loadEntity(final ConfigurationFile filepath, final TypeReference<T> dtoType) {
-        final String content = loadContent(filepath.getFile());
-        return JsonUtil.fromJson(content, dtoType);
-    }
-
-    private String loadContent(final Path filepath) {
-        try {
-            final Template template = VelocityUtils.loadTemplate(filepath.toFile());
-            return VelocityUtils.mergeTemplate(template,
-                    Map.ofEntries(Map.entry(VARIABLE_ENVIRONMENT, environmentVariables)));
-        } catch (final IOException | ParseException e) {
-            throw new IllegalStateException(e);
-        }
+        return entityLoader.loadEntity(filepath.getFile(), dtoType);
     }
 
     public abstract EntityType getType();
