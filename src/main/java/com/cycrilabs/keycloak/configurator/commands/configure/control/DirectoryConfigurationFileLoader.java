@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
-import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigureCommandConfiguration;
+import com.cycrilabs.keycloak.configurator.shared.entity.ConfigurationSource;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -56,10 +56,10 @@ import io.quarkus.logging.Log;
  * types.
  */
 public class DirectoryConfigurationFileLoader extends ConfigurationFileLoader {
-    private final ConfigureCommandConfiguration configuration;
+    private final ConfigurationSource configuration;
     private final Map<EntityType, List<ConfigurationFile>> configurationFiles = new HashMap<>();
 
-    public DirectoryConfigurationFileLoader(final ConfigureCommandConfiguration configuration) {
+    public DirectoryConfigurationFileLoader(final ConfigurationSource configuration) {
         this.configuration = configuration;
     }
 

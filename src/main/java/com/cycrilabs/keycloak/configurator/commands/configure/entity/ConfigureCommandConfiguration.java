@@ -2,13 +2,15 @@ package com.cycrilabs.keycloak.configurator.commands.configure.entity;
 
 import lombok.Getter;
 
+import com.cycrilabs.keycloak.configurator.shared.entity.ConfigurationSource;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 import com.cycrilabs.keycloak.configurator.shared.entity.KeycloakConfiguration;
 
 import picocli.CommandLine.ParseResult;
 
 @Getter
-public class ConfigureCommandConfiguration extends KeycloakConfiguration {
+public class ConfigureCommandConfiguration extends KeycloakConfiguration
+        implements ConfigurationSource {
     private final String configDirectory;
     private final EntityType entityType;
     private final boolean flatFiles;
