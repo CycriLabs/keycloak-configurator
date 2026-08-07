@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
@@ -109,6 +110,32 @@ public class JsonUtil {
     public static <T> T loadEntity(final Path filepath, final TypeReference<T> dtoType) {
         final String json = loadJsonFromPath(filepath);
         return fromJson(json, dtoType);
+    }
+
+    /**
+     * Converts the given object to a JSON tree without an intermediate string representation.
+     *
+     * @param entity
+     *         object to convert
+     * @return the JSON tree of the object
+     */
+    public static JsonNode toJsonNode(final Object entity) {
+        return OBJECT_MAPPER.valueToTree(entity);
+    }
+
+    /**
+     * Parses the given JSON string into a JSON tree.
+     *
+     * @param content
+     *         JSON string
+     * @return the parsed JSON tree
+     */
+    public static JsonNode readTree(final String content) {
+        try {
+            return OBJECT_MAPPER.readTree(content);
+        } catch (final JsonProcessingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     /**
