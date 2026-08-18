@@ -1,3 +1,13 @@
+# [3.4.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.3.0...3.4.0) (2026-08-18)
+
+
+### Features
+
+* **diff:** add built-in entity filter ([8d1ef95](https://github.com/CycriLabs/keycloak-configurator/commit/8d1ef95e6e1262de4c9db16b13b5d3c41ec18422))
+* **diff:** add comparison engine ([4e382d0](https://github.com/CycriLabs/keycloak-configurator/commit/4e382d0e4aaf12dfdddcaa7044ad8ccf7d08dc2f))
+* **diff:** add diff sub-command ([39c05e9](https://github.com/CycriLabs/keycloak-configurator/commit/39c05e9b93d678886fffb35bfedab0bba79a5a06))
+* **diff:** add differs for all entity types ([5b5ed6e](https://github.com/CycriLabs/keycloak-configurator/commit/5b5ed6e5e6d3838df58f5b1384604950c0e93a99))
+
 # [3.3.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.2.0...3.3.0) (2026-03-29)
 
 
