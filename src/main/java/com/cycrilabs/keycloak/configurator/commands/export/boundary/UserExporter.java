@@ -3,7 +3,10 @@ package com.cycrilabs.keycloak.configurator.commands.export.boundary;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.WebApplicationException;
 
+import org.keycloak.admin.client.resource.UsersResource;
+
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
+import com.cycrilabs.keycloak.configurator.shared.control.PagingUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -30,9 +33,8 @@ public class UserExporter extends AbstractExporter {
     @Override
     protected void exportEntities() {
         try {
-            keycloak.realm(configuration.getRealmName())
-                    .users()
-                    .list()
+            final UsersResource users = keycloak.realm(configuration.getRealmName()).users();
+            PagingUtil.listAll(users::list)
                     .forEach(user -> {
                         Log.infof("Exporting user '%s'.", user.getUsername());
                         writeFile(JsonUtil.toJson(user), user.getUsername(),

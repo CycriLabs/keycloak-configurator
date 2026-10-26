@@ -7,10 +7,12 @@ import java.util.Set;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.NotFoundException;
 
+import org.keycloak.admin.client.resource.GroupResource;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
+import com.cycrilabs.keycloak.configurator.shared.control.PagingUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -94,10 +96,9 @@ public class GroupDiffer extends AbstractDiffer<GroupRepresentation> {
     private List<GroupRepresentation> getSubGroups(final String realm,
             final GroupRepresentation group) {
         try {
-            return keycloak.realm(realm)
-                    .groups()
-                    .group(group.getId())
-                    .getSubGroups(null, null, Boolean.TRUE);
+            final GroupResource groupResource = keycloak.realm(realm).groups().group(group.getId());
+            return PagingUtil.listAll(
+                    (first, max) -> groupResource.getSubGroups(first, max, Boolean.TRUE));
         } catch (final RuntimeException e) {
             Log.debugf("Could not read sub groups of group '%s' in realm '%s': %s", group.getPath(),
                     realm, e.getMessage());
