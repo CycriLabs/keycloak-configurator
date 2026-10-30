@@ -9,11 +9,13 @@ import java.util.stream.Collectors;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
+import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import com.cycrilabs.keycloak.configurator.commands.configure.entity.ConfigurationFile;
+import com.cycrilabs.keycloak.configurator.shared.control.PagingUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -129,9 +131,8 @@ public class UserDiffer extends AbstractDiffer<UserRepresentation> {
             return Set.of();
         }
 
-        return keycloak.realm(realm)
-                .users()
-                .list()
+        final UsersResource users = keycloak.realm(realm).users();
+        return PagingUtil.listAll(users::list)
                 .stream()
                 .map(UserRepresentation::getUsername)
                 .collect(Collectors.toSet());
