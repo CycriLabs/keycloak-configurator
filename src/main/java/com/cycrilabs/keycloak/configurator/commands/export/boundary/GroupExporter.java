@@ -2,7 +2,10 @@ package com.cycrilabs.keycloak.configurator.commands.export.boundary;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
+import org.keycloak.admin.client.resource.GroupsResource;
+
 import com.cycrilabs.keycloak.configurator.shared.control.JsonUtil;
+import com.cycrilabs.keycloak.configurator.shared.control.PagingUtil;
 import com.cycrilabs.keycloak.configurator.shared.entity.EntityType;
 
 import io.quarkus.logging.Log;
@@ -16,9 +19,8 @@ public class GroupExporter extends AbstractExporter {
 
     @Override
     protected void exportEntity(final String entityName) {
-        keycloak.realm(configuration.getRealmName())
-                .groups()
-                .groups()
+        final GroupsResource groups = keycloak.realm(configuration.getRealmName()).groups();
+        PagingUtil.listAll(groups::groups)
                 .stream()
                 .filter(group -> group.getName().equals(entityName))
                 .forEach(group -> {
@@ -30,9 +32,8 @@ public class GroupExporter extends AbstractExporter {
 
     @Override
     protected void exportEntities() {
-        keycloak.realm(configuration.getRealmName())
-                .groups()
-                .groups()
+        final GroupsResource groups = keycloak.realm(configuration.getRealmName()).groups();
+        PagingUtil.listAll(groups::groups)
                 .forEach(group -> {
                     Log.infof("Exporting group '%s'.", group.getName());
                     writeFile(JsonUtil.toJson(group), group.getName(),
