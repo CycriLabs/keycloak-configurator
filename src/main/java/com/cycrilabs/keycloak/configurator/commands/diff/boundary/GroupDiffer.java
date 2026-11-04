@@ -71,7 +71,7 @@ public class GroupDiffer extends AbstractDiffer<GroupRepresentation> {
     @Override
     protected Set<String> getServerEntityNames(final String realm) {
         final Set<String> paths = new LinkedHashSet<>();
-        collectPaths(realm, keycloak.realm(realm).groups().groups(), paths);
+        collectPaths(realm, PagingUtil.listAll(keycloak.realm(realm).groups()::groups), paths);
         return paths;
     }
 
