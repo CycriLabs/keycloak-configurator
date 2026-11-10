@@ -45,6 +45,9 @@ import io.quarkus.logging.Log;
  * │   │   │   │   ├── realm-role-a.json
  * │   │   ├── components
  * │   │   │   ├── ...
+ * │   │   ├── client-scope-mappings
+ * │   │   │   ├── client-a
+ * │   │   │   │   ├── scope-mappings.json
  * │   ├── realm-b
  * │   │   ├── realms
  * │   │   │   ├── realm-b.json
@@ -152,6 +155,7 @@ public class DirectoryConfigurationFileLoader extends ConfigurationFileLoader {
                 realmName = fileNameParts[fileNameParts.length - 3];
                 break;
             case CLIENT_ROLE:
+            case CLIENT_SCOPE_MAPPING:
                 realmName = fileNameParts[fileNameParts.length - 4];
                 clientId = fileNameParts[fileNameParts.length - 2];
                 break;

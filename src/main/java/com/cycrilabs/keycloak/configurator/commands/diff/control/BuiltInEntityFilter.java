@@ -132,7 +132,7 @@ public class BuiltInEntityFilter {
             case REALM_ROLE -> isBuiltInRealmRole(realm, name);
             case USER -> isBuiltInUser(name);
             case COMPONENT -> BUILT_IN_COMPONENTS.contains(name);
-            case GROUP, SERVICE_ACCOUNT_CLIENT_ROLE, SERVICE_ACCOUNT_REALM_ROLE -> false;
+            case GROUP, SERVICE_ACCOUNT_CLIENT_ROLE, SERVICE_ACCOUNT_REALM_ROLE, CLIENT_SCOPE_MAPPING -> false;
         };
     }
 

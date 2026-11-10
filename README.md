@@ -80,6 +80,9 @@ an entity of the Keycloak REST API. The following directory structure is expecte
 │   │   │   │   ├── realm-role-a.json
 │   │   ├── components
 │   │   │   ├── ...
+│   │   ├── client-scope-mappings
+│   │   │   ├── client-a
+│   │   │   │   ├── scope-mappings.json
 │   ├── realm-b
 │   │   ├── realms
 │   │   │   ├── realm-b.json
@@ -109,6 +112,7 @@ Type and name are separated by an underscore (`_`). For example:
 │   │   ├── users_user-a.json
 │   │   ├── service-account-client-roles_client-a_realm-role-a.json
 │   │   ├── components_component-a.json
+│   │   ├── client-scope-mappings_client-a_scope-mappings.json
 │   ├── realm-b
 │   │   ├── realms_realm-b.json
 │   │   ├── clients_client-b.json
@@ -142,8 +146,34 @@ identifier to identifier configuration source directories:
 | `user`                        | `users`                        | A user.                                |
 | `service-account-realm-role`  | `service-account-realm-roles`  | A service account realm role mapping.  |
 | `component`                   | `components`                   | A component, e.g. LDAP provider.       |
+| `client-scope-mapping`        | `client-scope-mappings`        | The scope mappings of a client.        |
 
 Entities are imported as listed in the table above.
+
+#### Client scope mappings
+
+Client scope mappings define which roles a client may put into its tokens when
+`fullScopeAllowed` is `false` (in the admin console: Clients → client → Client scopes →
+dedicated scope → Scope). The client is taken from the directory name (nested structure)
+or from the second part of the file name (flat structure). A file lists realm roles and
+client roles, the latter keyed by the client id of the client that owns the roles:
+
+```json
+{
+    "realm": [
+        "realm-role-a"
+    ],
+    "client": {
+        "realm-management": [
+            "view-users",
+            "manage-users"
+        ]
+    }
+}
+```
+
+Mappings are only added, never removed. Roles or clients that cannot be found are reported
+as errors.
 
 The `configure`-command allows expanding a given set of variables. The following set
 of variables is supported:
