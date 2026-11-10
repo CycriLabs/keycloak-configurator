@@ -9,7 +9,7 @@ files, and to __diff__ a Keycloak instance against the local configuration witho
 modifying the server.
 
 All communication happens via the
-[Keycloak REST API](https://www.keycloak.org/docs-api/22.0.1/rest-api/index.html).
+[Keycloak REST API](https://www.keycloak.org/docs-api/latest/rest-api/index.html).
 Internally, it is done via the
 [Quarkus Keycloak Java Admin Client](https://quarkus.io/guides/security-keycloak-admin-client).
 
@@ -23,6 +23,8 @@ The configurator supports the following Keycloak API.
 | 3.1.x        | 3.29.4          | 26.0.7                        |
 | 3.2.x        | 3.29.4          | 26.0.7                        |
 | 3.3.x        | 3.34.1          | 26.0.8                        |
+| 3.4.x        | 3.34.1          | 26.0.8                        |
+| 3.5.x        | 3.34.1          | 26.0.8                        |
 
 Previous to version 3.x, the Keycloak version itself is tracked:
 
@@ -233,7 +235,7 @@ Variables must be placed within the secret template as `$variable`. For example:
 QUARKUS_OIDC_CREDENTIALS_SECRET=$secret
 ```
 
-The `client` variable is the Keycloak representation [ClientRepresentation](https://www.keycloak.org/docs-api/23.0.6/rest-api/#ClientRepresentation).
+The `client` variable is the Keycloak representation [ClientRepresentation](https://www.keycloak.org/docs-api/latest/rest-api/#ClientRepresentation).
 All fields can be accessed as described in [Velocity References](https://velocity.apache.org/engine/2.3/user-guide.html#references),
 for example:
 
@@ -392,19 +394,19 @@ In case of configuring existing keycloak container in docker-compose. This can b
 ```docker-compose
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.0
+    image: quay.io/keycloak/keycloak:26.8.2
     environment:
       KC_HTTP_RELATIVE_PATH: auth
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-    command: ["start-dev", "--http-relative-path=auth", "--http-port=5050", "--import-realm","--hostname=localhost", "--hostname-port=5050"]
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    command: ["start-dev", "--http-relative-path=auth", "--http-port=5050", "--import-realm","--hostname=localhost"]
     ports:
       - 5050:5050
     volumes:
       - ./../keycloak/setup:/opt/keycloak/data/import:Z
 
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     ports:
       - "5432:5432"
     environment:
