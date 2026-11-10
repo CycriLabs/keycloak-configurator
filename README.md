@@ -77,7 +77,7 @@ an entity of the Keycloak REST API. The following directory structure is expecte
 │   │   │   ├── ...
 │   │   ├── users
 │   │   │   ├── ...
-│   │   ├── service-account-client-roles
+│   │   ├── service-account-realm-roles
 │   │   │   ├── client-a
 │   │   │   │   ├── realm-role-a.json
 │   │   ├── components
@@ -113,7 +113,7 @@ Type and name are separated by an underscore (`_`). For example:
 │   │   ├── service-account-client-roles_client-a_role-a.json
 │   │   ├── groups_group-a.json
 │   │   ├── users_user-a.json
-│   │   ├── service-account-client-roles_client-a_realm-role-a.json
+│   │   ├── service-account-realm-roles_client-a_realm-role-a.json
 │   │   ├── components_component-a.json
 │   │   ├── client-scope-mappings_client-a_scope-mappings.json
 │   ├── realm-b
