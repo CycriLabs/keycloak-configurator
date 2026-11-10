@@ -15,7 +15,8 @@ public enum EntityType {
     GROUP(7, "group", "groups"),
     USER(8, "user", "users"),
     SERVICE_ACCOUNT_REALM_ROLE(9, "service-account-realm-role", "service-account-realm-roles"),
-    COMPONENT(10, "component", "components");
+    COMPONENT(10, "component", "components"),
+    CLIENT_SCOPE_MAPPING(11, "client-scope-mapping", "client-scope-mappings");
 
     private final int priority;
     private final String name;

@@ -24,5 +24,10 @@ class ConfigureCommandTest {
         final String output = result.getOutput();
         Assertions.assertTrue(output.contains("Executing importer 'RealmImporter'"));
         Assertions.assertTrue(output.contains("Executing importer 'ComponentImporter'"));
+        Assertions.assertTrue(output.contains("Executing importer 'ClientScopeMappingImporter'"));
+        Assertions.assertTrue(output.contains(
+                "Added realm roles [blog-administration] to the scope of client 'blog' of realm 'realm-a'."));
+        Assertions.assertTrue(output.contains(
+                "Added client roles [view-users] of client 'realm-management' to the scope of client 'blog' of realm 'realm-a'."));
     }
 }

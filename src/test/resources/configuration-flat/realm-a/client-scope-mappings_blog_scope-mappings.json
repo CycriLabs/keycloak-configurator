@@ -1,0 +1,10 @@
+{
+    "realm": [
+        "blog-administration"
+    ],
+    "client": {
+        "realm-management": [
+            "view-users"
+        ]
+    }
+}
