@@ -1,3 +1,16 @@
+# [3.5.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.4.0...3.5.0) (2026-11-10)
+
+
+### Bug Fixes
+
+* page through top level groups ([6fe6650](https://github.com/CycriLabs/keycloak-configurator/commit/6fe6650aeb33dfa0545596fd310d75a41ca71b20))
+* page through users and sub groups ([b271f6a](https://github.com/CycriLabs/keycloak-configurator/commit/b271f6a6afe73cb510295f43e5ff1615da656b44))
+
+
+### Features
+
+* **configure:** add client scope mapping importer ([a24f15e](https://github.com/CycriLabs/keycloak-configurator/commit/a24f15e454322ef1dc20cee878a9865f352a85a4))
+
 # [3.4.0](https://github.com/CycriLabs/keycloak-configurator/compare/3.3.0...3.4.0) (2026-08-18)
 
 
