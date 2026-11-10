@@ -61,6 +61,8 @@ an entity of the Keycloak REST API. The following directory structure is expecte
 │   ├── realm-a
 │   │   ├── realms
 │   │   │   ├── realm-a.json
+│   │   ├── client-scopes
+│   │   │   ├── client-scope-a.json
 │   │   ├── clients
 │   │   │   ├── client-a.json
 │   │   ├── client-roles
@@ -104,6 +106,7 @@ Type and name are separated by an underscore (`_`). For example:
 ├── configuration
 │   ├── realm-a
 │   │   ├── realms_realm-a.json
+│   │   ├── client-scopes_client-scope-a.json
 │   │   ├── clients_client-a.json
 │   │   ├── client-roles_client-a_role-a.json
 │   │   ├── realm-roles_realm-role-a.json
@@ -138,6 +141,7 @@ identifier to identifier configuration source directories:
 | Entity Type                   | Directory identifier           | Description                            |
 |-------------------------------|--------------------------------|----------------------------------------|
 | `realm`                       | `realms`                       | A realm.                               |
+| `client-scope`                | `client-scopes`                | A client scope.                        |
 | `client`                      | `clients`                      | A client.                              |
 | `client-role`                 | `client-roles`                 | A client role.                         |
 | `realm-role`                  | `realm-roles`                  | A realm role.                          |
